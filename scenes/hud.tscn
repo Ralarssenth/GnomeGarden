@@ -1,0 +1,19 @@
+[gd_scene format=3 uid="uid://f1xug5peqhti"]
+
+[node name="HUD" type="CanvasLayer"]
+
+[node name="PlantCropMenuButton" type="Button" parent="." groups=["buttons"]]
+z_index = 1
+offset_left = 105.0
+offset_top = 1.0
+offset_right = 228.0
+offset_bottom = 32.0
+text = "Plant Seed
+"
+alignment = 0
+
+[node name="ClearDebrisButton" type="Button" parent="." groups=["buttons"]]
+z_index = 1
+offset_right = 103.0
+offset_bottom = 31.0
+text = "Clear Debris"

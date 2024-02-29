@@ -1,0 +1,139 @@
+[gd_scene load_steps=17 format=3 uid="uid://bkeys04n7sew6"]
+
+[ext_resource type="Texture2D" uid="uid://d4idcen7lk0vm" path="res://assets/gnome/PNG/24x32/gnome-m-red_hat-NESW.png" id="1_a1ccd"]
+[ext_resource type="Script" path="res://scripts/gnome.gd" id="2_vr4qt"]
+
+[sub_resource type="RectangleShape2D" id="RectangleShape2D_0n17s"]
+size = Vector2(8, 7)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_ly1tx"]
+atlas = ExtResource("1_a1ccd")
+region = Rect2(0, 64, 24, 32)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_5iji8"]
+atlas = ExtResource("1_a1ccd")
+region = Rect2(24, 64, 24, 32)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_owotc"]
+atlas = ExtResource("1_a1ccd")
+region = Rect2(48, 64, 24, 32)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_xg8qy"]
+atlas = ExtResource("1_a1ccd")
+region = Rect2(0, 96, 24, 32)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_6hs0k"]
+atlas = ExtResource("1_a1ccd")
+region = Rect2(24, 96, 24, 32)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_sqkn7"]
+atlas = ExtResource("1_a1ccd")
+region = Rect2(48, 96, 24, 32)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_gu002"]
+atlas = ExtResource("1_a1ccd")
+region = Rect2(0, 32, 24, 32)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_d2hpn"]
+atlas = ExtResource("1_a1ccd")
+region = Rect2(24, 32, 24, 32)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_g86xa"]
+atlas = ExtResource("1_a1ccd")
+region = Rect2(48, 32, 24, 32)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_vf7p8"]
+atlas = ExtResource("1_a1ccd")
+region = Rect2(0, 0, 24, 32)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_c2vde"]
+atlas = ExtResource("1_a1ccd")
+region = Rect2(24, 0, 24, 32)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_i5vid"]
+atlas = ExtResource("1_a1ccd")
+region = Rect2(48, 0, 24, 32)
+
+[sub_resource type="SpriteFrames" id="SpriteFrames_lefn1"]
+animations = [{
+"frames": [{
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_ly1tx")
+}, {
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_5iji8")
+}, {
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_owotc")
+}, {
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_5iji8")
+}],
+"loop": true,
+"name": &"walk_down",
+"speed": 5.0
+}, {
+"frames": [{
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_xg8qy")
+}, {
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_6hs0k")
+}, {
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_sqkn7")
+}, {
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_6hs0k")
+}],
+"loop": true,
+"name": &"walk_left",
+"speed": 5.0
+}, {
+"frames": [{
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_gu002")
+}, {
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_d2hpn")
+}, {
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_g86xa")
+}, {
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_d2hpn")
+}],
+"loop": true,
+"name": &"walk_right",
+"speed": 5.0
+}, {
+"frames": [{
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_vf7p8")
+}, {
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_c2vde")
+}, {
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_i5vid")
+}, {
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_c2vde")
+}],
+"loop": true,
+"name": &"walk_up",
+"speed": 5.0
+}]
+
+[node name="Gnome" type="CharacterBody2D"]
+script = ExtResource("2_vr4qt")
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="."]
+position = Vector2(0, 9.5)
+shape = SubResource("RectangleShape2D_0n17s")
+
+[node name="AnimatedSprite2D" type="AnimatedSprite2D" parent="."]
+sprite_frames = SubResource("SpriteFrames_lefn1")
+animation = &"walk_down"
+
+[node name="NavigationAgent2D" type="NavigationAgent2D" parent="."]
