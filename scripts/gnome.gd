@@ -54,7 +54,8 @@ func navigate():
 
 	velocity = current_agent_position.direction_to(next_path_position) * movement_speed
 	move_and_slide()
-	set_walk_animation()
+	if state == STATE.IDLE:
+		set_walk_animation()
 
 func set_walk_animation():
 	var speed = get_real_velocity()
@@ -93,7 +94,6 @@ func set_state(_state):
 			
 		STATE.HAULING:
 			pass
-
 
 
 func _on_animation_player_animation_finished(busy):

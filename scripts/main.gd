@@ -135,6 +135,7 @@ func _on_gnome_idle():
 	print("gnome idle signal caught")
 
 func _on_gnome_arrived(pos: Vector2):
+	print("gnome has arrived")
 	var map_pos = tutorial_level.local_to_map(pos)
 	tutorial_level.erase_cell(clearSelection, map_pos)
 	tutorial_level.erase_cell(plantSelection, map_pos)
