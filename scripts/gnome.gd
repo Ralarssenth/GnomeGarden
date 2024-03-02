@@ -1,7 +1,10 @@
 extends CharacterBody2D
 
 var movement_speed: float = 4.0
-var movement_target_position: Vector2 = Vector2(60.0,180.0)
+var movement_target_position: Vector2 = Vector2(0.0,0.0)
+
+signal idle 
+signal arrived
 
 @onready var navigation_agent: NavigationAgent2D = $NavigationAgent2D
 
@@ -17,6 +20,8 @@ func _ready():
 
 	# Make sure to not await during _ready.
 	call_deferred("actor_setup")
+	
+	set_state(STATE.IDLE)
 
 func actor_setup():
 	# Wait for the first physics frame so the NavigationServer can sync.
@@ -25,12 +30,16 @@ func actor_setup():
 	# Now that the navigation map is no longer empty, set the movement target.
 	set_movement_target(movement_target_position)
 
+# update navigation agent target position
 func set_movement_target(movement_target: Vector2):
 	navigation_agent.target_position = movement_target
+	movement_target_position = movement_target
 
 # Called every frame. 'delta' is the elapsed time since the previous frame.
 func _process(delta):
 	if navigation_agent.is_navigation_finished():
+		emit_signal("arrived", movement_target_position)
+		set_state(STATE.IDLE)
 		return
 
 	var current_agent_position: Vector2 = global_position
@@ -42,7 +51,8 @@ func _process(delta):
 func set_state(_state):
 	match state:
 		STATE.IDLE:
-			pass
+			emit_signal("idle")
+			print("state set to idle")
 			
 		STATE.WALKING:
 			pass
