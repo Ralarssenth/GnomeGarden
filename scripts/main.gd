@@ -21,7 +21,7 @@ var plantSeedPos = []
 
 enum MODES {NULL, CLEAR_DEBRIS, PLANT}
 var mode = MODES.NULL
-
+enum STATE {IDLE, CLEARING_DEBRIS, PLANTING_SEED, TENDING_PLANT, HAULING}
 
 # Called when the node enters the scene tree for the first time.
 func _ready():
@@ -93,7 +93,6 @@ func _unhandled_input(event):
 		tutorial_level.erase_cell(clearSelection, tile_mouse_pos)
 		# remove the position from the array
 		clearDebrisPos.erase(tile_mouse_pos)
-		
 
 	#right click in PLANT MODE
 	if event.is_action_pressed("right click") and mode == MODES.PLANT:
@@ -107,7 +106,7 @@ func _unhandled_input(event):
 	
 func set_mode(_mode):
 	mode = _mode
-	match  mode:
+	match mode:
 		MODES.NULL:
 			tutorial_level.set_layer_modulate(clearSelection, removeHighlightColor)
 			tutorial_level.set_layer_modulate(plantSelection, removeHighlightColor)
@@ -120,14 +119,19 @@ func set_mode(_mode):
 			tutorial_level.set_layer_modulate(background, plantHighlightColor)
 func _on_gnome_idle():
 	var pos
+	var job
 	if not clearDebrisPos.is_empty():
 		pos = tutorial_level.map_to_local(clearDebrisPos.pop_front())
+		job = STATE.CLEARING_DEBRIS
 	elif not plantSeedPos.is_empty():
 		pos = tutorial_level.map_to_local(plantSeedPos.pop_front())
+		job = STATE.PLANTING_SEED
 	else:
-		# currently hardcoded, should be call to wander randomly eventually
-		pos = Vector2(0.0,0.0)
+		# pick a random spot on the map
+		pos = Vector2(randf_range(-32.0, 32.0),randf_range(-32.0, 32.0))
+		job = STATE.IDLE
 	select_movement_target(pos)
+	gnome.set_job(job)
 	print("gnome idle signal caught")
 
 func _on_gnome_arrived(pos: Vector2):
