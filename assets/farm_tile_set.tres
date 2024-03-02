@@ -737,6 +737,7 @@ texture = ExtResource("1_36jdr")
 5:8/0/z_index = 1
 12:0/0 = 0
 10:0/0 = 0
+10:0/0/custom_data_0 = true
 
 [resource]
 terrain_set_0/mode = 0
@@ -745,4 +746,6 @@ terrain_set_0/terrain_0/color = Color(0.235294, 0.698039, 0.164706, 1)
 terrain_set_0/terrain_1/name = "Ground"
 terrain_set_0/terrain_1/color = Color(0.5, 0.4375, 0.25, 1)
 navigation_layer_0/layers = 1
+custom_data_layer_0/name = "debris"
+custom_data_layer_0/type = 1
 sources/0 = SubResource("TileSetAtlasSource_jhi7j")

@@ -5,6 +5,7 @@ var movement_target_position: Vector2 = Vector2(0.0,0.0)
 
 signal idle 
 signal arrived
+signal gnome_finished_busy_animation
 
 @onready var navigation_agent: NavigationAgent2D = $NavigationAgent2D
 @onready var _animation_player = $AnimationPlayer
@@ -40,10 +41,8 @@ func set_movement_target(movement_target: Vector2):
 # Called every frame. 'delta' is the elapsed time since the previous frame.
 func _process(delta):
 	if navigation_agent.is_navigation_finished() and state == STATE.IDLE:
-		emit_signal("arrived", movement_target_position)
-		set_state(job)
-		print("state set to " + str(job) + " in delta")
-		print(state)
+		emit_signal("arrived", movement_target_position, job)
+		print("current state in delta: " + str(state))
 		return
 
 	navigate()
@@ -97,5 +96,4 @@ func set_state(_state):
 
 
 func _on_animation_player_animation_finished(busy):
-	set_state(STATE.IDLE)
-	print("busy animation finished")
+	emit_signal("gnome_finished_busy_animation", job, movement_target_position)
