@@ -159,13 +159,24 @@ func _on_gnome_idle():
 	gnome.set_job(job)
 	print("gnome sent new position data")
 
-func _on_gnome_arrived(pos: Vector2, job):
+func _on_gnome_arrived(pos: Vector2, job, reachable):
 	print("gnome has arrived")
 	var map_pos = tutorial_level.local_to_map(pos)
 	var cell = tutorial_level.get_cell_tile_data(foreground, map_pos)
+	var reached = reachable
 	print(cell)
 	
-	if cell:
+	if not reached:
+		if job== STATE.CLEARING_DEBRIS:
+			tutorial_level.erase_cell(clearSelection, map_pos)
+			gnome.set_job(STATE.IDLE)
+			gnome.set_state(STATE.IDLE)
+		if job == STATE.PLANTING_SEED:
+			tutorial_level.erase_cell(plantSelection, map_pos)
+			gnome.set_job(STATE.IDLE)
+			gnome.set_state(STATE.IDLE)
+	
+	elif cell:
 		var debris = cell.get_custom_data("debris")
 		print("debris bool: " + str(debris))
 
@@ -231,6 +242,5 @@ func _on_gnome_finished_busy_animation(job, pos):
 
 func _on_plant_needs_tending(pos: Vector2):
 	var map_pos = tutorial_level.local_to_map(pos)
-	#plantSeedPos.push_back(map_pos)
 	seedlingPos.push_back(map_pos)
 	print("plant added to tending queue")

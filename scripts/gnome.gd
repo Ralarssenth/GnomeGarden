@@ -42,9 +42,15 @@ func set_movement_target(movement_target: Vector2):
 # Called every frame. 'delta' is the elapsed time since the previous frame.
 func _process(delta):
 	if navigation_agent.is_navigation_finished() and state == STATE.IDLE:
-		emit_signal("arrived", movement_target_position, job)
-		print("current state in delta: " + str(state))
-		return
+		var reachable = true
+		if navigation_agent.is_target_reachable():
+			emit_signal("arrived", movement_target_position, job, reachable)
+			print("current state in delta: " + str(state))
+			return
+		else:
+			reachable = false
+			emit_signal("arrived", movement_target_position, job, reachable)
+			return
 	if state == STATE.IDLE:
 		navigate()
 
@@ -103,4 +109,5 @@ func set_state(_state):
 func _on_animation_player_animation_finished(_anim_name):
 	if _anim_name == "busy":
 		emit_signal("gnome_finished_busy_animation", job, movement_target_position)
+
 
