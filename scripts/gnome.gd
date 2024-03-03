@@ -9,6 +9,7 @@ signal gnome_finished_busy_animation
 
 @onready var navigation_agent: NavigationAgent2D = $NavigationAgent2D
 @onready var _animation_player = $AnimationPlayer
+@onready var area2d = $Area2D
 
 enum STATE {IDLE, CLEARING_DEBRIS, PLANTING_SEED, TENDING_PLANT, HAULING}
 var state = STATE.IDLE
@@ -18,8 +19,8 @@ var job = STATE.IDLE
 func _ready():
 	# These values need to be adjusted for the actor's speed
 	# and the navigation layout.
-	navigation_agent.path_desired_distance = 4.0
-	navigation_agent.target_desired_distance = 4.0
+	navigation_agent.path_desired_distance = 1.0
+	navigation_agent.target_desired_distance = 1.0
 
 	# Make sure to not await during _ready.
 	call_deferred("actor_setup")
@@ -44,8 +45,8 @@ func _process(delta):
 		emit_signal("arrived", movement_target_position, job)
 		print("current state in delta: " + str(state))
 		return
-
-	navigate()
+	if state == STATE.IDLE:
+		navigate()
 
 func navigate():
 	var current_agent_position: Vector2 = global_position
@@ -53,8 +54,7 @@ func navigate():
 
 	velocity = current_agent_position.direction_to(next_path_position) * movement_speed
 	move_and_slide()
-	if state == STATE.IDLE:
-		set_walk_animation()
+	set_walk_animation()
 
 func set_walk_animation():
 	var speed = get_real_velocity()
@@ -84,16 +84,23 @@ func set_state(_state):
 			_animation_player.play("busy")
 			
 		STATE.PLANTING_SEED:
-			print("gnome state set to planting seed")
-			_animation_player.stop()
-			_animation_player.play("busy")
+			if area2d.has_overlapping_areas():
+				set_state(STATE.IDLE)
+				print("gnome won't plant on top of an existing seedling")
+			else:
+				print("gnome state set to planting seed")
+				_animation_player.stop()
+				_animation_player.play("busy")
 			
 		STATE.TENDING_PLANT:
-			pass
+			print("gnome state set to tending plant")
+			_animation_player.stop()
+			_animation_player.play("busy")
 			
 		STATE.HAULING:
 			pass
 
+func _on_animation_player_animation_finished(_anim_name):
+	if _anim_name == "busy":
+		emit_signal("gnome_finished_busy_animation", job, movement_target_position)
 
-func _on_animation_player_animation_finished(busy):
-	emit_signal("gnome_finished_busy_animation", job, movement_target_position)

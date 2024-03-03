@@ -1,6 +1,7 @@
-[gd_resource type="TileSet" load_steps=32 format=3 uid="uid://bw3no5fgo7o1"]
+[gd_resource type="TileSet" load_steps=35 format=3 uid="uid://bw3no5fgo7o1"]
 
 [ext_resource type="Texture2D" uid="uid://dadx8bl6lm6r6" path="res://assets/free version/free.png" id="1_36jdr"]
+[ext_resource type="PackedScene" uid="uid://00mgsdnce8op" path="res://scenes/plant.tscn" id="2_yx84v"]
 
 [sub_resource type="NavigationPolygon" id="NavigationPolygon_ql6qq"]
 vertices = PackedVector2Array(8, 8, -8, 8, -8, -8, 8, -8)
@@ -163,6 +164,13 @@ outlines = Array[PackedVector2Array]([PackedVector2Array(-8, -8, 8, -8, 8, 8, -8
 source_geometry_group_name = &"navigation_polygon_source_group"
 agent_radius = 0.0
 
+[sub_resource type="NavigationPolygon" id="NavigationPolygon_fqx3y"]
+vertices = PackedVector2Array(8, 8, -8, 8, -8, -8, 8, -8)
+polygons = Array[PackedInt32Array]([PackedInt32Array(0, 1, 2, 3)])
+outlines = Array[PackedVector2Array]([PackedVector2Array(-8, -8, 8, -8, 8, 8, -8, 8)])
+source_geometry_group_name = &"navigation_polygon_source_group"
+agent_radius = 0.0
+
 [sub_resource type="NavigationPolygon" id="NavigationPolygon_dw0w7"]
 vertices = PackedVector2Array(8, 8, -8, 8, -8, -8, 8, -8)
 polygons = Array[PackedInt32Array]([PackedInt32Array(0, 1, 2, 3)])
@@ -206,6 +214,7 @@ source_geometry_group_name = &"navigation_polygon_source_group"
 agent_radius = 0.0
 
 [sub_resource type="TileSetAtlasSource" id="TileSetAtlasSource_jhi7j"]
+resource_name = "terrain"
 texture = ExtResource("1_36jdr")
 0:0/0 = 0
 0:0/0/terrain_set = 0
@@ -290,16 +299,7 @@ texture = ExtResource("1_36jdr")
 6:0/0/terrains_peering_bit/top_side = 1
 6:0/0/terrains_peering_bit/top_right_corner = 1
 7:0/0 = 0
-7:0/0/terrain_set = 0
-7:0/0/terrain = 1
-7:0/0/terrains_peering_bit/right_side = 1
-7:0/0/terrains_peering_bit/bottom_right_corner = 1
-7:0/0/terrains_peering_bit/bottom_side = 1
-7:0/0/terrains_peering_bit/bottom_left_corner = 1
-7:0/0/terrains_peering_bit/left_side = 1
-7:0/0/terrains_peering_bit/top_left_corner = 1
-7:0/0/terrains_peering_bit/top_side = 1
-7:0/0/terrains_peering_bit/top_right_corner = 1
+7:0/0/navigation_layer_0/polygon = SubResource("NavigationPolygon_fqx3y")
 8:0/0 = 0
 8:0/0/z_index = 1
 9:0/0 = 0
@@ -739,6 +739,10 @@ texture = ExtResource("1_36jdr")
 10:0/0 = 0
 10:0/0/custom_data_0 = true
 
+[sub_resource type="TileSetScenesCollectionSource" id="TileSetScenesCollectionSource_ww8e1"]
+resource_name = "plant"
+scenes/0/scene = ExtResource("2_yx84v")
+
 [resource]
 terrain_set_0/mode = 0
 terrain_set_0/terrain_0/name = "Grass"
@@ -749,3 +753,4 @@ navigation_layer_0/layers = 1
 custom_data_layer_0/name = "debris"
 custom_data_layer_0/type = 1
 sources/0 = SubResource("TileSetAtlasSource_jhi7j")
+sources/1 = SubResource("TileSetScenesCollectionSource_ww8e1")
