@@ -19,8 +19,8 @@ var job = STATE.IDLE
 func _ready():
 	# These values need to be adjusted for the actor's speed
 	# and the navigation layout.
-	navigation_agent.path_desired_distance = 1.0
-	navigation_agent.target_desired_distance = 1.0
+	navigation_agent.path_desired_distance = 8.0
+	navigation_agent.target_desired_distance = 8.0
 
 	# Make sure to not await during _ready.
 	call_deferred("actor_setup")

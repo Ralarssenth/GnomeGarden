@@ -58,7 +58,6 @@ func register_gnome_signals():
 	gnome.connect("arrived", _on_gnome_arrived)
 	gnome.connect("gnome_finished_busy_animation", _on_gnome_finished_busy_animation)
 
-
 # Called on menu button toggle
 func _on_button_pressed(name):
 	if mode == MODES.NULL:
@@ -162,52 +161,60 @@ func _on_gnome_idle():
 func _on_gnome_arrived(pos: Vector2, job, reachable):
 	print("gnome has arrived")
 	var map_pos = tutorial_level.local_to_map(pos)
-	var cell = tutorial_level.get_cell_tile_data(foreground, map_pos)
-	var reached = reachable
-	print(cell)
+	var foreground_cell = tutorial_level.get_cell_tile_data(foreground, map_pos)
 	
-	if not reached:
-		if job== STATE.CLEARING_DEBRIS:
-			tutorial_level.erase_cell(clearSelection, map_pos)
-			gnome.set_job(STATE.IDLE)
-			gnome.set_state(STATE.IDLE)
-		if job == STATE.PLANTING_SEED:
-			tutorial_level.erase_cell(plantSelection, map_pos)
-			gnome.set_job(STATE.IDLE)
-			gnome.set_state(STATE.IDLE)
+	print(foreground_cell)
 	
-	elif cell:
-		var debris = cell.get_custom_data("debris")
-		print("debris bool: " + str(debris))
-
-		if job == STATE.CLEARING_DEBRIS and debris:
-			print("gnome told to clear")
-			tutorial_level.erase_cell(clearSelection, map_pos)
-			gnome.set_state(job)
+	match job:
+		STATE.IDLE:
+			gnome.set_state(STATE.IDLE)
+		
+		STATE.CLEARING_DEBRIS:
+			if not reachable:
+				tutorial_level.erase_cell(clearSelection, map_pos)
+				gnome.set_job(STATE.IDLE)
+				gnome.set_state(STATE.IDLE)
 			
-		elif job == STATE.PLANTING_SEED and debris:
-			print("gnome won't plant here because of debris")
-			tutorial_level.erase_cell(plantSelection, map_pos)
-			gnome.set_job(STATE.IDLE)
+			elif foreground_cell:
+				var debris = foreground_cell.get_custom_data("debris")
+				print("debris bool: " + str(debris))
+				
+				if debris:
+					print("gnome told to clear")
+					tutorial_level.erase_cell(clearSelection, map_pos)
+					gnome.set_state(job)
+					
+				else:
+					print("gnome state set to idle on arrival because cell is not debris")
+					gnome.set_state(STATE.IDLE)
+			
+			else:
+				print("gnome state set to idle on arrival because foreground cell is empty")
+				tutorial_level.erase_cell(clearSelection, map_pos)
+				gnome.set_job(STATE.IDLE)
+				gnome.set_state(STATE.IDLE)
+			
+		STATE.PLANTING_SEED:
+			if not reachable:
+				tutorial_level.erase_cell(plantSelection, map_pos)
+				gnome.set_job(STATE.IDLE)
+				gnome.set_state(STATE.IDLE)
+			
+			elif foreground_cell:
+				print("gnome won't plant here because foreground cell is occupied")
+				tutorial_level.erase_cell(plantSelection, map_pos)
+				gnome.set_job(STATE.IDLE)
+			
+			else:
+				print("gnome told to plant seed upon arrival")
+				tutorial_level.erase_cell(plantSelection, map_pos)
+				gnome.set_state(job)
 		
-		else:
-			print("gnome state set to idle on arrival because cell is not debris")
-			gnome.set_state(STATE.IDLE)
-	
-	elif gnome.job == STATE.PLANTING_SEED:
-		print("gnome told to plant seed upon arrival")
-		tutorial_level.erase_cell(plantSelection, map_pos)
-		gnome.set_state(job)
+		STATE.TENDING_PLANT:
+			#this logic will need to be updated when plant becomes a cell on the tilemap
+			#right now the gnome will tend all plants from any distance
+			gnome.set_state(job)
 		
-	elif gnome.job == STATE.TENDING_PLANT:
-		print("gnome told to tend plant upon arrival")
-		gnome.set_state(job)
-		
-	else:
-		print("gnome state set to idle on arrival because cell is void")
-		if gnome.job == STATE.CLEARING_DEBRIS:
-			tutorial_level.erase_cell(clearSelection, map_pos)
-		gnome.set_state(STATE.IDLE)
 
 func _on_gnome_finished_busy_animation(job, pos):
 	print("busy animation finished")
