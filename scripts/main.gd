@@ -30,7 +30,7 @@ var seedlingPos = []
 enum MODES {NULL, CLEAR_DEBRIS, PLANT}
 var mode = MODES.NULL
 # THIS ENUM MUST MATCH THE ONE IN GNOME
-enum STATE {IDLE, CLEARING_DEBRIS, PLANTING_SEED, TENDING_PLANT, HAULING}
+enum GNOME_STATE {IDLE, CLEARING_DEBRIS, PLANTING_SEED, TENDING_PLANT, HAULING}
 
 # Called when the node enters the scene tree for the first time.
 func _ready():
@@ -72,48 +72,36 @@ func _on_button_pressed(name):
 
 
 func _unhandled_input(event):
-	
-	# left click in CLEAR MODE
-	if event.is_action_pressed("click") and mode == MODES.CLEAR_DEBRIS:
-		var mouse_pos = get_global_mouse_position()
-		var tile_mouse_pos = tutorial_level.local_to_map(mouse_pos)
-		
-		# set the highlight
-		tutorial_level.set_cell(clearSelection, tile_mouse_pos, tilemap_source_id, highlight_atlas_coords)
-		# add the pos to the clear debris array
-		clearDebrisPos.push_back(tile_mouse_pos)
-		print("appended clear debris array")
-	
-	#left click in PLANT MODE
-	if event.is_action_pressed("click") and mode == MODES.PLANT:
-		var mouse_pos = get_global_mouse_position()
-		var tile_mouse_pos = tutorial_level.local_to_map(mouse_pos)
-		
-		#set the highlight
-		tutorial_level.set_cell(plantSelection, tile_mouse_pos, tilemap_source_id, highlight_atlas_coords)
-		# add the pos to the clear debris array
-		plantSeedPos.push_back(tile_mouse_pos)
-		print("appended plant seed array")
-	
-	#right click in CLEAR MODE
-	if event.is_action_pressed("right click") and mode == MODES.CLEAR_DEBRIS:
-		var mouse_pos = get_global_mouse_position()
-		var tile_mouse_pos = tutorial_level.local_to_map(mouse_pos)
-		
-		# erase the highlight
-		tutorial_level.erase_cell(clearSelection, tile_mouse_pos)
-		# remove the position from the array
-		clearDebrisPos.erase(tile_mouse_pos)
+	var mouse_pos = get_global_mouse_position()
+	var tile_mouse_pos = tutorial_level.local_to_map(mouse_pos)
+	match mode:
+		MODES.CLEAR_DEBRIS:
+			# left click in CLEAR MODE
+			if event.is_action_pressed("click"):
+				tutorial_level.set_cell(clearSelection, tile_mouse_pos, tilemap_source_id, highlight_atlas_coords)
+				clearDebrisPos.push_back(tile_mouse_pos)
+				print("appended clear debris array")
+				
+			#right click in CLEAR MODE
+			if event.is_action_pressed("right click"):
+				tutorial_level.erase_cell(clearSelection, tile_mouse_pos)
+				clearDebrisPos.erase(tile_mouse_pos)
+				print("erased a position from the clear debris array")
+			
+		MODES.PLANT:
+				#left click in PLANT MODE
+			if event.is_action_pressed("click"):
+					tutorial_level.set_cell(plantSelection, tile_mouse_pos, tilemap_source_id, highlight_atlas_coords)
+					plantSeedPos.push_back(tile_mouse_pos)
+					print("appended plant seed array")
+			
+			#right click in PLANT MODE
+			if event.is_action_pressed("right click"):
+				tutorial_level.erase_cell(plantSelection, tile_mouse_pos)
+				plantSeedPos.erase(tile_mouse_pos)
+		_:
+			pass
 
-	#right click in PLANT MODE
-	if event.is_action_pressed("right click") and mode == MODES.PLANT:
-		var mouse_pos = get_global_mouse_position()
-		var tile_mouse_pos = tutorial_level.local_to_map(mouse_pos)
-		
-		# erase the highlight
-		tutorial_level.erase_cell(plantSelection, tile_mouse_pos)
-		# remove the position from the array
-		clearDebrisPos.erase(tile_mouse_pos)
 	
 func set_mode(_mode):
 	mode = _mode
@@ -136,23 +124,26 @@ func _on_gnome_idle():
 	var pos
 	var job
 	print("gnome idle signal caught")
+	# This is the logic for the order of operations on gnome jobs
+	# gnomes will check the tending array first, then check the debris array, then check the planting array
+	# if all arrays are empty, gnome picks a random spot near the tree to path to
 	if not seedlingPos.is_empty():
 		pos = tutorial_level.map_to_local(seedlingPos.pop_front())
-		job = STATE.TENDING_PLANT
+		job = GNOME_STATE.TENDING_PLANT
 		print("gnome told to tend")
 		
 	elif not clearDebrisPos.is_empty():
 		pos = tutorial_level.map_to_local(clearDebrisPos.pop_front())
-		job = STATE.CLEARING_DEBRIS
+		job = GNOME_STATE.CLEARING_DEBRIS
 		
 	elif not plantSeedPos.is_empty():
 		pos = tutorial_level.map_to_local(plantSeedPos.pop_front())
-		job = STATE.PLANTING_SEED
+		job = GNOME_STATE.PLANTING_SEED
 		
 	else:
 		# pick a random spot on the map
 		pos = Vector2(randf_range(-32.0, 32.0),randf_range(-32.0, 32.0))
-		job = STATE.IDLE
+		job = GNOME_STATE.IDLE
 
 	gnome.set_movement_target(pos)
 	gnome.set_job(job)
@@ -166,14 +157,14 @@ func _on_gnome_arrived(pos: Vector2, job, reachable):
 	print(foreground_cell)
 	
 	match job:
-		STATE.IDLE:
-			gnome.set_state(STATE.IDLE)
+		GNOME_STATE.IDLE:
+			gnome.set_state(GNOME_STATE.IDLE)
 		
-		STATE.CLEARING_DEBRIS:
+		GNOME_STATE.CLEARING_DEBRIS:
 			if not reachable:
 				tutorial_level.erase_cell(clearSelection, map_pos)
-				gnome.set_job(STATE.IDLE)
-				gnome.set_state(STATE.IDLE)
+				gnome.set_job(GNOME_STATE.IDLE)
+				gnome.set_state(GNOME_STATE.IDLE)
 			
 			elif foreground_cell:
 				var debris = foreground_cell.get_custom_data("debris")
@@ -186,31 +177,31 @@ func _on_gnome_arrived(pos: Vector2, job, reachable):
 					
 				else:
 					print("gnome state set to idle on arrival because cell is not debris")
-					gnome.set_state(STATE.IDLE)
+					gnome.set_state(GNOME_STATE.IDLE)
 			
 			else:
 				print("gnome state set to idle on arrival because foreground cell is empty")
 				tutorial_level.erase_cell(clearSelection, map_pos)
-				gnome.set_job(STATE.IDLE)
-				gnome.set_state(STATE.IDLE)
+				gnome.set_job(GNOME_STATE.IDLE)
+				gnome.set_state(GNOME_STATE.IDLE)
 			
-		STATE.PLANTING_SEED:
+		GNOME_STATE.PLANTING_SEED:
 			if not reachable:
 				tutorial_level.erase_cell(plantSelection, map_pos)
-				gnome.set_job(STATE.IDLE)
-				gnome.set_state(STATE.IDLE)
+				gnome.set_job(GNOME_STATE.IDLE)
+				gnome.set_state(GNOME_STATE.IDLE)
 			
 			elif foreground_cell:
 				print("gnome won't plant here because foreground cell is occupied")
 				tutorial_level.erase_cell(plantSelection, map_pos)
-				gnome.set_job(STATE.IDLE)
+				gnome.set_job(GNOME_STATE.IDLE)
 			
 			else:
 				print("gnome told to plant seed upon arrival")
 				tutorial_level.erase_cell(plantSelection, map_pos)
 				gnome.set_state(job)
 		
-		STATE.TENDING_PLANT:
+		GNOME_STATE.TENDING_PLANT:
 			#this logic will need to be updated when plant becomes a cell on the tilemap
 			#right now the gnome will tend all plants from any distance
 			gnome.set_state(job)
@@ -218,17 +209,14 @@ func _on_gnome_arrived(pos: Vector2, job, reachable):
 
 func _on_gnome_finished_busy_animation(job, pos):
 	print("busy animation finished")
-	var gnomeJob = job
-	match gnomeJob:
-		STATE.CLEARING_DEBRIS:
-			var map_pos = tutorial_level.local_to_map(pos)
+	var map_pos = tutorial_level.local_to_map(pos)
+	match job:
+		GNOME_STATE.CLEARING_DEBRIS:
 			tutorial_level.erase_cell(foreground, map_pos)
 			tutorial_level.set_cell(background, map_pos, tilemap_source_id, passable_dirt_atlas_coords)
-			gnome.set_state(STATE.IDLE)
 			print("gnome set to idle after clearing debris")
 			
-		STATE.PLANTING_SEED:
-			var map_pos = tutorial_level.local_to_map(pos)
+		GNOME_STATE.PLANTING_SEED:
 			tutorial_level.set_cell(background, map_pos, tilemap_source_id, impassable_dirt_atlas_coords)
 			
 			# spawn a plant at ABSOLUTE pos NOT map_pos
@@ -236,16 +224,16 @@ func _on_gnome_finished_busy_animation(job, pos):
 			plant.connect("needs_tending", Callable(self, "_on_plant_needs_tending"))
 			plant.set_position(pos)
 			add_child(plant)
-			
-			gnome.set_state(STATE.IDLE)
 			print("gnome set to idle after planting seed")
 		
-		STATE.TENDING_PLANT:
-			gnome.set_state(STATE.IDLE)
+		GNOME_STATE.TENDING_PLANT:
 			# advance to next animation on the plant and play it
-			
-		STATE.IDLE:
+			print("gnome set to idle after tending plant")
+
+		GNOME_STATE.IDLE:
 			print("busy while idle??")
+
+	gnome.set_state(GNOME_STATE.IDLE)
 
 func _on_plant_needs_tending(pos: Vector2):
 	var map_pos = tutorial_level.local_to_map(pos)
