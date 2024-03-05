@@ -5,6 +5,7 @@ extends CanvasLayer
 @onready var message_timer = $MessageContainer/Timer
 @onready var message_buffer_timer = $MessageContainer/Timer2
 @onready var flower_counter = $ScoreContainer/HBoxContainer/HBoxContainer/FlowersCount
+@onready var fruit_counter = $ScoreContainer/HBoxContainer/HBoxContainer2/FruitsCount
 
 var message_list = []
 
@@ -37,3 +38,6 @@ func _on_timer_timeout():
 
 func update_flower_counter(count):
 	flower_counter.set_text(str(count))
+
+func update_fruit_counter(count):
+	fruit_counter.set_text(str(count))

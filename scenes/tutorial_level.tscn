@@ -20,4 +20,7 @@ layer_3/z_index = 3
 layer_3/tile_data = PackedInt32Array()
 layer_4/name = "plantSelection"
 layer_4/tile_data = PackedInt32Array()
+layer_5/name = "harvestSelection"
+layer_5/z_index = 5
+layer_5/tile_data = PackedInt32Array()
 script = ExtResource("2_gkr2y")

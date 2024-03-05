@@ -9,9 +9,8 @@ signal gnome_finished_busy_animation
 
 @onready var navigation_agent: NavigationAgent2D = $NavigationAgent2D
 @onready var _animation_player = $AnimationPlayer
-@onready var area2d = $Area2D
 
-enum STATE {IDLE, CLEARING_DEBRIS, PLANTING_SEED, TENDING_PLANT, HAULING}
+enum STATE {IDLE, CLEARING_DEBRIS, PLANTING_SEED, TENDING_PLANT, HARVESTING, HAULING}
 var state = STATE.IDLE
 var job = STATE.IDLE
 
@@ -41,7 +40,7 @@ func set_movement_target(movement_target: Vector2):
 
 # Called every frame. 'delta' is the elapsed time since the previous frame.
 func _process(delta):
-	if navigation_agent.is_navigation_finished() and state == STATE.IDLE:
+	if navigation_agent.is_navigation_finished() and (state == STATE.IDLE or STATE.HAULING):
 		var reachable = true
 		if navigation_agent.is_target_reachable():
 			emit_signal("arrived", movement_target_position, job, reachable)
@@ -52,6 +51,8 @@ func _process(delta):
 			emit_signal("arrived", movement_target_position, job, reachable)
 			return
 	if state == STATE.IDLE:
+		navigate()
+	if state == STATE.HAULING:
 		navigate()
 
 # Tells the gnome to advance on his navigation path 
@@ -95,19 +96,21 @@ func set_state(_state):
 			_animation_player.play("busy")
 			
 		STATE.PLANTING_SEED:
-			if area2d.has_overlapping_areas():
-				set_state(STATE.IDLE)
-				print("gnome won't plant on top of an existing seedling")
-			else:
-				print("gnome state set to planting seed")
-				_animation_player.play("busy")
+			print("gnome state set to planting seed")
+			_animation_player.play("busy")
 			
 		STATE.TENDING_PLANT:
 			print("gnome state set to tending plant")
 			_animation_player.play("busy")
 			
+		STATE.HARVESTING:
+			print("gnome state set to harvesting plant")
+			_animation_player.play("busy")
+		
 		STATE.HAULING:
-			pass
+			print("gnome state set to hauling")
+			set_job(STATE.HAULING)
+			set_movement_target(Vector2(0,0))
 
 # Passes signals with additional params up to main when animation finishes
 func _on_animation_player_animation_finished(_anim_name):

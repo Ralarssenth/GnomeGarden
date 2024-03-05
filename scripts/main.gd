@@ -8,9 +8,11 @@ extends Node2D
 var tilemap_source_id = 0
 var plant_tilemap_source_id = 1
 var background = 0
+var permanents = 1
 var foreground = 2
 var clearSelection = 3
 var plantSelection = 4
+var harvestSelection = 5
 
 var highlight_atlas_coords = Vector2i(12,0)
 var passable_dirt_atlas_coords = Vector2(7,0)
@@ -29,14 +31,16 @@ var clearDebrisPos = []
 var plantSeedPos = []
 var seedlingPos = []
 var flowersPos = []
+var harvestablePos = []
 var harvestPos = []
 
 var flower_count = flowersPos.size()
+var fruit_count = 0
 
-enum MODES {NULL, CLEAR_DEBRIS, PLANT}
+enum MODES {NULL, CLEAR_DEBRIS, PLANT, HARVEST}
 var mode = MODES.NULL
-# THIS ENUM MUST MATCH THE ONE IN GNOME.GD
-enum GNOME_STATE {IDLE, CLEARING_DEBRIS, PLANTING_SEED, TENDING_PLANT, HAULING}
+# THIS ENUM MUST MATCH THE ONE IN GNOME.GD IDENTICALLY
+enum GNOME_STATE {IDLE, CLEARING_DEBRIS, PLANTING_SEED, TENDING_PLANT, HARVESTING, HAULING}
 
 # Called when the node enters the scene tree for the first time.
 func _ready():
@@ -74,6 +78,8 @@ func _on_button_pressed(name):
 				set_mode(MODES.CLEAR_DEBRIS)
 			"PlantCropMenuButton":
 				set_mode(MODES.PLANT)
+			"HarvestButton":
+				set_mode(MODES.HARVEST)
 
 	else:
 		set_mode(MODES.NULL)
@@ -97,7 +103,7 @@ func _unhandled_input(event):
 				print("erased a position from the clear debris array")
 			
 		MODES.PLANT:
-				#left click in PLANT MODE
+			#left click in PLANT MODE
 			if event.is_action_pressed("click"):
 					tutorial_level.set_cell(plantSelection, tile_mouse_pos, tilemap_source_id, highlight_atlas_coords)
 					plantSeedPos.push_back(tile_mouse_pos)
@@ -107,6 +113,18 @@ func _unhandled_input(event):
 			if event.is_action_pressed("right click"):
 				tutorial_level.erase_cell(plantSelection, tile_mouse_pos)
 				plantSeedPos.erase(tile_mouse_pos)
+		
+		MODES.HARVEST:
+			#left click in HARVEST MODE
+			if event.is_action_pressed("click"):
+				if harvestablePos.find(tile_mouse_pos) != -1:
+					tutorial_level.set_cell(harvestSelection, tile_mouse_pos, tilemap_source_id, highlight_atlas_coords)
+					harvestPos.push_back(tile_mouse_pos)
+			#right click in HARVEST MODE
+			if event.is_action_pressed("right click"):
+				tutorial_level.erase_cell(harvestSelection, tile_mouse_pos)
+				harvestPos.erase(tile_mouse_pos)
+
 		_:
 			pass
 
@@ -124,6 +142,7 @@ func set_mode(_mode):
 		MODES.NULL:
 			tutorial_level.set_layer_modulate(clearSelection, removeHighlightColor)
 			tutorial_level.set_layer_modulate(plantSelection, removeHighlightColor)
+			tutorial_level.set_layer_modulate(harvestSelection, removeHighlightColor)
 			tutorial_level.set_layer_modulate(background, removeColor)
 			
 		MODES.CLEAR_DEBRIS:
@@ -133,6 +152,10 @@ func set_mode(_mode):
 		MODES.PLANT:
 			tutorial_level.set_layer_modulate(plantSelection, highlightColor)
 			tutorial_level.set_layer_modulate(background, plantHighlightColor)
+		
+		MODES.HARVEST:
+			tutorial_level.set_layer_modulate(background, plantHighlightColor)
+			tutorial_level.set_layer_modulate(harvestSelection, highlightColor)
 
 # This is the logic for the order of operations on gnome jobs
 # gnomes will check the tending array first, then check the debris array, then check the planting array
@@ -140,24 +163,31 @@ func set_mode(_mode):
 func _on_gnome_idle():
 	var pos
 	var job
-	print("gnome idle signal caught")
 	if not seedlingPos.is_empty():
 		pos = tutorial_level.map_to_local(seedlingPos.pop_front())
 		job = GNOME_STATE.TENDING_PLANT
 		print("gnome told to tend")
+	
+	elif not harvestPos.is_empty():
+		pos = tutorial_level.map_to_local(harvestPos.pop_front())
+		job = GNOME_STATE.HARVESTING
+		print("gnome told to harvest")
 		
 	elif not clearDebrisPos.is_empty():
 		pos = tutorial_level.map_to_local(clearDebrisPos.pop_front())
 		job = GNOME_STATE.CLEARING_DEBRIS
+		print("gnome told to clear debris")
 		
 	elif not plantSeedPos.is_empty():
 		pos = tutorial_level.map_to_local(plantSeedPos.pop_front())
 		job = GNOME_STATE.PLANTING_SEED
+		print("gnome told to plant seed")
 		
 	else:
 		# pick a random spot on the map
 		pos = Vector2(randf_range(-32.0, 32.0),randf_range(-32.0, 32.0))
 		job = GNOME_STATE.IDLE
+		print("gnome told to idle")
 
 	gnome.set_movement_target(pos)
 	gnome.set_job(job)
@@ -169,6 +199,7 @@ func _on_gnome_arrived(pos: Vector2, job, reachable):
 	print("gnome has arrived")
 	var map_pos = tutorial_level.local_to_map(pos)
 	var foreground_cells = tutorial_level.get_used_cells(foreground)
+	var permanent_cells = tutorial_level.get_used_cells(permanents)
 	
 	match job:
 		GNOME_STATE.IDLE:
@@ -178,8 +209,9 @@ func _on_gnome_arrived(pos: Vector2, job, reachable):
 			if not reachable:
 				tutorial_level.erase_cell(clearSelection, map_pos)
 				gnome.set_state(GNOME_STATE.IDLE)
+				print("gnome told to idle because cell unreachable")
 			
-			if foreground_cells.find(map_pos) != -1:
+			elif foreground_cells.find(map_pos) != -1:
 				print("gnome told to clear")
 				tutorial_level.erase_cell(clearSelection, map_pos)
 				gnome.set_state(job)
@@ -193,24 +225,38 @@ func _on_gnome_arrived(pos: Vector2, job, reachable):
 			if not reachable:
 				tutorial_level.erase_cell(plantSelection, map_pos)
 				gnome.set_state(GNOME_STATE.IDLE)
+				print("gnome told to idle because cell unreachable")
 				
-			else:
-				if foreground_cells.find(map_pos) != -1:
-					print("gnome won't plant here because foreground cell is occupied")
-					tutorial_level.erase_cell(plantSelection, map_pos)
-					gnome.set_state(GNOME_STATE.IDLE)
+			elif foreground_cells.find(map_pos) != -1 or permanent_cells.find(map_pos) != -1:
+				print("gnome won't plant here because foreground cell is occupied")
+				tutorial_level.erase_cell(plantSelection, map_pos)
+				gnome.set_state(GNOME_STATE.IDLE)
 					
-				else:
-					print("gnome told to plant seed upon arrival")
-					tutorial_level.erase_cell(plantSelection, map_pos)
-					gnome.set_state(job)
+			else:
+				print("gnome told to plant seed upon arrival")
+				tutorial_level.erase_cell(plantSelection, map_pos)
+				gnome.set_state(job)
 		
 		GNOME_STATE.TENDING_PLANT:
 			if not reachable:
 				gnome.set_state(GNOME_STATE.IDLE)
+				print("gnome told to idle because cell unreachable")
 			
 			else:
 				gnome.set_state(job)
+		
+		GNOME_STATE.HARVESTING:
+			if not reachable:
+				gnome.set_state(GNOME_STATE.IDLE)
+				print("gnome told to idle because cell unreachable")
+			#todo: add a check for if harvestable
+			else:
+				gnome.set_state(job)
+		
+		GNOME_STATE.HAULING:
+			fruit_count = fruit_count + 1
+			hud.update_fruit_counter(fruit_count)
+			gnome.set_state(GNOME_STATE.IDLE)
 
 # Updates the tilemap based on what the gnome was just doing
 # Sets the gnome back to idle now that he's done his job
@@ -218,32 +264,44 @@ func _on_gnome_finished_busy_animation(job, pos):
 	print("busy animation finished")
 	var map_pos = tutorial_level.local_to_map(pos)
 	match job:
+		GNOME_STATE.IDLE:
+			print("busy while idle??")
+			
 		GNOME_STATE.CLEARING_DEBRIS:
 			tutorial_level.erase_cell(foreground, map_pos)
 			tutorial_level.set_cell(background, map_pos, tilemap_source_id, passable_dirt_atlas_coords)
-			print("gnome set to idle after clearing debris")
-			
+	
 			if flowersPos.find(map_pos) != -1:
 				flowersPos.erase(map_pos)
 				update_flower_count()
+				
+			gnome.set_state(GNOME_STATE.IDLE)
+			print("gnome set to idle after clearing debris")
 			
 		GNOME_STATE.PLANTING_SEED:
 			tutorial_level.set_cell(background, map_pos, tilemap_source_id, impassable_dirt_atlas_coords)
-			#spawn a plant using the tilemap
 			tutorial_level.set_cell(foreground, map_pos, plant_tilemap_source_id, plant_id, plant_1)
+			gnome.set_state(GNOME_STATE.IDLE)
 			print("gnome set to idle after planting seed")
 		
 		GNOME_STATE.TENDING_PLANT:
-			# advance to next animation on the plant and play it
-			tutorial_level.erase_cell(foreground, map_pos)
 			tutorial_level.set_cell(foreground, map_pos, plant_tilemap_source_id, plant_id, plant_2)
+			gnome.set_state(GNOME_STATE.IDLE)
 			print("gnome set to idle after tending plant")
-
-		GNOME_STATE.IDLE:
-			print("busy while idle??")
+		
+		GNOME_STATE.HARVESTING:
+			tutorial_level.erase_cell(foreground, map_pos)
+			tutorial_level.erase_cell(harvestSelection, map_pos)
+			tutorial_level.set_cell(background, map_pos, tilemap_source_id, passable_dirt_atlas_coords)
+			flowersPos.erase(map_pos)
+			update_flower_count()
+			harvestablePos.erase(map_pos)
+			gnome.set_state(GNOME_STATE.HAULING)
+			print("gnome set to hauling after harvesting")
 	
-	gnome.set_state(GNOME_STATE.IDLE)
+	
 
+# Updates the contents of the flower_count variable and pushes it to the hud
 func update_flower_count():
 	flower_count = flowersPos.size()
 	hud.update_flower_counter(flower_count)
@@ -256,7 +314,8 @@ func _on_plant_needs_tending(pos: Vector2):
 	update_flower_count()
 	print("plant added to tending queue")
 
+#Adds plant coords to harvestable array
 func _on_plant_finished_growing(pos: Vector2):
 	var map_pos = tutorial_level.local_to_map(pos)
-	harvestPos.push_back(map_pos)
+	harvestablePos.push_back(map_pos)
 	print("plant added to harvest queue")
