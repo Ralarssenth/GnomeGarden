@@ -27,10 +27,10 @@ func _ready():
 	
 	set_state(STATE.IDLE)
 
+# Sets up the navigation on the first physics frame
 func actor_setup():
 	# Wait for the first physics frame so the NavigationServer can sync.
 	await get_tree().physics_frame
-
 	# Now that the navigation map is no longer empty, set the movement target.
 	set_movement_target(movement_target_position)
 
@@ -54,6 +54,7 @@ func _process(delta):
 	if state == STATE.IDLE:
 		navigate()
 
+# Tells the gnome to advance on his navigation path 
 func navigate():
 	var current_agent_position: Vector2 = global_position
 	var next_path_position: Vector2 = navigation_agent.get_next_path_position()
@@ -62,6 +63,7 @@ func navigate():
 	move_and_slide()
 	set_walk_animation()
 
+# Sets the gnome's walking animation based on velocity vector
 func set_walk_animation():
 	var speed = get_real_velocity()
 	if speed.x > 0 and abs(speed.x) > abs(speed.y):
@@ -73,20 +75,23 @@ func set_walk_animation():
 	else:
 		_animation_player.play("walk_up")
 
+# Set's the gnome's job
 func set_job(_job):
 	job = _job
 	print("gnome job set")
 
+# Sets the gnome's current state
+# Defines the gnome's jobs based on state
 func set_state(_state):
 	state = _state
 	match state:
 		STATE.IDLE:
+			set_job(STATE.IDLE)
 			emit_signal("idle")
 			print("gnome state set to idle")
 			
 		STATE.CLEARING_DEBRIS:
 			print("gnome state set to clearing debris")
-			_animation_player.stop()
 			_animation_player.play("busy")
 			
 		STATE.PLANTING_SEED:
@@ -95,17 +100,16 @@ func set_state(_state):
 				print("gnome won't plant on top of an existing seedling")
 			else:
 				print("gnome state set to planting seed")
-				_animation_player.stop()
 				_animation_player.play("busy")
 			
 		STATE.TENDING_PLANT:
 			print("gnome state set to tending plant")
-			_animation_player.stop()
 			_animation_player.play("busy")
 			
 		STATE.HAULING:
 			pass
 
+# Passes signals with additional params up to main when animation finishes
 func _on_animation_player_animation_finished(_anim_name):
 	if _anim_name == "busy":
 		emit_signal("gnome_finished_busy_animation", job, movement_target_position)

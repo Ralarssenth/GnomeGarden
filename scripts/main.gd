@@ -3,8 +3,6 @@ extends Node2D
 @onready var tutorial_level = $TutorialLevel
 @onready var gnome = $Gnome
 
-const plant_scene = preload("res://scenes/plant.tscn")
-
 var tilemap_source_id = 0
 var plant_tilemap_source_id = 1
 var background = 0
@@ -15,7 +13,9 @@ var plantSelection = 4
 var highlight_atlas_coords = Vector2i(12,0)
 var passable_dirt_atlas_coords = Vector2(7,0)
 var impassable_dirt_atlas_coords = Vector2(6,0)
-var plant_id = Vector2(0,0)
+var plant_id = Vector2i(0, 0)
+var plant_1 = 0
+var plant_2 = 1
 
 var clearHighlightColor = Color(0,0,0.5,0.5)
 var plantHighlightColor = Color(0,0.5,0,0.5)
@@ -26,10 +26,11 @@ var removeHighlightColor = Color(1,1,1,0)
 var clearDebrisPos = []
 var plantSeedPos = []
 var seedlingPos = []
+var harvestPos = []
 
 enum MODES {NULL, CLEAR_DEBRIS, PLANT}
 var mode = MODES.NULL
-# THIS ENUM MUST MATCH THE ONE IN GNOME
+# THIS ENUM MUST MATCH THE ONE IN GNOME.GD
 enum GNOME_STATE {IDLE, CLEARING_DEBRIS, PLANTING_SEED, TENDING_PLANT, HAULING}
 
 # Called when the node enters the scene tree for the first time.
@@ -51,14 +52,14 @@ func register_buttons():
 		# Connects the button's signal to the node's callable
 		button.connect("pressed", callable)
 
-# Connects all the cusutom signals from gnome
+# Connects all the custom signals from gnome
 # Called in the ready function
 func register_gnome_signals():
 	gnome.connect("idle", _on_gnome_idle)
 	gnome.connect("arrived", _on_gnome_arrived)
 	gnome.connect("gnome_finished_busy_animation", _on_gnome_finished_busy_animation)
 
-# Called on menu button toggle
+# Called on menu button press
 func _on_button_pressed(name):
 	if mode == MODES.NULL:
 		match name:
@@ -70,7 +71,7 @@ func _on_button_pressed(name):
 	else:
 		set_mode(MODES.NULL)
 
-
+# handles player inputs
 func _unhandled_input(event):
 	var mouse_pos = get_global_mouse_position()
 	var tile_mouse_pos = tutorial_level.local_to_map(mouse_pos)
@@ -102,7 +103,7 @@ func _unhandled_input(event):
 		_:
 			pass
 
-	
+#Sets the player's game mode
 func set_mode(_mode):
 	mode = _mode
 	
@@ -120,13 +121,13 @@ func set_mode(_mode):
 			tutorial_level.set_layer_modulate(plantSelection, highlightColor)
 			tutorial_level.set_layer_modulate(background, plantHighlightColor)
 
+# This is the logic for the order of operations on gnome jobs
+# gnomes will check the tending array first, then check the debris array, then check the planting array
+# if all arrays are empty, gnome picks a random spot near the tree to path to
 func _on_gnome_idle():
 	var pos
 	var job
 	print("gnome idle signal caught")
-	# This is the logic for the order of operations on gnome jobs
-	# gnomes will check the tending array first, then check the debris array, then check the planting array
-	# if all arrays are empty, gnome picks a random spot near the tree to path to
 	if not seedlingPos.is_empty():
 		pos = tutorial_level.map_to_local(seedlingPos.pop_front())
 		job = GNOME_STATE.TENDING_PLANT
@@ -149,64 +150,57 @@ func _on_gnome_idle():
 	gnome.set_job(job)
 	print("gnome sent new position data")
 
+# Tells a gnome what to do with a cell once they arrive 
+# based on their assigned job and if they were able to reach their destination
 func _on_gnome_arrived(pos: Vector2, job, reachable):
 	print("gnome has arrived")
 	var map_pos = tutorial_level.local_to_map(pos)
-	var foreground_cell = tutorial_level.get_cell_tile_data(foreground, map_pos)
-	
-	print(foreground_cell)
+	var foreground_cells = tutorial_level.get_used_cells(foreground)
 	
 	match job:
 		GNOME_STATE.IDLE:
-			gnome.set_state(GNOME_STATE.IDLE)
+			gnome.set_state(job)
 		
 		GNOME_STATE.CLEARING_DEBRIS:
 			if not reachable:
 				tutorial_level.erase_cell(clearSelection, map_pos)
-				gnome.set_job(GNOME_STATE.IDLE)
 				gnome.set_state(GNOME_STATE.IDLE)
 			
-			elif foreground_cell:
-				var debris = foreground_cell.get_custom_data("debris")
-				print("debris bool: " + str(debris))
-				
-				if debris:
-					print("gnome told to clear")
-					tutorial_level.erase_cell(clearSelection, map_pos)
-					gnome.set_state(job)
-					
-				else:
-					print("gnome state set to idle on arrival because cell is not debris")
-					gnome.set_state(GNOME_STATE.IDLE)
+			if foreground_cells.find(map_pos) != -1:
+				print("gnome told to clear")
+				tutorial_level.erase_cell(clearSelection, map_pos)
+				gnome.set_state(job)
 			
 			else:
 				print("gnome state set to idle on arrival because foreground cell is empty")
 				tutorial_level.erase_cell(clearSelection, map_pos)
-				gnome.set_job(GNOME_STATE.IDLE)
 				gnome.set_state(GNOME_STATE.IDLE)
 			
 		GNOME_STATE.PLANTING_SEED:
 			if not reachable:
 				tutorial_level.erase_cell(plantSelection, map_pos)
-				gnome.set_job(GNOME_STATE.IDLE)
 				gnome.set_state(GNOME_STATE.IDLE)
-			
-			elif foreground_cell:
-				print("gnome won't plant here because foreground cell is occupied")
-				tutorial_level.erase_cell(plantSelection, map_pos)
-				gnome.set_job(GNOME_STATE.IDLE)
-			
+				
 			else:
-				print("gnome told to plant seed upon arrival")
-				tutorial_level.erase_cell(plantSelection, map_pos)
-				gnome.set_state(job)
+				if foreground_cells.find(map_pos) != -1:
+					print("gnome won't plant here because foreground cell is occupied")
+					tutorial_level.erase_cell(plantSelection, map_pos)
+					gnome.set_state(GNOME_STATE.IDLE)
+					
+				else:
+					print("gnome told to plant seed upon arrival")
+					tutorial_level.erase_cell(plantSelection, map_pos)
+					gnome.set_state(job)
 		
 		GNOME_STATE.TENDING_PLANT:
-			#this logic will need to be updated when plant becomes a cell on the tilemap
-			#right now the gnome will tend all plants from any distance
-			gnome.set_state(job)
-		
+			if not reachable:
+				gnome.set_state(GNOME_STATE.IDLE)
+			
+			else:
+				gnome.set_state(job)
 
+# Updates the tilemap based on what the gnome was just doing
+# Sets the gnome back to idle now that he's done his job
 func _on_gnome_finished_busy_animation(job, pos):
 	print("busy animation finished")
 	var map_pos = tutorial_level.local_to_map(pos)
@@ -218,24 +212,27 @@ func _on_gnome_finished_busy_animation(job, pos):
 			
 		GNOME_STATE.PLANTING_SEED:
 			tutorial_level.set_cell(background, map_pos, tilemap_source_id, impassable_dirt_atlas_coords)
-			
-			# spawn a plant at ABSOLUTE pos NOT map_pos
-			var plant = plant_scene.instantiate()
-			plant.connect("needs_tending", Callable(self, "_on_plant_needs_tending"))
-			plant.set_position(pos)
-			add_child(plant)
+			#spawn a plant using the tilemap
+			tutorial_level.set_cell(foreground, map_pos, plant_tilemap_source_id, plant_id, plant_1)
 			print("gnome set to idle after planting seed")
 		
 		GNOME_STATE.TENDING_PLANT:
 			# advance to next animation on the plant and play it
+			tutorial_level.set_cell(foreground, map_pos, plant_tilemap_source_id, plant_id, plant_2)
 			print("gnome set to idle after tending plant")
 
 		GNOME_STATE.IDLE:
 			print("busy while idle??")
-
+	
 	gnome.set_state(GNOME_STATE.IDLE)
 
+# Adds plant coords to the tending array
 func _on_plant_needs_tending(pos: Vector2):
 	var map_pos = tutorial_level.local_to_map(pos)
 	seedlingPos.push_back(map_pos)
 	print("plant added to tending queue")
+
+func _on_plant_finished_growing(pos: Vector2):
+	var map_pos = tutorial_level.local_to_map(pos)
+	harvestPos.push_back(map_pos)
+	print("plant added to harvest queue")
