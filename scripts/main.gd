@@ -2,6 +2,8 @@ extends Node2D
 
 @onready var tutorial_level = $TutorialLevel
 @onready var gnome = $Gnome
+@onready var hud = $HUD
+
 
 var tilemap_source_id = 0
 var plant_tilemap_source_id = 1
@@ -26,7 +28,10 @@ var removeHighlightColor = Color(1,1,1,0)
 var clearDebrisPos = []
 var plantSeedPos = []
 var seedlingPos = []
+var flowersPos = []
 var harvestPos = []
+
+var flower_count = flowersPos.size()
 
 enum MODES {NULL, CLEAR_DEBRIS, PLANT}
 var mode = MODES.NULL
@@ -37,6 +42,8 @@ enum GNOME_STATE {IDLE, CLEARING_DEBRIS, PLANTING_SEED, TENDING_PLANT, HAULING}
 func _ready():
 	register_buttons()
 	register_gnome_signals()
+	initial_hud_messages()
+	
 
 # Called every frame. 'delta' is the elapsed time since the previous frame.
 func _process(delta):
@@ -102,6 +109,12 @@ func _unhandled_input(event):
 				plantSeedPos.erase(tile_mouse_pos)
 		_:
 			pass
+
+# Opening game messages
+func initial_hud_messages():
+	hud.update_message_list("Welcome to Gnome Garden!")
+	hud.update_message_list("Click the Plant Seed button to get started.")
+	hud.show_message_text()
 
 #Sets the player's game mode
 func set_mode(_mode):
@@ -210,6 +223,10 @@ func _on_gnome_finished_busy_animation(job, pos):
 			tutorial_level.set_cell(background, map_pos, tilemap_source_id, passable_dirt_atlas_coords)
 			print("gnome set to idle after clearing debris")
 			
+			if flowersPos.find(map_pos) != -1:
+				flowersPos.erase(map_pos)
+				update_flower_count()
+			
 		GNOME_STATE.PLANTING_SEED:
 			tutorial_level.set_cell(background, map_pos, tilemap_source_id, impassable_dirt_atlas_coords)
 			#spawn a plant using the tilemap
@@ -218,6 +235,7 @@ func _on_gnome_finished_busy_animation(job, pos):
 		
 		GNOME_STATE.TENDING_PLANT:
 			# advance to next animation on the plant and play it
+			tutorial_level.erase_cell(foreground, map_pos)
 			tutorial_level.set_cell(foreground, map_pos, plant_tilemap_source_id, plant_id, plant_2)
 			print("gnome set to idle after tending plant")
 
@@ -226,10 +244,16 @@ func _on_gnome_finished_busy_animation(job, pos):
 	
 	gnome.set_state(GNOME_STATE.IDLE)
 
+func update_flower_count():
+	flower_count = flowersPos.size()
+	hud.update_flower_counter(flower_count)
+
 # Adds plant coords to the tending array
 func _on_plant_needs_tending(pos: Vector2):
 	var map_pos = tutorial_level.local_to_map(pos)
 	seedlingPos.push_back(map_pos)
+	flowersPos.push_back(map_pos)
+	update_flower_count()
 	print("plant added to tending queue")
 
 func _on_plant_finished_growing(pos: Vector2):
