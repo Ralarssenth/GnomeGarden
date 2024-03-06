@@ -113,6 +113,7 @@ _data = {
 }
 
 [node name="Gnome" type="CharacterBody2D"]
+scale = Vector2(0.4, 0.4)
 script = ExtResource("2_vr4qt")
 
 [node name="NavigationAgent2D" type="NavigationAgent2D" parent="."]

@@ -43,12 +43,12 @@ func _process(delta):
 	if navigation_agent.is_navigation_finished() and (state == STATE.IDLE or STATE.HAULING):
 		var reachable = true
 		if navigation_agent.is_target_reachable():
-			emit_signal("arrived", movement_target_position, job, reachable)
+			emit_signal("arrived", movement_target_position, job, reachable, self)
 			print("current state in delta: " + str(state))
 			return
 		else:
 			reachable = false
-			emit_signal("arrived", movement_target_position, job, reachable)
+			emit_signal("arrived", movement_target_position, job, reachable, self)
 			return
 	if state == STATE.IDLE:
 		navigate()
@@ -88,7 +88,7 @@ func set_state(_state):
 	match state:
 		STATE.IDLE:
 			set_job(STATE.IDLE)
-			emit_signal("idle")
+			emit_signal("idle", self)
 			print("gnome state set to idle")
 			
 		STATE.CLEARING_DEBRIS:
@@ -115,6 +115,6 @@ func set_state(_state):
 # Passes signals with additional params up to main when animation finishes
 func _on_animation_player_animation_finished(_anim_name):
 	if _anim_name == "busy":
-		emit_signal("gnome_finished_busy_animation", job, movement_target_position)
+		emit_signal("gnome_finished_busy_animation", job, movement_target_position, self)
 
 

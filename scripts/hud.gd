@@ -6,6 +6,7 @@ extends CanvasLayer
 @onready var message_buffer_timer = $MessageContainer/Timer2
 @onready var flower_counter = $ScoreContainer/HBoxContainer/HBoxContainer/FlowersCount
 @onready var fruit_counter = $ScoreContainer/HBoxContainer/HBoxContainer2/FruitsCount
+@onready var garden_score = $ScoreContainer/HBoxContainer/HBoxContainer3/GardenScore
 
 var message_list = []
 
@@ -41,3 +42,6 @@ func update_flower_counter(count):
 
 func update_fruit_counter(count):
 	fruit_counter.set_text(str(count))
+
+func update_garden_score(score):
+	garden_score.set_text(str(score))
