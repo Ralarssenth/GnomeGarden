@@ -1,8 +1,10 @@
-[gd_resource type="TileSet" load_steps=36 format=3 uid="uid://bw3no5fgo7o1"]
+[gd_resource type="TileSet" load_steps=38 format=3 uid="uid://bw3no5fgo7o1"]
 
 [ext_resource type="Texture2D" uid="uid://dadx8bl6lm6r6" path="res://assets/free version/free.png" id="1_36jdr"]
-[ext_resource type="PackedScene" uid="uid://00mgsdnce8op" path="res://scenes/plant1.tscn" id="2_40x67"]
-[ext_resource type="PackedScene" uid="uid://jgtitofpug0" path="res://scenes/plant_2.tscn" id="3_hre2x"]
+[ext_resource type="PackedScene" uid="uid://00mgsdnce8op" path="res://scenes/plant_1a.tscn" id="2_2bv60"]
+[ext_resource type="PackedScene" uid="uid://jgtitofpug0" path="res://scenes/plant_1b.tscn" id="3_5i45a"]
+[ext_resource type="PackedScene" uid="uid://iwqem6g4tks0" path="res://scenes/plant_2a.tscn" id="4_sx5x2"]
+[ext_resource type="PackedScene" uid="uid://da6cpy1a7lkd0" path="res://scenes/plant_2b.tscn" id="5_7lcmb"]
 
 [sub_resource type="NavigationPolygon" id="NavigationPolygon_ql6qq"]
 vertices = PackedVector2Array(8, 8, -8, 8, -8, -8, 8, -8)
@@ -742,8 +744,10 @@ texture = ExtResource("1_36jdr")
 
 [sub_resource type="TileSetScenesCollectionSource" id="TileSetScenesCollectionSource_ww8e1"]
 resource_name = "plant1"
-scenes/0/scene = ExtResource("2_40x67")
-scenes/1/scene = ExtResource("3_hre2x")
+scenes/0/scene = ExtResource("2_2bv60")
+scenes/1/scene = ExtResource("3_5i45a")
+scenes/2/scene = ExtResource("4_sx5x2")
+scenes/3/scene = ExtResource("5_7lcmb")
 
 [resource]
 terrain_set_0/mode = 0

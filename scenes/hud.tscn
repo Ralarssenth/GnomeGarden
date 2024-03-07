@@ -39,6 +39,15 @@ theme_override_font_sizes/font_size = 24
 text = "Plant Seed"
 icon_alignment = 1
 
+[node name="PlantCrop2MenuButton" type="Button" parent="ButtonsContainer/HBoxContainer" groups=["buttons"]]
+visible = false
+layout_mode = 2
+theme_override_colors/font_outline_color = Color(0, 0, 0, 1)
+theme_override_constants/outline_size = 5
+theme_override_fonts/font = ExtResource("2_qdxsb")
+theme_override_font_sizes/font_size = 24
+text = "Plant Other Seed"
+
 [node name="HarvestButton" type="Button" parent="ButtonsContainer/HBoxContainer" groups=["buttons"]]
 layout_mode = 2
 theme_override_colors/font_outline_color = Color(0, 0, 0, 1)

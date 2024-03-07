@@ -7,6 +7,7 @@ extends CanvasLayer
 @onready var flower_counter = $ScoreContainer/HBoxContainer/HBoxContainer/FlowersCount
 @onready var fruit_counter = $ScoreContainer/HBoxContainer/HBoxContainer2/FruitsCount
 @onready var garden_score = $ScoreContainer/HBoxContainer/HBoxContainer3/GardenScore
+@onready var plant2_button = $ButtonsContainer/HBoxContainer/PlantCrop2MenuButton
 
 var message_list = []
 
@@ -45,3 +46,7 @@ func update_fruit_counter(count):
 
 func update_garden_score(score):
 	garden_score.set_text(str(score))
+
+func update_plant_button_visibility(fruit_count):
+	if fruit_count >= 3:
+		plant2_button.set_visible(true)

@@ -10,7 +10,7 @@ signal gnome_finished_busy_animation
 @onready var navigation_agent: NavigationAgent2D = $NavigationAgent2D
 @onready var _animation_player = $AnimationPlayer
 
-enum STATE {IDLE, CLEARING_DEBRIS, PLANTING_SEED, TENDING_PLANT, HARVESTING, HAULING}
+enum STATE {IDLE, CLEARING_DEBRIS, PLANTING_SEED, PLANTING_SEED2, TENDING_PLANT, HARVESTING, HAULING}
 var state = STATE.IDLE
 var job = STATE.IDLE
 
@@ -40,7 +40,7 @@ func set_movement_target(movement_target: Vector2):
 
 # Called every frame. 'delta' is the elapsed time since the previous frame.
 func _process(delta):
-	if navigation_agent.is_navigation_finished() and (state == STATE.IDLE or STATE.HAULING):
+	if navigation_agent.is_navigation_finished() and (state == STATE.IDLE or state == STATE.HAULING):
 		var reachable = true
 		if navigation_agent.is_target_reachable():
 			emit_signal("arrived", movement_target_position, job, reachable, self)
@@ -97,6 +97,10 @@ func set_state(_state):
 			
 		STATE.PLANTING_SEED:
 			print("gnome state set to planting seed")
+			_animation_player.play("busy")
+		
+		STATE.PLANTING_SEED2:
+			print("gnome state set to planting seed2")
 			_animation_player.play("busy")
 			
 		STATE.TENDING_PLANT:

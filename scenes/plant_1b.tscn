@@ -1,9 +1,9 @@
-[gd_scene load_steps=6 format=3 uid="uid://00mgsdnce8op"]
+[gd_scene load_steps=6 format=3 uid="uid://jgtitofpug0"]
 
-[ext_resource type="Texture2D" uid="uid://dadx8bl6lm6r6" path="res://assets/free version/free.png" id="1_f0ki3"]
-[ext_resource type="Script" path="res://scripts/plant.gd" id="2_st5nr"]
+[ext_resource type="Texture2D" uid="uid://dadx8bl6lm6r6" path="res://assets/free version/free.png" id="1_hvup4"]
+[ext_resource type="Script" path="res://scripts/plant_2.gd" id="2_6vsis"]
 
-[sub_resource type="Animation" id="Animation_ng1yk"]
+[sub_resource type="Animation" id="Animation_70clo"]
 length = 0.001
 tracks/0/type = "value"
 tracks/0/imported = false
@@ -15,10 +15,10 @@ tracks/0/keys = {
 "times": PackedFloat32Array(0),
 "transitions": PackedFloat32Array(1),
 "update": 1,
-"values": [Vector2i(6, 9)]
+"values": [Vector2i(8, 9)]
 }
 
-[sub_resource type="Animation" id="Animation_afuhw"]
+[sub_resource type="Animation" id="Animation_aytfx"]
 resource_name = "grow"
 length = 10.0
 tracks/0/type = "value"
@@ -31,25 +31,25 @@ tracks/0/keys = {
 "times": PackedFloat32Array(0, 4.6, 9.6),
 "transitions": PackedFloat32Array(1, 1, 1),
 "update": 1,
-"values": [Vector2i(6, 9), Vector2i(7, 9), Vector2i(8, 9)]
+"values": [Vector2i(8, 9), Vector2i(9, 9), Vector2i(10, 9)]
 }
 
-[sub_resource type="AnimationLibrary" id="AnimationLibrary_xllkh"]
+[sub_resource type="AnimationLibrary" id="AnimationLibrary_fachp"]
 _data = {
-"RESET": SubResource("Animation_ng1yk"),
-"grow": SubResource("Animation_afuhw")
+"RESET": SubResource("Animation_70clo"),
+"grow": SubResource("Animation_aytfx")
 }
 
-[node name="Plant" type="Sprite2D"]
-texture = ExtResource("1_f0ki3")
+[node name="Plant1b" type="Sprite2D"]
+texture = ExtResource("1_hvup4")
 hframes = 13
 vframes = 10
-frame = 123
-script = ExtResource("2_st5nr")
+frame = 125
+script = ExtResource("2_6vsis")
 
 [node name="AnimationPlayer" type="AnimationPlayer" parent="."]
 libraries = {
-"": SubResource("AnimationLibrary_xllkh")
+"": SubResource("AnimationLibrary_fachp")
 }
 
 [connection signal="animation_finished" from="AnimationPlayer" to="." method="_on_animation_player_animation_finished"]

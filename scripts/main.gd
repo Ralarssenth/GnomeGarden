@@ -21,8 +21,10 @@ var passable_dirt_atlas_coords = Vector2i(7,0)
 var impassable_dirt_atlas_coords = Vector2i(6,0)
 var rock_atlas_coords = Vector2i(10, 0)
 var plant_id = Vector2i(0, 0)
-var plant_1 = 0
-var plant_2 = 1
+var plant_1a = 0
+var plant_1b = 1
+var plant_2a = 2
+var plant_2b = 3
 
 #color shortcuts
 var clearHighlightColor = Color(0,0,0.5,0.5)
@@ -35,6 +37,7 @@ var removeHighlightColor = Color(1,1,1,0)
 var gnomes = []
 var clearDebrisPos = []
 var plantSeedPos = []
+var plantSeed2Pos = []
 var seedlingPos = []
 var flowersPos = []
 var harvestablePos = []
@@ -45,10 +48,10 @@ var flower_count = flowersPos.size()
 var fruit_count = 0
 
 # state tracking
-enum MODES {NULL, CLEAR_DEBRIS, PLANT, HARVEST}
+enum MODES {NULL, CLEAR_DEBRIS, PLANT, PLANT2, HARVEST}
 var mode = MODES.NULL
 # THIS ENUM MUST MATCH THE ONE IN GNOME.GD IDENTICALLY
-enum GNOME_STATE {IDLE, CLEARING_DEBRIS, PLANTING_SEED, TENDING_PLANT, HARVESTING, HAULING}
+enum GNOME_STATE {IDLE, CLEARING_DEBRIS, PLANTING_SEED, PLANTING_SEED2, TENDING_PLANT, HARVESTING, HAULING}
 
 # Called when the node enters the scene tree for the first time.
 func _ready():
@@ -95,6 +98,8 @@ func _on_button_pressed(name):
 				set_mode(MODES.PLANT)
 			"HarvestButton":
 				set_mode(MODES.HARVEST)
+			"PlantCrop2MenuButton":
+				set_mode(MODES.PLANT2)
 
 	else:
 		set_mode(MODES.NULL)
@@ -124,6 +129,16 @@ func _unhandled_input(event):
 					plantSeedPos.push_back(tile_mouse_pos)
 					print("appended plant seed array")
 			
+			#right click in PLANT MODE
+			if event.is_action_pressed("right click"):
+				tutorial_level.erase_cell(plantSelection, tile_mouse_pos)
+				plantSeedPos.erase(tile_mouse_pos)
+		
+		MODES.PLANT2:
+			if event.is_action_pressed("click"):
+					tutorial_level.set_cell(plantSelection, tile_mouse_pos, tilemap_source_id, highlight_atlas_coords)
+					plantSeed2Pos.push_back(tile_mouse_pos)
+					print("appended plant seed array")
 			#right click in PLANT MODE
 			if event.is_action_pressed("right click"):
 				tutorial_level.erase_cell(plantSelection, tile_mouse_pos)
@@ -159,6 +174,10 @@ func set_mode(_mode):
 			tutorial_level.set_layer_modulate(background, clearHighlightColor)
 			
 		MODES.PLANT:
+			tutorial_level.set_layer_modulate(plantSelection, highlightColor)
+			tutorial_level.set_layer_modulate(background, plantHighlightColor)
+		
+		MODES.PLANT2:
 			tutorial_level.set_layer_modulate(plantSelection, highlightColor)
 			tutorial_level.set_layer_modulate(background, plantHighlightColor)
 		
@@ -199,6 +218,11 @@ func _on_gnome_idle(current_gnome):
 		job = GNOME_STATE.PLANTING_SEED
 		print("gnome told to plant seed")
 		
+	elif not plantSeed2Pos.is_empty():
+		pos = tutorial_level.map_to_local(plantSeed2Pos.pop_front())
+		job = GNOME_STATE.PLANTING_SEED2
+		print("gnome told to plant seed2")
+		
 	else:
 		# pick a random spot on the map
 		pos = Vector2(randf_range(-32.0, 32.0),randf_range(-32.0, 32.0))
@@ -237,7 +261,7 @@ func _on_gnome_arrived(pos: Vector2, job, reachable, current_gnome):
 				tutorial_level.erase_cell(clearSelection, map_pos)
 				current_gnome.set_state(GNOME_STATE.IDLE)
 			
-		GNOME_STATE.PLANTING_SEED:
+		GNOME_STATE.PLANTING_SEED, GNOME_STATE.PLANTING_SEED2:
 			if not reachable:
 				tutorial_level.erase_cell(plantSelection, map_pos)
 				current_gnome.set_state(GNOME_STATE.IDLE)
@@ -273,6 +297,7 @@ func _on_gnome_arrived(pos: Vector2, job, reachable, current_gnome):
 			fruit_count = fruit_count + 1
 			hud.update_fruit_counter(fruit_count)
 			current_gnome.set_state(GNOME_STATE.IDLE)
+			hud.update_plant_button_visibility(fruit_count)
 
 # Updates the tilemap based on what the gnome was just doing
 # Sets the gnome back to idle now that he's done his job
@@ -297,13 +322,27 @@ func _on_gnome_finished_busy_animation(job, pos, current_gnome):
 			
 		GNOME_STATE.PLANTING_SEED:
 			tutorial_level.set_cell(background, map_pos, tilemap_source_id, impassable_dirt_atlas_coords)
-			tutorial_level.set_cell(foreground, map_pos, plant_tilemap_source_id, plant_id, plant_1)
+			tutorial_level.set_cell(foreground, map_pos, plant_tilemap_source_id, plant_id, plant_1a)
 			current_gnome.set_state(GNOME_STATE.IDLE)
 			print("gnome set to idle after planting seed")
 		
-		GNOME_STATE.TENDING_PLANT:
-			tutorial_level.set_cell(foreground, map_pos, plant_tilemap_source_id, plant_id, plant_2)
+		GNOME_STATE.PLANTING_SEED2:
+			tutorial_level.set_cell(background, map_pos, tilemap_source_id, impassable_dirt_atlas_coords)
+			tutorial_level.set_cell(foreground, map_pos, plant_tilemap_source_id, plant_id, plant_2a)
 			current_gnome.set_state(GNOME_STATE.IDLE)
+			print("gnome set to idle after planting seed2")
+		
+		GNOME_STATE.TENDING_PLANT:
+			var seedling_id = tutorial_level.get_cell_alternative_tile(foreground, map_pos)
+			if seedling_id == plant_1a:
+				tutorial_level.set_cell(foreground, map_pos, plant_tilemap_source_id, plant_id, plant_1b)
+			elif seedling_id == plant_2a:
+				tutorial_level.set_cell(foreground, map_pos, plant_tilemap_source_id, plant_id, (plant_2b))
+			else:
+				print("gnome told to tend not a seedling??")
+				print(seedling_id)
+			current_gnome.set_state(GNOME_STATE.IDLE)
+			update_garden_score()
 			print("gnome set to idle after tending plant")
 		
 		GNOME_STATE.HARVESTING:
@@ -312,6 +351,7 @@ func _on_gnome_finished_busy_animation(job, pos, current_gnome):
 			tutorial_level.set_cell(background, map_pos, tilemap_source_id, passable_dirt_atlas_coords)
 			flowersPos.erase(map_pos)
 			update_flower_count()
+			update_garden_score()
 			harvestablePos.erase(map_pos)
 			current_gnome.set_state(GNOME_STATE.HAULING)
 			print("gnome set to hauling after harvesting")
@@ -320,7 +360,6 @@ func _on_gnome_finished_busy_animation(job, pos, current_gnome):
 func update_flower_count():
 	flower_count = flowersPos.size()
 	hud.update_flower_counter(flower_count)
-	update_garden_score()
 	
 	var number_of_gnomes = gnomes.size()
 	if number_of_gnomes < float(flower_count) / 5:
@@ -340,7 +379,11 @@ func _on_plant_finished_growing(pos: Vector2):
 	harvestablePos.push_back(map_pos)
 	print("plant added to harvest queue")
 
+# Calculates the garden score and updates the HUD
 func update_garden_score():
-	var foreground_cells = tutorial_level.get_used_cells_by_id(foreground, tilemap_source_id, rock_atlas_coords)
-	var score = (foreground_cells.size() * -2) + (flower_count)
+	var rocks = tutorial_level.get_used_cells_by_id(foreground, tilemap_source_id, rock_atlas_coords)
+	var flower_ones = tutorial_level.get_used_cells_by_id(foreground, plant_tilemap_source_id, plant_id, plant_1b)
+	var flower_twos = tutorial_level.get_used_cells_by_id(foreground, plant_tilemap_source_id, plant_id, plant_2b)
+	
+	var score = (rocks.size() * -2) + (flower_ones.size() * 1) + (flower_twos.size() * 5)
 	hud.update_garden_score(score)
