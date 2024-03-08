@@ -1,5 +1,10 @@
 extends TileMap
 
+# Tutorial Text
+const WELCOME = [
+	"Welcome to Gnome Garden!!", 
+	"Click the Plant Seed button to get started."
+	]
 
 # Called when the node enters the scene tree for the first time.
 func _ready():
@@ -10,4 +15,5 @@ func _ready():
 func _process(delta):
 	pass
 
-
+func get_welcome():
+	return WELCOME

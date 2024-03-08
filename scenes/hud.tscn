@@ -4,6 +4,7 @@
 [ext_resource type="FontFile" uid="uid://b5k5jn21eha6y" path="res://assets/fonts/VarelaRound-Regular.ttf" id="2_qdxsb"]
 
 [node name="HUD" type="CanvasLayer"]
+process_mode = 1
 script = ExtResource("1_g56gc")
 
 [node name="ButtonsContainer" type="MarginContainer" parent="."]
@@ -57,6 +58,7 @@ theme_override_font_sizes/font_size = 24
 text = "Harvest"
 
 [node name="MessageContainer" type="MarginContainer" parent="."]
+visible = false
 anchors_preset = 14
 anchor_top = 0.5
 anchor_right = 1.0
@@ -107,7 +109,6 @@ theme_override_constants/margin_bottom = 4
 [node name="HBoxContainer" type="HBoxContainer" parent="ScoreContainer"]
 layout_mode = 2
 theme_override_constants/separation = 32
-alignment = 1
 
 [node name="HBoxContainer" type="HBoxContainer" parent="ScoreContainer/HBoxContainer"]
 layout_mode = 2
@@ -169,4 +170,89 @@ theme_override_fonts/font = ExtResource("2_qdxsb")
 theme_override_font_sizes/font_size = 24
 text = "0"
 
+[node name="TimeContainer" type="HBoxContainer" parent="ScoreContainer"]
+layout_mode = 2
+alignment = 2
+
+[node name="DayLabel" type="Label" parent="ScoreContainer/TimeContainer"]
+layout_mode = 2
+theme_override_colors/font_outline_color = Color(0, 0, 0, 1)
+theme_override_constants/outline_size = 5
+theme_override_fonts/font = ExtResource("2_qdxsb")
+theme_override_font_sizes/font_size = 24
+text = "Day:"
+
+[node name="Day" type="Label" parent="ScoreContainer/TimeContainer"]
+layout_mode = 2
+theme_override_colors/font_outline_color = Color(0, 0, 0, 1)
+theme_override_constants/outline_size = 5
+theme_override_fonts/font = ExtResource("2_qdxsb")
+theme_override_font_sizes/font_size = 24
+text = "0"
+
+[node name="DayTimer" type="Timer" parent="ScoreContainer/TimeContainer"]
+wait_time = 5.0
+one_shot = true
+
+[node name="MenuContainer" type="MarginContainer" parent="."]
+process_mode = 3
+visible = false
+anchors_preset = 8
+anchor_left = 0.5
+anchor_top = 0.5
+anchor_right = 0.5
+anchor_bottom = 0.5
+offset_left = -93.0
+offset_top = -55.0
+offset_right = 82.0
+offset_bottom = 43.0
+grow_horizontal = 2
+grow_vertical = 2
+theme_override_constants/margin_left = 4
+theme_override_constants/margin_top = 4
+theme_override_constants/margin_right = 4
+theme_override_constants/margin_bottom = 4
+
+[node name="ColorRect" type="ColorRect" parent="MenuContainer"]
+layout_mode = 2
+color = Color(0.0196078, 0.462745, 0.545098, 1)
+
+[node name="MarginContainer" type="MarginContainer" parent="MenuContainer"]
+layout_mode = 2
+theme_override_constants/margin_left = 4
+theme_override_constants/margin_top = 4
+theme_override_constants/margin_right = 4
+theme_override_constants/margin_bottom = 4
+
+[node name="VBoxContainer" type="VBoxContainer" parent="MenuContainer/MarginContainer"]
+layout_mode = 2
+theme_override_constants/separation = 4
+
+[node name="Label" type="Label" parent="MenuContainer/MarginContainer/VBoxContainer"]
+layout_mode = 2
+theme_override_colors/font_outline_color = Color(0, 0, 0, 1)
+theme_override_constants/outline_size = 5
+theme_override_fonts/font = ExtResource("2_qdxsb")
+theme_override_font_sizes/font_size = 24
+text = "Gnome Garden"
+horizontal_alignment = 1
+
+[node name="Label2" type="Label" parent="MenuContainer/MarginContainer/VBoxContainer"]
+layout_mode = 2
+theme_override_colors/font_outline_color = Color(0, 0, 0, 1)
+theme_override_constants/outline_size = 4
+theme_override_fonts/font = ExtResource("2_qdxsb")
+theme_override_font_sizes/font_size = 16
+text = "Level Select"
+horizontal_alignment = 1
+
+[node name="TutorialLevel" type="Button" parent="MenuContainer/MarginContainer/VBoxContainer" groups=["buttons"]]
+layout_mode = 2
+theme_override_colors/font_outline_color = Color(0, 0, 0, 1)
+theme_override_constants/outline_size = 5
+theme_override_fonts/font = ExtResource("2_qdxsb")
+theme_override_font_sizes/font_size = 24
+text = "Tutorial Level"
+
 [connection signal="timeout" from="MessageContainer/Timer" to="." method="_on_timer_timeout"]
+[connection signal="timeout" from="ScoreContainer/TimeContainer/DayTimer" to="." method="_on_day_timer_timeout"]

@@ -1,6 +1,9 @@
 extends CanvasLayer
 
+@onready var buttons_container = $ButtonsContainer
 @onready var message_container = $MessageContainer
+@onready var score_container = $ScoreContainer
+@onready var menu_container = $MenuContainer
 @onready var message_label = $MessageContainer/HBoxContainer/Label
 @onready var message_timer = $MessageContainer/Timer
 @onready var message_buffer_timer = $MessageContainer/Timer2
@@ -8,8 +11,13 @@ extends CanvasLayer
 @onready var fruit_counter = $ScoreContainer/HBoxContainer/HBoxContainer2/FruitsCount
 @onready var garden_score = $ScoreContainer/HBoxContainer/HBoxContainer3/GardenScore
 @onready var plant2_button = $ButtonsContainer/HBoxContainer/PlantCrop2MenuButton
+@onready var day = $ScoreContainer/TimeContainer/Day
+@onready var day_timer = $ScoreContainer/TimeContainer/DayTimer
 
 var message_list = []
+var day_tracker = 0
+
+signal game_over
 
 # Called when the node enters the scene tree for the first time.
 func _ready():
@@ -20,8 +28,19 @@ func _ready():
 func _process(delta):
 	pass
 
+func show_game_hud():
+	menu_container.set_visible(false)
+	buttons_container.set_visible(true)
+	score_container.set_visible(true)
+	day_timer.start()
+
+func show_menu_hud():
+	buttons_container.set_visible(false)
+	score_container.set_visible(false)
+	menu_container.set_visible(true)
+
 func update_message_list(text):
-	message_list.push_back(text)
+	message_list.append_array(text)
 
 # updates the message text, displays, and starts the message timer
 func show_message_text():
@@ -50,3 +69,11 @@ func update_garden_score(score):
 func update_plant_button_visibility(fruit_count):
 	if fruit_count >= 3:
 		plant2_button.set_visible(true)
+
+
+func _on_day_timer_timeout():
+	day_tracker += 1
+	day.set_text(str(day_tracker))
+	if day_tracker >= 5:
+		emit_signal("game_over")
+	day_timer.start()

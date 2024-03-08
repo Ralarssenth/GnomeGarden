@@ -41,6 +41,7 @@ _data = {
 }
 
 [node name="Plant1b" type="Sprite2D"]
+process_mode = 1
 texture = ExtResource("1_hvup4")
 hframes = 13
 vframes = 10
