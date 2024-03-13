@@ -58,6 +58,7 @@ theme_override_font_sizes/font_size = 24
 text = "Harvest"
 
 [node name="MessageContainer" type="MarginContainer" parent="."]
+process_mode = 3
 visible = false
 anchors_preset = 14
 anchor_top = 0.5
@@ -196,7 +197,6 @@ one_shot = true
 
 [node name="MenuContainer" type="MarginContainer" parent="."]
 process_mode = 3
-visible = false
 anchors_preset = 8
 anchor_left = 0.5
 anchor_top = 0.5
@@ -253,6 +253,14 @@ theme_override_constants/outline_size = 5
 theme_override_fonts/font = ExtResource("2_qdxsb")
 theme_override_font_sizes/font_size = 24
 text = "Tutorial Level"
+
+[node name="SandboxLevel" type="Button" parent="MenuContainer/MarginContainer/VBoxContainer" groups=["buttons"]]
+layout_mode = 2
+theme_override_colors/font_outline_color = Color(0, 0, 0, 1)
+theme_override_constants/outline_size = 5
+theme_override_fonts/font = ExtResource("2_qdxsb")
+theme_override_font_sizes/font_size = 24
+text = "Sandbox Mode"
 
 [connection signal="timeout" from="MessageContainer/Timer" to="." method="_on_timer_timeout"]
 [connection signal="timeout" from="ScoreContainer/TimeContainer/DayTimer" to="." method="_on_day_timer_timeout"]

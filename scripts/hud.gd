@@ -15,9 +15,6 @@ extends CanvasLayer
 @onready var day_timer = $ScoreContainer/TimeContainer/DayTimer
 
 var message_list = []
-var day_tracker = 0
-
-signal game_over
 
 # Called when the node enters the scene tree for the first time.
 func _ready():
@@ -71,9 +68,3 @@ func update_plant_button_visibility(fruit_count):
 		plant2_button.set_visible(true)
 
 
-func _on_day_timer_timeout():
-	day_tracker += 1
-	day.set_text(str(day_tracker))
-	if day_tracker >= 5:
-		emit_signal("game_over")
-	day_timer.start()

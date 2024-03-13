@@ -2,6 +2,7 @@ extends Node2D
 
 var gnome = preload("res://scenes/gnome.tscn")
 var tutorial_level = preload("res://scenes/tutorial_level.tscn")
+var sandbox_level = preload("res://scenes/sandbox.tscn")
 
 @onready var camera = $Camera2D
 @onready var hud = $HUD
@@ -53,17 +54,23 @@ var harvestPos = []
 var flower_count = flowersPos.size()
 var fruit_count = 0
 
+# Day and ToD tracking
+@onready var day_timer = $DayTimer
+var day_tracker = 0
+
 # state tracking
+#TODO refactor the enums into a singleton so they can be all in one place instead of having to match?
 enum MODES {NULL, CLEAR_DEBRIS, PLANT, PLANT2, HARVEST, DRAG}
 var mode = MODES.NULL
 # THIS ENUM MUST MATCH THE ONE IN GNOME.GD IDENTICALLY
 enum GNOME_STATE {IDLE, CLEARING_DEBRIS, PLANTING_SEED, PLANTING_SEED2, TENDING_PLANT, HARVESTING, HAULING}
+# THIS ENUM MUST MATCH THE ONE IN LEVEL.GD INDENTICALLY
+enum GAME_MODES {STANDARD, SANDBOX}
 
 # Called when the node enters the scene tree for the first time.
 func _ready():
 	register_buttons()
 	hud.show_menu_hud()
-	hud.connect("game_over", game_over)
 
 # Called every frame. 'delta' is the elapsed time since the previous frame.
 func _process(delta):
@@ -87,6 +94,7 @@ func start_level(level):
 	hud.show_game_hud()
 	spawn_gnome()
 	update_hud_messages(current_level.get_welcome())
+	start_days()
 	update_garden_score()
 	
 func game_over():
@@ -114,6 +122,8 @@ func _on_button_pressed(name):
 				set_mode(MODES.PLANT2)
 			"TutorialLevel":
 				start_level(tutorial_level)
+			"SandboxLevel":
+				start_level(sandbox_level)
 
 	else:
 		set_mode(MODES.NULL)
@@ -420,6 +430,22 @@ func _on_plant_finished_growing(pos: Vector2):
 	harvestablePos.push_back(map_pos)
 	print("plant added to harvest queue")
 
+# Starts the day tracking based on the current_level
+func start_days():
+	if in_level:
+		day_timer.set_wait_time(current_level.get_day_length())
+		day_timer.start()
+	
+# Tracks the days elapsed and triggers game_over() based on the current_level
+func _on_day_timer_timeout():
+	if in_level:
+		day_tracker += 1
+		print("day timer incremented")
+		hud.day.set_text(str(day_tracker))
+		if current_level.get_game_mode() == GAME_MODES.STANDARD:
+			if day_tracker >= current_level.get_days():
+				game_over()
+
 # Calculates the garden score and updates the HUD
 func update_garden_score():
 	var rocks = current_level.get_used_cells_by_id(FOREGROUND, TILEMAP_SOURCE_ID, ROCK_ATLAS_COORDS)
@@ -428,3 +454,5 @@ func update_garden_score():
 	
 	var score = (rocks.size() * -2) + (flower_ones.size() * 1) + (flower_twos.size() * 5)
 	hud.update_garden_score(score)
+	print("garden score updated")
+

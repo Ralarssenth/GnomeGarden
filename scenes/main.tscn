@@ -11,3 +11,8 @@ script = ExtResource("1_a81db")
 zoom = Vector2(3, 3)
 
 [node name="HUD" parent="." instance=ExtResource("2_rkjnl")]
+
+[node name="DayTimer" type="Timer" parent="."]
+process_mode = 1
+
+[connection signal="timeout" from="DayTimer" to="." method="_on_day_timer_timeout"]

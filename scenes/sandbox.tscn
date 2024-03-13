@@ -1,0 +1,7 @@
+[gd_scene load_steps=3 format=3 uid="uid://dt1sw04t7kmrt"]
+
+[ext_resource type="PackedScene" uid="uid://cly2xeubhhq30" path="res://scenes/level.tscn" id="1_ndxhi"]
+[ext_resource type="Script" path="res://scripts/sandbox.gd" id="2_6707p"]
+
+[node name="TileMap" instance=ExtResource("1_ndxhi")]
+script = ExtResource("2_6707p")
