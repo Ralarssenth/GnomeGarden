@@ -10,9 +10,8 @@ signal gnome_finished_busy_animation
 @onready var navigation_agent: NavigationAgent2D = $NavigationAgent2D
 @onready var _animation_player = $AnimationPlayer
 
-enum STATE {IDLE, CLEARING_DEBRIS, PLANTING_SEED, PLANTING_SEED2, TENDING_PLANT, HARVESTING, HAULING}
-var state = STATE.IDLE
-var job = STATE.IDLE
+var state = Globals.GNOME_STATE.IDLE
+var job = Globals.GNOME_STATE.IDLE
 
 # Called when the node enters the scene tree for the first time.
 func _ready():
@@ -24,7 +23,7 @@ func _ready():
 	# Make sure to not await during _ready.
 	call_deferred("actor_setup")
 	
-	set_state(STATE.IDLE)
+	set_state(Globals.GNOME_STATE.IDLE)
 
 # Sets up the navigation on the first physics frame
 func actor_setup():
@@ -40,7 +39,7 @@ func set_movement_target(movement_target: Vector2):
 
 # Called every frame. 'delta' is the elapsed time since the previous frame.
 func _process(delta):
-	if navigation_agent.is_navigation_finished() and (state == STATE.IDLE or state == STATE.HAULING):
+	if navigation_agent.is_navigation_finished() and (state == Globals.GNOME_STATE.IDLE or state == Globals.GNOME_STATE.HAULING):
 		var reachable = true
 		if navigation_agent.is_target_reachable():
 			emit_signal("arrived", movement_target_position, job, reachable, self)
@@ -50,9 +49,9 @@ func _process(delta):
 			reachable = false
 			emit_signal("arrived", movement_target_position, job, reachable, self)
 			return
-	if state == STATE.IDLE:
+	if state == Globals.GNOME_STATE.IDLE:
 		navigate()
-	if state == STATE.HAULING:
+	if state == Globals.GNOME_STATE.HAULING:
 		navigate()
 
 # Tells the gnome to advance on his navigation path 
@@ -86,34 +85,34 @@ func set_job(_job):
 func set_state(_state):
 	state = _state
 	match state:
-		STATE.IDLE:
-			set_job(STATE.IDLE)
+		Globals.GNOME_STATE.IDLE:
+			set_job(Globals.GNOME_STATE.IDLE)
 			emit_signal("idle", self)
 			print("gnome state set to idle")
 			
-		STATE.CLEARING_DEBRIS:
+		Globals.GNOME_STATE.CLEARING_DEBRIS:
 			print("gnome state set to clearing debris")
 			_animation_player.play("busy")
 			
-		STATE.PLANTING_SEED:
+		Globals.GNOME_STATE.PLANTING_SEED:
 			print("gnome state set to planting seed")
 			_animation_player.play("busy")
 		
-		STATE.PLANTING_SEED2:
+		Globals.GNOME_STATE.PLANTING_SEED2:
 			print("gnome state set to planting seed2")
 			_animation_player.play("busy")
 			
-		STATE.TENDING_PLANT:
+		Globals.GNOME_STATE.TENDING_PLANT:
 			print("gnome state set to tending plant")
 			_animation_player.play("busy")
 			
-		STATE.HARVESTING:
+		Globals.GNOME_STATE.HARVESTING:
 			print("gnome state set to harvesting plant")
 			_animation_player.play("busy")
 		
-		STATE.HAULING:
+		Globals.GNOME_STATE.HAULING:
 			print("gnome state set to hauling")
-			set_job(STATE.HAULING)
+			set_job(Globals.GNOME_STATE.HAULING)
 			set_movement_target(Vector2(0,0))
 
 # Passes signals with additional params up to main when animation finishes

@@ -7,7 +7,7 @@ func _ready():
 		"Welcome to Gnome Garden!!", 
 		"Click the Plant Seed button to get started."
 		])
-	set_game_mode(GAME_MODES.STANDARD)
+	set_game_mode(Globals.GAME_MODES.STANDARD)
 	set_days(90)
 	set_day_length(10.0)
 

@@ -59,13 +59,12 @@ var fruit_count = 0
 var day_tracker = 0
 
 # state tracking
-#TODO refactor the enums into a singleton so they can be all in one place instead of having to match?
 enum MODES {NULL, CLEAR_DEBRIS, PLANT, PLANT2, HARVEST, DRAG}
 var mode = MODES.NULL
 # THIS ENUM MUST MATCH THE ONE IN GNOME.GD IDENTICALLY
-enum GNOME_STATE {IDLE, CLEARING_DEBRIS, PLANTING_SEED, PLANTING_SEED2, TENDING_PLANT, HARVESTING, HAULING}
+
 # THIS ENUM MUST MATCH THE ONE IN LEVEL.GD INDENTICALLY
-enum GAME_MODES {STANDARD, SANDBOX}
+
 
 # Called when the node enters the scene tree for the first time.
 func _ready():
@@ -246,33 +245,33 @@ func _on_gnome_idle(current_gnome):
 	var job
 	if not seedlingPos.is_empty():
 		pos = current_level.map_to_local(seedlingPos.pop_front())
-		job = GNOME_STATE.TENDING_PLANT
+		job = Globals.GNOME_STATE.TENDING_PLANT
 		print("gnome told to tend")
 	
 	elif not harvestPos.is_empty():
 		pos = current_level.map_to_local(harvestPos.pop_front())
-		job = GNOME_STATE.HARVESTING
+		job = Globals.GNOME_STATE.HARVESTING
 		print("gnome told to harvest")
 		
 	elif not clearDebrisPos.is_empty():
 		pos = current_level.map_to_local(clearDebrisPos.pop_front())
-		job = GNOME_STATE.CLEARING_DEBRIS
+		job = Globals.GNOME_STATE.CLEARING_DEBRIS
 		print("gnome told to clear debris")
 		
 	elif not plantSeedPos.is_empty():
 		pos = current_level.map_to_local(plantSeedPos.pop_front())
-		job = GNOME_STATE.PLANTING_SEED
+		job = Globals.GNOME_STATE.PLANTING_SEED
 		print("gnome told to plant seed")
 		
 	elif not plantSeed2Pos.is_empty():
 		pos = current_level.map_to_local(plantSeed2Pos.pop_front())
-		job = GNOME_STATE.PLANTING_SEED2
+		job = Globals.GNOME_STATE.PLANTING_SEED2
 		print("gnome told to plant seed2")
 		
 	else:
 		# pick a random spot on the map
 		pos = Vector2(randf_range(-32.0, 32.0),randf_range(-32.0, 32.0))
-		job = GNOME_STATE.IDLE
+		job = Globals.GNOME_STATE.IDLE
 		print("gnome told to idle")
 
 	current_gnome.set_movement_target(pos)
@@ -288,13 +287,13 @@ func _on_gnome_arrived(pos: Vector2, job, reachable, current_gnome):
 	var permanent_cells = current_level.get_used_cells(PERMANENTS)
 	
 	match job:
-		GNOME_STATE.IDLE:
+		Globals.GNOME_STATE.IDLE:
 			current_gnome.set_state(job)
 		
-		GNOME_STATE.CLEARING_DEBRIS:
+		Globals.GNOME_STATE.CLEARING_DEBRIS:
 			if not reachable:
 				current_level.erase_cell(CLEAR_SELECTION, map_pos)
-				current_gnome.set_state(GNOME_STATE.IDLE)
+				current_gnome.set_state(Globals.GNOME_STATE.IDLE)
 				print("gnome told to idle because cell unreachable")
 			
 			elif foreground_cells.find(map_pos) != -1:
@@ -305,44 +304,44 @@ func _on_gnome_arrived(pos: Vector2, job, reachable, current_gnome):
 			else:
 				print("gnome state set to idle on arrival because foreground cell is empty")
 				current_level.erase_cell(CLEAR_SELECTION, map_pos)
-				current_gnome.set_state(GNOME_STATE.IDLE)
+				current_gnome.set_state(Globals.GNOME_STATE.IDLE)
 			
-		GNOME_STATE.PLANTING_SEED, GNOME_STATE.PLANTING_SEED2:
+		Globals.GNOME_STATE.PLANTING_SEED, Globals.GNOME_STATE.PLANTING_SEED2:
 			if not reachable:
 				current_level.erase_cell(PLANT_SELECTION, map_pos)
-				current_gnome.set_state(GNOME_STATE.IDLE)
+				current_gnome.set_state(Globals.GNOME_STATE.IDLE)
 				print("gnome told to idle because cell unreachable")
 				
 			elif foreground_cells.find(map_pos) != -1 or permanent_cells.find(map_pos) != -1:
 				print("gnome won't plant here because foreground cell is occupied")
 				current_level.erase_cell(PLANT_SELECTION, map_pos)
-				current_gnome.set_state(GNOME_STATE.IDLE)
+				current_gnome.set_state(Globals.GNOME_STATE.IDLE)
 					
 			else:
 				print("gnome told to plant seed upon arrival")
 				current_level.erase_cell(PLANT_SELECTION, map_pos)
 				current_gnome.set_state(job)
 		
-		GNOME_STATE.TENDING_PLANT:
+		Globals.GNOME_STATE.TENDING_PLANT:
 			if not reachable:
-				current_gnome.set_state(GNOME_STATE.IDLE)
+				current_gnome.set_state(Globals.GNOME_STATE.IDLE)
 				print("gnome told to idle because cell unreachable")
 			
 			else:
 				current_gnome.set_state(job)
 		
-		GNOME_STATE.HARVESTING:
+		Globals.GNOME_STATE.HARVESTING:
 			if not reachable:
-				current_gnome.set_state(GNOME_STATE.IDLE)
+				current_gnome.set_state(Globals.GNOME_STATE.IDLE)
 				print("gnome told to idle because cell unreachable")
 			#todo: add a check for if harvestable
 			else:
 				current_gnome.set_state(job)
 		
-		GNOME_STATE.HAULING:
+		Globals.GNOME_STATE.HAULING:
 			fruit_count = fruit_count + 1
 			hud.update_fruit_counter(fruit_count)
-			current_gnome.set_state(GNOME_STATE.IDLE)
+			current_gnome.set_state(Globals.GNOME_STATE.IDLE)
 			hud.update_plant_button_visibility(fruit_count)
 
 # Updates the tilemap based on what the gnome was just doing
@@ -351,10 +350,10 @@ func _on_gnome_finished_busy_animation(job, pos, current_gnome):
 	print("busy animation finished")
 	var map_pos = current_level.local_to_map(pos)
 	match job:
-		GNOME_STATE.IDLE:
+		Globals.GNOME_STATE.IDLE:
 			print("busy while idle??")
 			
-		GNOME_STATE.CLEARING_DEBRIS:
+		Globals.GNOME_STATE.CLEARING_DEBRIS:
 			current_level.erase_cell(FOREGROUND, map_pos)
 			current_level.set_cell(BACKGROUND, map_pos, TILEMAP_SOURCE_ID, PASSABLE_DIRT_ATLAS_COORDS)
 	
@@ -363,22 +362,22 @@ func _on_gnome_finished_busy_animation(job, pos, current_gnome):
 				update_flower_count()
 				
 			update_garden_score()
-			current_gnome.set_state(GNOME_STATE.IDLE)
+			current_gnome.set_state(Globals.GNOME_STATE.IDLE)
 			print("gnome set to idle after clearing debris")
 			
-		GNOME_STATE.PLANTING_SEED:
+		Globals.GNOME_STATE.PLANTING_SEED:
 			current_level.set_cell(BACKGROUND, map_pos, TILEMAP_SOURCE_ID, IMPASSABLE_DIRT_ATLAS_COORDS)
 			current_level.set_cell(FOREGROUND, map_pos, PLANT_TILEMAP_SOURCE_ID, PLANT_ATLAS, PLANT_1A)
-			current_gnome.set_state(GNOME_STATE.IDLE)
+			current_gnome.set_state(Globals.GNOME_STATE.IDLE)
 			print("gnome set to idle after planting seed")
 		
-		GNOME_STATE.PLANTING_SEED2:
+		Globals.GNOME_STATE.PLANTING_SEED2:
 			current_level.set_cell(BACKGROUND, map_pos, TILEMAP_SOURCE_ID, IMPASSABLE_DIRT_ATLAS_COORDS)
 			current_level.set_cell(FOREGROUND, map_pos, PLANT_TILEMAP_SOURCE_ID, PLANT_ATLAS, PLANT_2A)
-			current_gnome.set_state(GNOME_STATE.IDLE)
+			current_gnome.set_state(Globals.GNOME_STATE.IDLE)
 			print("gnome set to idle after planting seed2")
 		
-		GNOME_STATE.TENDING_PLANT:
+		Globals.GNOME_STATE.TENDING_PLANT:
 			var seedling_id = current_level.get_cell_alternative_tile(FOREGROUND, map_pos)
 			if seedling_id == PLANT_1A:
 				current_level.set_cell(FOREGROUND, map_pos, PLANT_TILEMAP_SOURCE_ID, PLANT_ATLAS, PLANT_1B)
@@ -387,11 +386,11 @@ func _on_gnome_finished_busy_animation(job, pos, current_gnome):
 			else:
 				print("gnome told to tend not a seedling??")
 				print(seedling_id)
-			current_gnome.set_state(GNOME_STATE.IDLE)
+			current_gnome.set_state(Globals.GNOME_STATE.IDLE)
 			update_garden_score()
 			print("gnome set to idle after tending plant")
 		
-		GNOME_STATE.HARVESTING:
+		Globals.GNOME_STATE.HARVESTING:
 			current_level.erase_cell(FOREGROUND, map_pos)
 			current_level.erase_cell(HARVEST_SELECTION, map_pos)
 			current_level.set_cell(BACKGROUND, map_pos, TILEMAP_SOURCE_ID, PASSABLE_DIRT_ATLAS_COORDS)
@@ -399,7 +398,7 @@ func _on_gnome_finished_busy_animation(job, pos, current_gnome):
 			update_flower_count()
 			update_garden_score()
 			harvestablePos.erase(map_pos)
-			current_gnome.set_state(GNOME_STATE.HAULING)
+			current_gnome.set_state(Globals.GNOME_STATE.HAULING)
 			print("gnome set to hauling after harvesting")
 
 #updates the hud messages and displays them
@@ -442,7 +441,7 @@ func _on_day_timer_timeout():
 		day_tracker += 1
 		print("day timer incremented")
 		hud.day.set_text(str(day_tracker))
-		if current_level.get_game_mode() == GAME_MODES.STANDARD:
+		if current_level.get_game_mode() == Globals.GAME_MODES.STANDARD:
 			if day_tracker >= current_level.get_days():
 				game_over()
 

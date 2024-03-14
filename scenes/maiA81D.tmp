@@ -1,0 +1,18 @@
+[gd_scene load_steps=3 format=3 uid="uid://dlu7ttpsdrxvx"]
+
+[ext_resource type="Script" path="res://scripts/main.gd" id="1_a81db"]
+[ext_resource type="PackedScene" uid="uid://f1xug5peqhti" path="res://scenes/hud.tscn" id="2_rkjnl"]
+
+[node name="Node2D" type="Node2D"]
+process_mode = 3
+script = ExtResource("1_a81db")
+
+[node name="Camera2D" type="Camera2D" parent="."]
+zoom = Vector2(3, 3)
+
+[node name="HUD" parent="." instance=ExtResource("2_rkjnl")]
+
+[node name="DayTimer" type="Timer" parent="."]
+process_mode = 1
+
+[connection signal="timeout" from="DayTimer" to="." method="_on_day_timer_timeout"]

@@ -7,7 +7,7 @@ func _ready():
 		"Welcome to Gnome Garden: Sandbox Mode!!", 
 		"This mode has no time limit, so garden to your heart's content!"
 		])
-	set_game_mode(GAME_MODES.SANDBOX)
+	set_game_mode(Globals.GAME_MODES.SANDBOX)
 	set_day_length(10.0)
 
 

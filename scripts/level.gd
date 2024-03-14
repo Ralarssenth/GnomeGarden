@@ -5,7 +5,7 @@ var welcome = []
 
 var days_until_game_over
 var day_length
-enum GAME_MODES {STANDARD, SANDBOX}
+
 var game_mode
 
 # Called when the node enters the scene tree for the first time.
@@ -40,8 +40,8 @@ func get_game_mode():
 
 func set_game_mode(mode):
 	match mode:
-		GAME_MODES.STANDARD:
-			game_mode = GAME_MODES.STANDARD
-		GAME_MODES.SANDBOX:
-			game_mode = GAME_MODES.SANDBOX
+		Globals.GAME_MODES.STANDARD:
+			game_mode = Globals.GAME_MODES.STANDARD
+		Globals.GAME_MODES.SANDBOX:
+			game_mode = Globals.GAME_MODES.SANDBOX
 		
