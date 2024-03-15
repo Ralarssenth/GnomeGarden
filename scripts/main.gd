@@ -7,34 +7,6 @@ var sandbox_level = preload("res://scenes/sandbox.tscn")
 @onready var camera = $Camera2D
 @onready var hud = $HUD
 
-#tile map shortcut constants
-const TILEMAP_SOURCE_ID = 0
-const PLANT_TILEMAP_SOURCE_ID = 1
-const BACKGROUND = 0
-const PERMANENTS = 1
-const FOREGROUND = 2
-const CLEAR_SELECTION = 3
-const PLANT_SELECTION = 4
-const HARVEST_SELECTION = 5
-
-#tile id shortcut constants
-const HIGHLIGHT_ATLAS_COORDS = Vector2i(12,0)
-const PASSABLE_DIRT_ATLAS_COORDS = Vector2i(7,0)
-const IMPASSABLE_DIRT_ATLAS_COORDS = Vector2i(6,0)
-const ROCK_ATLAS_COORDS = Vector2i(10, 0)
-const PLANT_ATLAS = Vector2i(0, 0)
-const PLANT_1A = 0
-const PLANT_1B = 1
-const PLANT_2A = 2
-const PLANT_2B = 3
-
-#color shortcut constants
-const CLEAR_HIGHLIGHT_COLOR = Color(0,0,0.5,0.5)
-const PLANT_HIGHLIGHT_COLOR = Color(0,0.5,0,0.5)
-const REMOVE_COLOR = Color(1,1,1,1)
-const HIGHLIGHT_COLOR = Color(1,1,1,0.4)
-const REMOVE_HIGHLIGHT_COLOR = Color(1,1,1,0)
-
 # level tracking
 var current_level
 var in_level = false
@@ -54,16 +26,13 @@ var harvestPos = []
 var flower_count = flowersPos.size()
 var fruit_count = 0
 
-# Day and ToD tracking
+# Day tracking
 @onready var day_timer = $DayTimer
 var day_tracker = 0
 
 # state tracking
 enum MODES {NULL, CLEAR_DEBRIS, PLANT, PLANT2, HARVEST, DRAG}
 var mode = MODES.NULL
-# THIS ENUM MUST MATCH THE ONE IN GNOME.GD IDENTICALLY
-
-# THIS ENUM MUST MATCH THE ONE IN LEVEL.GD INDENTICALLY
 
 
 # Called when the node enters the scene tree for the first time.
@@ -151,47 +120,47 @@ func _unhandled_input(event):
 			MODES.CLEAR_DEBRIS:
 				# left click in CLEAR MODE
 				if event.is_action_pressed("click"):
-					current_level.set_cell(CLEAR_SELECTION, tile_mouse_pos, TILEMAP_SOURCE_ID, HIGHLIGHT_ATLAS_COORDS)
+					current_level.set_cell(current_level.CLEAR_SELECTION, tile_mouse_pos, current_level.TILEMAP_SOURCE_ID, current_level.HIGHLIGHT_ATLAS_COORDS)
 					clearDebrisPos.push_back(tile_mouse_pos)
 					print("appended clear debris array")
 					
 				#right click in CLEAR MODE
 				if event.is_action_pressed("right click"):
-					current_level.erase_cell(CLEAR_SELECTION, tile_mouse_pos)
+					current_level.erase_cell(current_level.CLEAR_SELECTION, tile_mouse_pos)
 					clearDebrisPos.erase(tile_mouse_pos)
 					print("erased a position from the clear debris array")
 				
 			MODES.PLANT:
 				#left click in PLANT MODE
 				if event.is_action_pressed("click"):
-						current_level.set_cell(PLANT_SELECTION, tile_mouse_pos, TILEMAP_SOURCE_ID, HIGHLIGHT_ATLAS_COORDS)
+						current_level.set_cell(current_level.PLANT_SELECTION, tile_mouse_pos, current_level.TILEMAP_SOURCE_ID, current_level.HIGHLIGHT_ATLAS_COORDS)
 						plantSeedPos.push_back(tile_mouse_pos)
 						print("appended plant seed array")
 				
 				#right click in PLANT MODE
 				if event.is_action_pressed("right click"):
-					current_level.erase_cell(PLANT_SELECTION, tile_mouse_pos)
+					current_level.erase_cell(current_level.PLANT_SELECTION, tile_mouse_pos)
 					plantSeedPos.erase(tile_mouse_pos)
 			
 			MODES.PLANT2:
 				if event.is_action_pressed("click"):
-						current_level.set_cell(PLANT_SELECTION, tile_mouse_pos, TILEMAP_SOURCE_ID, HIGHLIGHT_ATLAS_COORDS)
+						current_level.set_cell(current_level.PLANT_SELECTION, tile_mouse_pos, current_level.TILEMAP_SOURCE_ID, current_level.HIGHLIGHT_ATLAS_COORDS)
 						plantSeed2Pos.push_back(tile_mouse_pos)
 						print("appended plant seed array")
 				#right click in PLANT MODE
 				if event.is_action_pressed("right click"):
-					current_level.erase_cell(PLANT_SELECTION, tile_mouse_pos)
+					current_level.erase_cell(current_level.PLANT_SELECTION, tile_mouse_pos)
 					plantSeedPos.erase(tile_mouse_pos)
 			
 			MODES.HARVEST:
 				#left click in HARVEST MODE
 				if event.is_action_pressed("click"):
 					if harvestablePos.find(tile_mouse_pos) != -1:
-						current_level.set_cell(HARVEST_SELECTION, tile_mouse_pos, TILEMAP_SOURCE_ID, HIGHLIGHT_ATLAS_COORDS)
+						current_level.set_cell(current_level.HARVEST_SELECTION, tile_mouse_pos, current_level.TILEMAP_SOURCE_ID, current_level.HIGHLIGHT_ATLAS_COORDS)
 						harvestPos.push_back(tile_mouse_pos)
 				#right click in HARVEST MODE
 				if event.is_action_pressed("right click"):
-					current_level.erase_cell(HARVEST_SELECTION, tile_mouse_pos)
+					current_level.erase_cell(current_level.HARVEST_SELECTION, tile_mouse_pos)
 					harvestPos.erase(tile_mouse_pos)
 			
 			MODES.DRAG:
@@ -209,26 +178,26 @@ func set_mode(_mode):
 	
 	match mode:
 		MODES.NULL:
-			current_level.set_layer_modulate(CLEAR_SELECTION, REMOVE_HIGHLIGHT_COLOR)
-			current_level.set_layer_modulate(PLANT_SELECTION, REMOVE_HIGHLIGHT_COLOR)
-			current_level.set_layer_modulate(HARVEST_SELECTION, REMOVE_HIGHLIGHT_COLOR)
-			current_level.set_layer_modulate(BACKGROUND, REMOVE_COLOR)
+			current_level.set_layer_modulate(current_level.CLEAR_SELECTION, Globals.REMOVE_HIGHLIGHT_COLOR)
+			current_level.set_layer_modulate(current_level.PLANT_SELECTION, Globals.REMOVE_HIGHLIGHT_COLOR)
+			current_level.set_layer_modulate(current_level.HARVEST_SELECTION, Globals.REMOVE_HIGHLIGHT_COLOR)
+			current_level.set_layer_modulate(current_level.BACKGROUND, Globals.REMOVE_COLOR)
 			
 		MODES.CLEAR_DEBRIS:
-			current_level.set_layer_modulate(CLEAR_SELECTION, HIGHLIGHT_COLOR)
-			current_level.set_layer_modulate(BACKGROUND, CLEAR_HIGHLIGHT_COLOR)
+			current_level.set_layer_modulate(current_level.CLEAR_SELECTION, Globals.HIGHLIGHT_COLOR)
+			current_level.set_layer_modulate(current_level.BACKGROUND, Globals.CLEAR_HIGHLIGHT_COLOR)
 			
 		MODES.PLANT:
-			current_level.set_layer_modulate(PLANT_SELECTION, HIGHLIGHT_COLOR)
-			current_level.set_layer_modulate(BACKGROUND, PLANT_HIGHLIGHT_COLOR)
+			current_level.set_layer_modulate(current_level.PLANT_SELECTION, Globals.HIGHLIGHT_COLOR)
+			current_level.set_layer_modulate(current_level.BACKGROUND, Globals.PLANT_HIGHLIGHT_COLOR)
 		
 		MODES.PLANT2:
-			current_level.set_layer_modulate(PLANT_SELECTION, HIGHLIGHT_COLOR)
-			current_level.set_layer_modulate(BACKGROUND, PLANT_HIGHLIGHT_COLOR)
+			current_level.set_layer_modulate(current_level.PLANT_SELECTION, Globals.HIGHLIGHT_COLOR)
+			current_level.set_layer_modulate(current_level.BACKGROUND, Globals.PLANT_HIGHLIGHT_COLOR)
 		
 		MODES.HARVEST:
-			current_level.set_layer_modulate(BACKGROUND, PLANT_HIGHLIGHT_COLOR)
-			current_level.set_layer_modulate(HARVEST_SELECTION, HIGHLIGHT_COLOR)
+			current_level.set_layer_modulate(current_level.BACKGROUND, Globals.PLANT_HIGHLIGHT_COLOR)
+			current_level.set_layer_modulate(current_level.HARVEST_SELECTION, Globals.HIGHLIGHT_COLOR)
 
 func spawn_gnome():
 	var new_gnome = gnome.instantiate()
@@ -283,8 +252,8 @@ func _on_gnome_idle(current_gnome):
 func _on_gnome_arrived(pos: Vector2, job, reachable, current_gnome):
 	print("gnome has arrived")
 	var map_pos = current_level.local_to_map(pos)
-	var foreground_cells = current_level.get_used_cells(FOREGROUND)
-	var permanent_cells = current_level.get_used_cells(PERMANENTS)
+	var foreground_cells = current_level.get_used_cells(current_level.FOREGROUND)
+	var permanent_cells = current_level.get_used_cells(current_level.PERMANENTS)
 	
 	match job:
 		Globals.GNOME_STATE.IDLE:
@@ -292,34 +261,34 @@ func _on_gnome_arrived(pos: Vector2, job, reachable, current_gnome):
 		
 		Globals.GNOME_STATE.CLEARING_DEBRIS:
 			if not reachable:
-				current_level.erase_cell(CLEAR_SELECTION, map_pos)
+				current_level.erase_cell(current_level.CLEAR_SELECTION, map_pos)
 				current_gnome.set_state(Globals.GNOME_STATE.IDLE)
 				print("gnome told to idle because cell unreachable")
 			
 			elif foreground_cells.find(map_pos) != -1:
 				print("gnome told to clear")
-				current_level.erase_cell(CLEAR_SELECTION, map_pos)
+				current_level.erase_cell(current_level.CLEAR_SELECTION, map_pos)
 				current_gnome.set_state(job)
 			
 			else:
 				print("gnome state set to idle on arrival because foreground cell is empty")
-				current_level.erase_cell(CLEAR_SELECTION, map_pos)
+				current_level.erase_cell(current_level.CLEAR_SELECTION, map_pos)
 				current_gnome.set_state(Globals.GNOME_STATE.IDLE)
 			
 		Globals.GNOME_STATE.PLANTING_SEED, Globals.GNOME_STATE.PLANTING_SEED2:
 			if not reachable:
-				current_level.erase_cell(PLANT_SELECTION, map_pos)
+				current_level.erase_cell(current_level.PLANT_SELECTION, map_pos)
 				current_gnome.set_state(Globals.GNOME_STATE.IDLE)
 				print("gnome told to idle because cell unreachable")
 				
 			elif foreground_cells.find(map_pos) != -1 or permanent_cells.find(map_pos) != -1:
 				print("gnome won't plant here because foreground cell is occupied")
-				current_level.erase_cell(PLANT_SELECTION, map_pos)
+				current_level.erase_cell(current_level.PLANT_SELECTION, map_pos)
 				current_gnome.set_state(Globals.GNOME_STATE.IDLE)
 					
 			else:
 				print("gnome told to plant seed upon arrival")
-				current_level.erase_cell(PLANT_SELECTION, map_pos)
+				current_level.erase_cell(current_level.PLANT_SELECTION, map_pos)
 				current_gnome.set_state(job)
 		
 		Globals.GNOME_STATE.TENDING_PLANT:
@@ -354,8 +323,8 @@ func _on_gnome_finished_busy_animation(job, pos, current_gnome):
 			print("busy while idle??")
 			
 		Globals.GNOME_STATE.CLEARING_DEBRIS:
-			current_level.erase_cell(FOREGROUND, map_pos)
-			current_level.set_cell(BACKGROUND, map_pos, TILEMAP_SOURCE_ID, PASSABLE_DIRT_ATLAS_COORDS)
+			current_level.erase_cell(current_level.FOREGROUND, map_pos)
+			current_level.set_cell(current_level.BACKGROUND, map_pos, current_level.TILEMAP_SOURCE_ID, current_level.PASSABLE_DIRT_ATLAS_COORDS)
 	
 			if flowersPos.find(map_pos) != -1:
 				flowersPos.erase(map_pos)
@@ -366,23 +335,23 @@ func _on_gnome_finished_busy_animation(job, pos, current_gnome):
 			print("gnome set to idle after clearing debris")
 			
 		Globals.GNOME_STATE.PLANTING_SEED:
-			current_level.set_cell(BACKGROUND, map_pos, TILEMAP_SOURCE_ID, IMPASSABLE_DIRT_ATLAS_COORDS)
-			current_level.set_cell(FOREGROUND, map_pos, PLANT_TILEMAP_SOURCE_ID, PLANT_ATLAS, PLANT_1A)
+			current_level.set_cell(current_level.BACKGROUND, map_pos, current_level.TILEMAP_SOURCE_ID, current_level.IMPASSABLE_DIRT_ATLAS_COORDS)
+			current_level.set_cell(current_level.FOREGROUND, map_pos, current_level.PLANT_TILEMAP_SOURCE_ID, current_level.PLANT_ATLAS, current_level.PLANT_1A)
 			current_gnome.set_state(Globals.GNOME_STATE.IDLE)
 			print("gnome set to idle after planting seed")
 		
 		Globals.GNOME_STATE.PLANTING_SEED2:
-			current_level.set_cell(BACKGROUND, map_pos, TILEMAP_SOURCE_ID, IMPASSABLE_DIRT_ATLAS_COORDS)
-			current_level.set_cell(FOREGROUND, map_pos, PLANT_TILEMAP_SOURCE_ID, PLANT_ATLAS, PLANT_2A)
+			current_level.set_cell(current_level.BACKGROUND, map_pos, current_level.TILEMAP_SOURCE_ID, current_level.IMPASSABLE_DIRT_ATLAS_COORDS)
+			current_level.set_cell(current_level.FOREGROUND, map_pos, current_level.PLANT_TILEMAP_SOURCE_ID, current_level.PLANT_ATLAS, current_level.PLANT_2A)
 			current_gnome.set_state(Globals.GNOME_STATE.IDLE)
 			print("gnome set to idle after planting seed2")
 		
 		Globals.GNOME_STATE.TENDING_PLANT:
-			var seedling_id = current_level.get_cell_alternative_tile(FOREGROUND, map_pos)
-			if seedling_id == PLANT_1A:
-				current_level.set_cell(FOREGROUND, map_pos, PLANT_TILEMAP_SOURCE_ID, PLANT_ATLAS, PLANT_1B)
-			elif seedling_id == PLANT_2A:
-				current_level.set_cell(FOREGROUND, map_pos, PLANT_TILEMAP_SOURCE_ID, PLANT_ATLAS, PLANT_2B)
+			var seedling_id = current_level.get_cell_alternative_tile(current_level.FOREGROUND, map_pos)
+			if seedling_id == current_level.PLANT_1A:
+				current_level.set_cell(current_level.FOREGROUND, map_pos, current_level.PLANT_TILEMAP_SOURCE_ID, current_level.PLANT_ATLAS, current_level.PLANT_1B)
+			elif seedling_id == current_level.PLANT_2A:
+				current_level.set_cell(current_level.FOREGROUND, map_pos, current_level.PLANT_TILEMAP_SOURCE_ID, current_level.PLANT_ATLAS, current_level.PLANT_2B)
 			else:
 				print("gnome told to tend not a seedling??")
 				print(seedling_id)
@@ -391,9 +360,9 @@ func _on_gnome_finished_busy_animation(job, pos, current_gnome):
 			print("gnome set to idle after tending plant")
 		
 		Globals.GNOME_STATE.HARVESTING:
-			current_level.erase_cell(FOREGROUND, map_pos)
-			current_level.erase_cell(HARVEST_SELECTION, map_pos)
-			current_level.set_cell(BACKGROUND, map_pos, TILEMAP_SOURCE_ID, PASSABLE_DIRT_ATLAS_COORDS)
+			current_level.erase_cell(current_level.FOREGROUND, map_pos)
+			current_level.erase_cell(current_level.HARVEST_SELECTION, map_pos)
+			current_level.set_cell(current_level.BACKGROUND, map_pos, current_level.TILEMAP_SOURCE_ID, current_level.PASSABLE_DIRT_ATLAS_COORDS)
 			flowersPos.erase(map_pos)
 			update_flower_count()
 			update_garden_score()
@@ -447,9 +416,9 @@ func _on_day_timer_timeout():
 
 # Calculates the garden score and updates the HUD
 func update_garden_score():
-	var rocks = current_level.get_used_cells_by_id(FOREGROUND, TILEMAP_SOURCE_ID, ROCK_ATLAS_COORDS)
-	var flower_ones = current_level.get_used_cells_by_id(FOREGROUND, PLANT_TILEMAP_SOURCE_ID, PLANT_ATLAS, PLANT_1B)
-	var flower_twos = current_level.get_used_cells_by_id(FOREGROUND, PLANT_TILEMAP_SOURCE_ID, PLANT_ATLAS, PLANT_2B)
+	var rocks = current_level.get_used_cells_by_id(current_level.FOREGROUND, current_level.TILEMAP_SOURCE_ID, current_level.ROCK_ATLAS_COORDS)
+	var flower_ones = current_level.get_used_cells_by_id(current_level.FOREGROUND, current_level.PLANT_TILEMAP_SOURCE_ID, current_level.PLANT_ATLAS, current_level.PLANT_1B)
+	var flower_twos = current_level.get_used_cells_by_id(current_level.FOREGROUND, current_level.PLANT_TILEMAP_SOURCE_ID, current_level.PLANT_ATLAS, current_level.PLANT_2B)
 	
 	var score = (rocks.size() * -2) + (flower_ones.size() * 1) + (flower_twos.size() * 5)
 	hud.update_garden_score(score)
