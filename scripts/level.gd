@@ -11,10 +11,14 @@ const PLANT_SELECTION = 4
 const HARVEST_SELECTION = 5
 
 #tile id shortcut constants
-const HIGHLIGHT_ATLAS_COORDS = Vector2i(12,0)
-const PASSABLE_DIRT_ATLAS_COORDS = Vector2i(7,0)
-const IMPASSABLE_DIRT_ATLAS_COORDS = Vector2i(6,0)
-const ROCK_ATLAS_COORDS = Vector2i(10, 0)
+const HIGHLIGHT_ATLAS_COORDS = Vector2i(0,1)
+const DIRT1_ATLAS_COORDS = Vector2i(2,0)
+const DIRT2_ATLAS_COORDS = Vector2i(3,0)
+const DIRT3_ATLAS_COORDS = Vector2i(4,0)
+const DIRT4_ATLAS_COORDS = Vector2i(5,0)
+const DIRT5_ATLAS_COORDS = Vector2i(6,0)
+const IMPASSABLE_DIRT_ATLAS_COORDS = Vector2i(1,0)
+const ROCK_ATLAS_COORDS = Vector2i(1, 1)
 const PLANT_ATLAS = Vector2i(0, 0)
 const PLANT_1A = 0
 const PLANT_1B = 1

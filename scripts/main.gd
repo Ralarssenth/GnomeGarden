@@ -324,7 +324,7 @@ func _on_gnome_finished_busy_animation(job, pos, current_gnome):
 			
 		Globals.GNOME_STATE.CLEARING_DEBRIS:
 			current_level.erase_cell(current_level.FOREGROUND, map_pos)
-			current_level.set_cell(current_level.BACKGROUND, map_pos, current_level.TILEMAP_SOURCE_ID, current_level.PASSABLE_DIRT_ATLAS_COORDS)
+			current_level.set_cell(current_level.BACKGROUND, map_pos, current_level.TILEMAP_SOURCE_ID, current_level.DIRT1_ATLAS_COORDS)
 	
 			if flowersPos.find(map_pos) != -1:
 				flowersPos.erase(map_pos)
@@ -362,7 +362,7 @@ func _on_gnome_finished_busy_animation(job, pos, current_gnome):
 		Globals.GNOME_STATE.HARVESTING:
 			current_level.erase_cell(current_level.FOREGROUND, map_pos)
 			current_level.erase_cell(current_level.HARVEST_SELECTION, map_pos)
-			current_level.set_cell(current_level.BACKGROUND, map_pos, current_level.TILEMAP_SOURCE_ID, current_level.PASSABLE_DIRT_ATLAS_COORDS)
+			current_level.set_cell(current_level.BACKGROUND, map_pos, current_level.TILEMAP_SOURCE_ID, current_level.DIRT1_ATLAS_COORDS)
 			flowersPos.erase(map_pos)
 			update_flower_count()
 			update_garden_score()
