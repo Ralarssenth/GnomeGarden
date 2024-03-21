@@ -54,7 +54,6 @@ texture = ExtResource("1_8cuvo")
 0:0/0/navigation_layer_0/polygon = SubResource("NavigationPolygon_o0q3j")
 0:0/0/custom_data_1 = 0.75
 1:0/0 = 0
-1:0/0/custom_data_1 = 1.0
 2:0/0 = 0
 2:0/0/navigation_layer_0/polygon = SubResource("NavigationPolygon_0agr4")
 2:0/0/custom_data_1 = 1.0

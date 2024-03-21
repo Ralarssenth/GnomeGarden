@@ -18,13 +18,13 @@ var clearDebrisPos = []
 var plantSeedPos = []
 var plantSeed2Pos = []
 var seedlingPos = []
-var flowersPos = []
 var harvestablePos = []
 var harvestPos = []
 
 # score keeping
-var flower_count = flowersPos.size()
+var flower_count = 0
 var fruit_count = 0
+var biodiversity = 1
 
 # Day tracking
 @onready var day_timer = $DayTimer
@@ -39,6 +39,7 @@ var mode = MODES.NULL
 func _ready():
 	register_buttons()
 	hud.show_menu_hud()
+	
 
 # Called every frame. 'delta' is the elapsed time since the previous frame.
 func _process(delta):
@@ -120,7 +121,12 @@ func _unhandled_input(event):
 			MODES.CLEAR_DEBRIS:
 				# left click in CLEAR MODE
 				if event.is_action_pressed("click"):
-					current_level.set_cell(current_level.CLEAR_SELECTION, tile_mouse_pos, current_level.TILEMAP_SOURCE_ID, current_level.HIGHLIGHT_ATLAS_COORDS)
+					current_level.set_cell(
+						current_level.CLEAR_SELECTION, 
+						tile_mouse_pos, 
+						current_level.TILEMAP_SOURCE_ID, 
+						current_level.HIGHLIGHT_ATLAS_COORDS
+					)
 					clearDebrisPos.push_back(tile_mouse_pos)
 					print("appended clear debris array")
 					
@@ -133,7 +139,12 @@ func _unhandled_input(event):
 			MODES.PLANT:
 				#left click in PLANT MODE
 				if event.is_action_pressed("click"):
-						current_level.set_cell(current_level.PLANT_SELECTION, tile_mouse_pos, current_level.TILEMAP_SOURCE_ID, current_level.HIGHLIGHT_ATLAS_COORDS)
+						current_level.set_cell(
+							current_level.PLANT_SELECTION, 
+							tile_mouse_pos, 
+							current_level.TILEMAP_SOURCE_ID, 
+							current_level.HIGHLIGHT_ATLAS_COORDS
+						)
 						plantSeedPos.push_back(tile_mouse_pos)
 						print("appended plant seed array")
 				
@@ -144,7 +155,12 @@ func _unhandled_input(event):
 			
 			MODES.PLANT2:
 				if event.is_action_pressed("click"):
-						current_level.set_cell(current_level.PLANT_SELECTION, tile_mouse_pos, current_level.TILEMAP_SOURCE_ID, current_level.HIGHLIGHT_ATLAS_COORDS)
+						current_level.set_cell(
+							current_level.PLANT_SELECTION, 
+							tile_mouse_pos, 
+							current_level.TILEMAP_SOURCE_ID, 
+							current_level.HIGHLIGHT_ATLAS_COORDS
+						)
 						plantSeed2Pos.push_back(tile_mouse_pos)
 						print("appended plant seed array")
 				#right click in PLANT MODE
@@ -155,8 +171,13 @@ func _unhandled_input(event):
 			MODES.HARVEST:
 				#left click in HARVEST MODE
 				if event.is_action_pressed("click"):
-					if harvestablePos.find(tile_mouse_pos) != -1:
-						current_level.set_cell(current_level.HARVEST_SELECTION, tile_mouse_pos, current_level.TILEMAP_SOURCE_ID, current_level.HIGHLIGHT_ATLAS_COORDS)
+					if harvestablePos.has(tile_mouse_pos):
+						current_level.set_cell(
+							current_level.HARVEST_SELECTION, 
+							tile_mouse_pos, 
+							current_level.TILEMAP_SOURCE_ID, 
+							current_level.HIGHLIGHT_ATLAS_COORDS
+						)
 						harvestPos.push_back(tile_mouse_pos)
 				#right click in HARVEST MODE
 				if event.is_action_pressed("right click"):
@@ -324,46 +345,94 @@ func _on_gnome_finished_busy_animation(job, pos, current_gnome):
 			
 		Globals.GNOME_STATE.CLEARING_DEBRIS:
 			current_level.erase_cell(current_level.FOREGROUND, map_pos)
-			current_level.set_cell(current_level.BACKGROUND, map_pos, current_level.TILEMAP_SOURCE_ID, current_level.DIRT1_ATLAS_COORDS)
-	
-			if flowersPos.find(map_pos) != -1:
-				flowersPos.erase(map_pos)
-				update_flower_count()
-				
+			current_level.set_cell(
+				current_level.BACKGROUND, 
+				map_pos, 
+				current_level.TILEMAP_SOURCE_ID, 
+				current_level.DIRT1_ATLAS_COORDS
+			)
+			update_flower_count()
 			update_garden_score()
 			current_gnome.set_state(Globals.GNOME_STATE.IDLE)
 			print("gnome set to idle after clearing debris")
 			
 		Globals.GNOME_STATE.PLANTING_SEED:
-			current_level.set_cell(current_level.BACKGROUND, map_pos, current_level.TILEMAP_SOURCE_ID, current_level.IMPASSABLE_DIRT_ATLAS_COORDS)
-			current_level.set_cell(current_level.FOREGROUND, map_pos, current_level.PLANT_TILEMAP_SOURCE_ID, current_level.PLANT_ATLAS, current_level.PLANT_1A)
+			current_level.set_cell(
+				current_level.BACKGROUND, 
+				map_pos, 
+				current_level.TILEMAP_SOURCE_ID, 
+				current_level.IMPASSABLE_DIRT_ATLAS_COORDS
+			)
+			current_level.set_cell(
+				current_level.FOREGROUND, 
+				map_pos, 
+				current_level.TILEMAP_SOURCE_ID,  
+				current_level.PLANT_1[0]
+			)
 			current_gnome.set_state(Globals.GNOME_STATE.IDLE)
 			print("gnome set to idle after planting seed")
+			start_grow_timer(map_pos, current_level.PLANT_1_GROW_TIME)
+
 		
 		Globals.GNOME_STATE.PLANTING_SEED2:
-			current_level.set_cell(current_level.BACKGROUND, map_pos, current_level.TILEMAP_SOURCE_ID, current_level.IMPASSABLE_DIRT_ATLAS_COORDS)
-			current_level.set_cell(current_level.FOREGROUND, map_pos, current_level.PLANT_TILEMAP_SOURCE_ID, current_level.PLANT_ATLAS, current_level.PLANT_2A)
+			current_level.set_cell(
+				current_level.BACKGROUND, 
+				map_pos, 
+				current_level.TILEMAP_SOURCE_ID, 
+				current_level.IMPASSABLE_DIRT_ATLAS_COORDS
+			)
+			current_level.set_cell(
+				current_level.FOREGROUND, 
+				map_pos, 
+				current_level.TILEMAP_SOURCE_ID,  
+				current_level.PLANT_2[0]
+			)
 			current_gnome.set_state(Globals.GNOME_STATE.IDLE)
+			start_grow_timer(map_pos, current_level.PLANT_2_GROW_TIME)
 			print("gnome set to idle after planting seed2")
 		
 		Globals.GNOME_STATE.TENDING_PLANT:
-			var seedling_id = current_level.get_cell_alternative_tile(current_level.FOREGROUND, map_pos)
-			if seedling_id == current_level.PLANT_1A:
-				current_level.set_cell(current_level.FOREGROUND, map_pos, current_level.PLANT_TILEMAP_SOURCE_ID, current_level.PLANT_ATLAS, current_level.PLANT_1B)
-			elif seedling_id == current_level.PLANT_2A:
-				current_level.set_cell(current_level.FOREGROUND, map_pos, current_level.PLANT_TILEMAP_SOURCE_ID, current_level.PLANT_ATLAS, current_level.PLANT_2B)
-			else:
-				print("gnome told to tend not a seedling??")
-				print(seedling_id)
+			var seedling_id = current_level.get_cell_atlas_coords(current_level.FOREGROUND, map_pos)
+			if current_level.PLANT_1.has(seedling_id):
+				var i = current_level.PLANT_1.find(seedling_id)
+				current_level.set_cell(
+				current_level.FOREGROUND, 
+				map_pos, 
+				current_level.TILEMAP_SOURCE_ID, 
+				current_level.PLANT_1[(i + 1)]
+				)
+				if seedling_id == current_level.PLANT_1[-2]:
+					start_harvest_timer(map_pos, current_level.PLANT_1_GROW_TIME)
+				else:
+					start_grow_timer(map_pos, current_level.PLANT_1_GROW_TIME)
+					
+			if current_level.PLANT_2.has(seedling_id):
+				var i = current_level.PLANT_2.find(seedling_id)
+				current_level.set_cell(
+				current_level.FOREGROUND, 
+				map_pos, 
+				current_level.TILEMAP_SOURCE_ID,  
+				current_level.PLANT_2[(i + 1)]
+				)
+				if seedling_id == current_level.PLANT_2[-2]:
+					start_harvest_timer(map_pos, current_level.PLANT_2_GROW_TIME)
+				else:
+					start_grow_timer(map_pos, current_level.PLANT_2_GROW_TIME)
+			
 			current_gnome.set_state(Globals.GNOME_STATE.IDLE)
+			update_flower_count()
 			update_garden_score()
 			print("gnome set to idle after tending plant")
 		
 		Globals.GNOME_STATE.HARVESTING:
 			current_level.erase_cell(current_level.FOREGROUND, map_pos)
 			current_level.erase_cell(current_level.HARVEST_SELECTION, map_pos)
-			current_level.set_cell(current_level.BACKGROUND, map_pos, current_level.TILEMAP_SOURCE_ID, current_level.DIRT1_ATLAS_COORDS)
-			flowersPos.erase(map_pos)
+			current_level.set_cell(
+				current_level.BACKGROUND, 
+				map_pos, 
+				current_level.TILEMAP_SOURCE_ID, 
+				current_level.DIRT1_ATLAS_COORDS
+			)
 			update_flower_count()
 			update_garden_score()
 			harvestablePos.erase(map_pos)
@@ -377,26 +446,30 @@ func update_hud_messages(messages):
 
 # Updates the contents of the flower_count variable and pushes it to the hud
 func update_flower_count():
-	flower_count = flowersPos.size()
+	flower_count =  current_level.get_flowers()
 	hud.update_flower_counter(flower_count)
 	
 	var number_of_gnomes = gnomes.size()
-	if number_of_gnomes < float(flower_count) / 5:
+	if number_of_gnomes <= float(flower_count) / 5:
 		spawn_gnome()
 
+func start_grow_timer(pos, time):
+	await get_tree().create_timer(time).timeout
+	_on_plant_needs_tending(pos)
+
+func start_harvest_timer(pos, time):
+	await get_tree().create_timer(time).timeout
+	_on_plant_finished_growing(pos)
+
 # Adds plant coords to the tending array
-func _on_plant_needs_tending(pos: Vector2):
-	var map_pos = current_level.local_to_map(pos)
+func _on_plant_needs_tending(map_pos):
 	seedlingPos.push_back(map_pos)
-	flowersPos.push_back(map_pos)
-	update_flower_count()
-	print("plant added to tending queue")
+	print("plant added to tending queue" + str(map_pos))
 
 #Adds plant coords to harvestable array
-func _on_plant_finished_growing(pos: Vector2):
-	var map_pos = current_level.local_to_map(pos)
+func _on_plant_finished_growing(map_pos):
 	harvestablePos.push_back(map_pos)
-	print("plant added to harvest queue")
+	print("plant added to harvest queue" + str(map_pos))
 
 # Starts the day tracking based on the current_level
 func start_days():
@@ -416,11 +489,15 @@ func _on_day_timer_timeout():
 
 # Calculates the garden score and updates the HUD
 func update_garden_score():
-	var rocks = current_level.get_used_cells_by_id(current_level.FOREGROUND, current_level.TILEMAP_SOURCE_ID, current_level.ROCK_ATLAS_COORDS)
-	var flower_ones = current_level.get_used_cells_by_id(current_level.FOREGROUND, current_level.PLANT_TILEMAP_SOURCE_ID, current_level.PLANT_ATLAS, current_level.PLANT_1B)
-	var flower_twos = current_level.get_used_cells_by_id(current_level.FOREGROUND, current_level.PLANT_TILEMAP_SOURCE_ID, current_level.PLANT_ATLAS, current_level.PLANT_2B)
+	var rocks = current_level.get_used_cells_by_id(
+		current_level.FOREGROUND, 
+		current_level.TILEMAP_SOURCE_ID, 
+		current_level.ROCK_ATLAS_COORDS
+	)
 	
-	var score = (rocks.size() * -2) + (flower_ones.size() * 1) + (flower_twos.size() * 5)
+	biodiversity = current_level.get_biodiversity() 
+	var score = (rocks.size() * -2) + (flower_count * biodiversity)
 	hud.update_garden_score(score)
 	print("garden score updated")
+
 
