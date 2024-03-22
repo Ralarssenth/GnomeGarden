@@ -9,12 +9,27 @@ signal gnome_finished_busy_animation
 
 @onready var navigation_agent: NavigationAgent2D = $NavigationAgent2D
 @onready var _animation_player = $AnimationPlayer
+@onready var gnome_sprite = $Sprite2D
+@onready var hat_sprite = $HatSprite
+
+const GNOME_TEXTURES = [
+	"res://assets/gnome/PNG/24x32/gnome-m-red_hat-NESW.png",
+	"res://assets/gnome/PNG/24x32/gnome-m-green_hat-NESW.png",
+	"res://assets/gnome/PNG/24x32/gnome-f-violet_hat-NESW.png",
+	"res://assets/gnome/PNG/24x32/gnome-f-red_hat-NESW.png"
+]
+
+var construction_hat = preload("res://assets/gnome/hats/construction_hat.png")
+var flower_hat = preload("res://assets/gnome/hats/flower_hat.png")
+var fruits_hat = preload("res://assets/gnome/hats/fruits_hat.png")
+
 
 var state = Globals.GNOME_STATE.IDLE
 var job = Globals.GNOME_STATE.IDLE
 
 # Called when the node enters the scene tree for the first time.
 func _ready():
+	randomize_gnome_texture()
 	# These values need to be adjusted for the actor's speed
 	# and the navigation layout.
 	navigation_agent.path_desired_distance = 2.0
@@ -24,6 +39,13 @@ func _ready():
 	call_deferred("actor_setup")
 	
 	set_state(Globals.GNOME_STATE.IDLE)
+
+# Sets a random sprite sheet from the list to be the sprite's texture 
+# Called on ready (when a gnome spawns in)
+func randomize_gnome_texture():
+	var i = randi_range(0, GNOME_TEXTURES.size()-1)
+	var texture = load(GNOME_TEXTURES[i])
+	gnome_sprite.set_texture(texture)
 
 # Sets up the navigation on the first physics frame
 func actor_setup():
@@ -75,10 +97,23 @@ func set_walk_animation():
 	else:
 		_animation_player.play("walk_up")
 
-# Set's the gnome's job
+# Set's the gnome's job and gives a hat based on the job
 func set_job(_job):
 	job = _job
 	print("gnome job set")
+	match job:
+		Globals.GNOME_STATE.IDLE:
+			hat_sprite.set_visible(false)
+		Globals.GNOME_STATE.CLEARING_DEBRIS:
+			hat_sprite.set_texture(construction_hat)
+			hat_sprite.set_visible(true)
+		Globals.GNOME_STATE.PLANTING_SEED, Globals.GNOME_STATE.PLANTING_SEED2, Globals.GNOME_STATE.TENDING_PLANT:
+			hat_sprite.set_texture(flower_hat)
+			hat_sprite.set_visible(true)
+		Globals.GNOME_STATE.HARVESTING, Globals.GNOME_STATE.HAULING:
+			hat_sprite.set_texture(fruits_hat)
+			hat_sprite.set_visible(true)
+
 
 # Sets the gnome's current state
 # Defines the gnome's jobs based on state

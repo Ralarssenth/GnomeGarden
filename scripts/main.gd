@@ -371,7 +371,12 @@ func _on_gnome_finished_busy_animation(job, pos, current_gnome):
 			)
 			current_gnome.set_state(Globals.GNOME_STATE.IDLE)
 			print("gnome set to idle after planting seed")
-			start_grow_timer(map_pos, current_level.PLANT_1_GROW_TIME)
+			start_grow_timer(
+				map_pos, 
+				current_level.PLANT_1_GROW_TIME, 
+				current_level.PLANT_1, 
+				0
+			)
 
 		
 		Globals.GNOME_STATE.PLANTING_SEED2:
@@ -388,40 +393,54 @@ func _on_gnome_finished_busy_animation(job, pos, current_gnome):
 				current_level.PLANT_2[0]
 			)
 			current_gnome.set_state(Globals.GNOME_STATE.IDLE)
-			start_grow_timer(map_pos, current_level.PLANT_2_GROW_TIME)
+			start_grow_timer(
+				map_pos, 
+				current_level.PLANT_2_GROW_TIME, 
+				current_level.PLANT_2, 
+				0
+			)
 			print("gnome set to idle after planting seed2")
 		
 		Globals.GNOME_STATE.TENDING_PLANT:
 			var seedling_id = current_level.get_cell_atlas_coords(current_level.FOREGROUND, map_pos)
 			if current_level.PLANT_1.has(seedling_id):
-				var i = current_level.PLANT_1.find(seedling_id)
-				current_level.set_cell(
-				current_level.FOREGROUND, 
-				map_pos, 
-				current_level.TILEMAP_SOURCE_ID, 
-				current_level.PLANT_1[(i + 1)]
-				)
+				var plant_stage = current_level.PLANT_1.find(seedling_id)
+				
 				if seedling_id == current_level.PLANT_1[-2]:
-					start_harvest_timer(map_pos, current_level.PLANT_1_GROW_TIME)
+					start_harvest_timer(
+						map_pos, 
+						current_level.PLANT_1_GROW_TIME, 
+						current_level.PLANT_1, 
+						plant_stage
+					)
+					
 				else:
-					start_grow_timer(map_pos, current_level.PLANT_1_GROW_TIME)
+					start_grow_timer(
+						map_pos, 
+						current_level.PLANT_1_GROW_TIME,
+						current_level.PLANT_1,  
+						plant_stage
+					)
 					
 			if current_level.PLANT_2.has(seedling_id):
-				var i = current_level.PLANT_2.find(seedling_id)
-				current_level.set_cell(
-				current_level.FOREGROUND, 
-				map_pos, 
-				current_level.TILEMAP_SOURCE_ID,  
-				current_level.PLANT_2[(i + 1)]
-				)
+				var plant_stage = current_level.PLANT_2.find(seedling_id)
+				
 				if seedling_id == current_level.PLANT_2[-2]:
-					start_harvest_timer(map_pos, current_level.PLANT_2_GROW_TIME)
+					start_harvest_timer(
+						map_pos, 
+						current_level.PLANT_2_GROW_TIME,
+						current_level.PLANT_2, 
+						plant_stage
+					)
 				else:
-					start_grow_timer(map_pos, current_level.PLANT_2_GROW_TIME)
+					start_grow_timer(
+						map_pos, 
+						current_level.PLANT_2_GROW_TIME,
+						current_level.PLANT_2,  
+						plant_stage
+					)
 			
 			current_gnome.set_state(Globals.GNOME_STATE.IDLE)
-			update_flower_count()
-			update_garden_score()
 			print("gnome set to idle after tending plant")
 		
 		Globals.GNOME_STATE.HARVESTING:
@@ -453,21 +472,27 @@ func update_flower_count():
 	if number_of_gnomes <= float(flower_count) / 5:
 		spawn_gnome()
 
-func start_grow_timer(pos, time):
+func start_grow_timer(map_pos, time, plant_array, plant_stage):
 	await get_tree().create_timer(time).timeout
-	_on_plant_needs_tending(pos)
-
-func start_harvest_timer(pos, time):
-	await get_tree().create_timer(time).timeout
-	_on_plant_finished_growing(pos)
-
-# Adds plant coords to the tending array
-func _on_plant_needs_tending(map_pos):
+	current_level.set_cell(
+				current_level.FOREGROUND, 
+				map_pos, 
+				current_level.TILEMAP_SOURCE_ID, 
+				plant_array[(plant_stage + 1)]
+			)
+	update_flower_count()
+	update_garden_score()
 	seedlingPos.push_back(map_pos)
 	print("plant added to tending queue" + str(map_pos))
 
-#Adds plant coords to harvestable array
-func _on_plant_finished_growing(map_pos):
+func start_harvest_timer(map_pos, time, plant_array, plant_stage):
+	await get_tree().create_timer(time).timeout
+	current_level.set_cell(
+				current_level.FOREGROUND, 
+				map_pos, 
+				current_level.TILEMAP_SOURCE_ID,  
+				plant_array[(plant_stage + 1)]
+			)
 	harvestablePos.push_back(map_pos)
 	print("plant added to harvest queue" + str(map_pos))
 

@@ -4,6 +4,7 @@
 [ext_resource type="Script" path="res://scripts/level.gd" id="2_ysa4s"]
 
 [node name="TileMap" type="TileMap"]
+texture_filter = 1
 tile_set = ExtResource("1_t7x12")
 format = 2
 layer_0/name = "background"
