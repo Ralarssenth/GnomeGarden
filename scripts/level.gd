@@ -20,19 +20,23 @@ const DIRT5_ATLAS_COORDS = Vector2i(6,0)
 const IMPASSABLE_DIRT_ATLAS_COORDS = Vector2i(1,0)
 const ROCK_ATLAS_COORDS = Vector2i(1,1)
 
-const PLANT_1 = [
-	Vector2i(0,4), 
-	Vector2i(1,4), 
-	Vector2i(2,4), 
-	Vector2i(3,4)
-]
-const PLANT_1_GROW_TIME = 10.0
-const PLANT_2 = [
-	Vector2i(0,5),
-	Vector2i(1,5),
-	Vector2i(2,5),
-	Vector2i(3,5)
-]
+const PLANTS = {
+	"PLANT_1": 
+		[
+		Vector2i(0,4), 
+		Vector2i(1,4), 
+		Vector2i(2,4), 
+		Vector2i(3,4)
+	], 
+	"PLANT_2" : 
+		[
+		Vector2i(0,5),
+		Vector2i(1,5),
+		Vector2i(2,5),
+		Vector2i(3,5)
+	]
+}
+const PLANT_1_GROW_TIME = 10.0 
 const PLANT_2_GROW_TIME = 20.0
 
 # Tutorial Text
@@ -81,53 +85,35 @@ func set_game_mode(mode):
 			game_mode = Globals.GAME_MODES.SANDBOX
 		
 func get_flowers():
-	var plant_ones = []
-	for plant in PLANT_1:
-		plant_ones.append_array(get_used_cells_by_id(
-		FOREGROUND, 
-		TILEMAP_SOURCE_ID,  
-		plant
-	))	
+	var plants = []
+	for plant in PLANTS:
+		for cell_id in PLANTS[plant]:
+			plants.append_array(get_used_cells_by_id(
+			FOREGROUND, 
+			TILEMAP_SOURCE_ID,  
+			cell_id
+		))	
 	
-	var seedling_ones = get_used_cells_by_id(
-		FOREGROUND, 
-		TILEMAP_SOURCE_ID,  
-		PLANT_1[0]
-	)
+	var seedlings = []
+	for plant in PLANTS:
+		seedlings.append_array(get_used_cells_by_id(
+			FOREGROUND, 
+			TILEMAP_SOURCE_ID,  
+			PLANTS[plant][0]
+		))
 	
-	var plant_twos = []
-	for plant in PLANT_2:
-		plant_twos.append_array(get_used_cells_by_id(
-		FOREGROUND, 
-		TILEMAP_SOURCE_ID,  
-		plant
-	))
-	
-	var seedling_twos = get_used_cells_by_id(
-		FOREGROUND, 
-		TILEMAP_SOURCE_ID,  
-		PLANT_2[0]
-	)
-	return (plant_ones.size() - seedling_ones.size()) + (plant_twos.size() - seedling_twos.size())
+	return (plants.size() - seedlings.size())
 	
 func get_biodiversity():
-	var plant_ones = []
-	for plant in PLANT_1:
-		plant_ones.append_array(get_used_cells_by_id(
-		FOREGROUND, 
-		TILEMAP_SOURCE_ID,  
-		plant
-	))	
-	var plant_twos = []
-	for plant in PLANT_2:
-		plant_twos.append_array(get_used_cells_by_id(
-		FOREGROUND, 
-		TILEMAP_SOURCE_ID,  
-		plant
-	))
 	var biodiv = 0
-	if not plant_ones.is_empty():
-		biodiv += 1
-	if not plant_twos.is_empty():
-		biodiv += 1
+	for plant in PLANTS:
+		var plant_holder = []
+		for cell_id in PLANTS[plant]:
+			plant_holder.append_array(get_used_cells_by_id(
+				FOREGROUND, 
+				TILEMAP_SOURCE_ID,  
+				cell_id
+			))	
+		if not plant_holder.is_empty():
+			biodiv += 1
 	return biodiv

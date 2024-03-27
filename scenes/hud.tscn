@@ -1,13 +1,21 @@
-[gd_scene load_steps=11 format=3 uid="uid://f1xug5peqhti"]
+[gd_scene load_steps=19 format=3 uid="uid://f1xug5peqhti"]
 
 [ext_resource type="Script" path="res://scripts/hud.gd" id="1_g56gc"]
 [ext_resource type="FontFile" uid="uid://b5k5jn21eha6y" path="res://assets/fonts/VarelaRound-Regular.ttf" id="2_qdxsb"]
 [ext_resource type="ButtonGroup" uid="uid://c6a4qoot8e063" path="res://scenes/plant_buttons.tres" id="3_f7wew"]
+[ext_resource type="Texture2D" uid="uid://ja83wm1ith2n" path="res://assets/free version/debris_icon.png" id="3_hwei1"]
 [ext_resource type="Texture2D" uid="uid://vnvq51qo64qe" path="res://assets/fonts/pause.png" id="3_lg2bv"]
 [ext_resource type="Texture2D" uid="uid://cmn86j80etfbm" path="res://assets/fonts/pause_white.png" id="4_73n0a"]
+[ext_resource type="Texture2D" uid="uid://cg8uef2jlgaaq" path="res://assets/free version/tomato_icon.png" id="4_kwcus"]
+[ext_resource type="Texture2D" uid="uid://cn0s7hnku82gw" path="res://assets/free version/debris_icon_pressed.png" id="4_pxmpo"]
 [ext_resource type="ButtonGroup" uid="uid://d0uho0lle8j7w" path="res://scenes/speed_buttons.tres" id="4_thxhc"]
+[ext_resource type="Texture2D" uid="uid://cgse6wej07ymu" path="res://assets/free version/tomato_icon_pressed.png" id="5_lcnxo"]
+[ext_resource type="Texture2D" uid="uid://bel3drj6vp0q" path="res://assets/gnome/hats/harvest_icon.png" id="5_ol62m"]
 [ext_resource type="Texture2D" uid="uid://bokqenahrgtfi" path="res://assets/fonts/play_arrow.png" id="5_vsnuh"]
+[ext_resource type="Texture2D" uid="uid://d3fxdu071utg5" path="res://assets/free version/potato_icon.png" id="5_y7dov"]
 [ext_resource type="Texture2D" uid="uid://be0q5ayoc4sbi" path="res://assets/fonts/play_arrow_white.png" id="6_pkd1k"]
+[ext_resource type="Texture2D" uid="uid://bow5ar4gbewbj" path="res://assets/gnome/hats/harvest_icon_pressed.png" id="6_yqk3p"]
+[ext_resource type="Texture2D" uid="uid://pmgxfui42nqj" path="res://assets/free version/potato_icon_pressed.png" id="7_dui7i"]
 [ext_resource type="Texture2D" uid="uid://ce2boa0pe282q" path="res://assets/fonts/fast_forward.png" id="7_xu3i2"]
 [ext_resource type="Texture2D" uid="uid://bmq7xesi3one8" path="res://assets/fonts/fast_forward_white.png" id="8_ydy76"]
 
@@ -31,51 +39,38 @@ layout_mode = 2
 mouse_filter = 2
 theme_override_constants/separation = 4
 
-[node name="ClearDebrisButton" type="Button" parent="ButtonsContainer/HBoxContainer" groups=["toggle_buttons"]]
+[node name="ClearDebrisButton" type="TextureButton" parent="ButtonsContainer/HBoxContainer" groups=["toggle_buttons"]]
 layout_mode = 2
-theme_override_colors/font_pressed_color = Color(0, 0, 1, 1)
-theme_override_colors/font_outline_color = Color(0, 0, 0, 1)
-theme_override_constants/outline_size = 5
-theme_override_fonts/font = ExtResource("2_qdxsb")
-theme_override_font_sizes/font_size = 24
 toggle_mode = true
 button_group = ExtResource("3_f7wew")
-text = "Clear Debris"
+texture_normal = ExtResource("3_hwei1")
+texture_pressed = ExtResource("4_pxmpo")
+stretch_mode = 5
 
-[node name="PlantCropMenuButton" type="Button" parent="ButtonsContainer/HBoxContainer" groups=["toggle_buttons"]]
+[node name="HarvestButton" type="TextureButton" parent="ButtonsContainer/HBoxContainer" groups=["toggle_buttons"]]
 layout_mode = 2
-theme_override_colors/font_pressed_color = Color(0, 1, 0, 1)
-theme_override_colors/font_outline_color = Color(0, 0, 0, 1)
-theme_override_constants/outline_size = 5
-theme_override_fonts/font = ExtResource("2_qdxsb")
-theme_override_font_sizes/font_size = 24
 toggle_mode = true
 button_group = ExtResource("3_f7wew")
-text = "Plant Seed"
-icon_alignment = 1
+texture_normal = ExtResource("5_ol62m")
+texture_pressed = ExtResource("6_yqk3p")
+stretch_mode = 5
 
-[node name="PlantCrop2MenuButton" type="Button" parent="ButtonsContainer/HBoxContainer" groups=["toggle_buttons"]]
+[node name="PlantCropMenuButton" type="TextureButton" parent="ButtonsContainer/HBoxContainer" groups=["toggle_buttons"]]
+layout_mode = 2
+toggle_mode = true
+button_group = ExtResource("3_f7wew")
+texture_normal = ExtResource("4_kwcus")
+texture_pressed = ExtResource("5_lcnxo")
+stretch_mode = 5
+
+[node name="PlantCrop2MenuButton" type="TextureButton" parent="ButtonsContainer/HBoxContainer" groups=["toggle_buttons"]]
 visible = false
 layout_mode = 2
-theme_override_colors/font_pressed_color = Color(0, 1, 0, 1)
-theme_override_colors/font_outline_color = Color(0, 0, 0, 1)
-theme_override_constants/outline_size = 5
-theme_override_fonts/font = ExtResource("2_qdxsb")
-theme_override_font_sizes/font_size = 24
 toggle_mode = true
 button_group = ExtResource("3_f7wew")
-text = "Plant Other Seed"
-
-[node name="HarvestButton" type="Button" parent="ButtonsContainer/HBoxContainer" groups=["toggle_buttons"]]
-layout_mode = 2
-theme_override_colors/font_pressed_color = Color(1, 0, 0, 1)
-theme_override_colors/font_outline_color = Color(0, 0, 0, 1)
-theme_override_constants/outline_size = 5
-theme_override_fonts/font = ExtResource("2_qdxsb")
-theme_override_font_sizes/font_size = 24
-toggle_mode = true
-button_group = ExtResource("3_f7wew")
-text = "Harvest"
+texture_normal = ExtResource("5_y7dov")
+texture_pressed = ExtResource("7_dui7i")
+stretch_mode = 5
 
 [node name="HBoxContainer2" type="HBoxContainer" parent="ButtonsContainer"]
 layout_mode = 2

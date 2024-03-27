@@ -69,7 +69,7 @@ func start_level(level):
 	update_hud_messages(current_level.get_welcome())
 	start_days()
 	update_garden_score()
-	
+
 func game_over():
 	update_hud_messages(["Game Over", "Thanks for gardening!"])
 	get_tree().paused = true
@@ -394,14 +394,14 @@ func _on_gnome_finished_busy_animation(job, pos, current_gnome):
 				current_level.FOREGROUND, 
 				map_pos, 
 				current_level.TILEMAP_SOURCE_ID,  
-				current_level.PLANT_1[0]
+				current_level.PLANTS["PLANT_1"][0]
 			)
 			current_gnome.set_state(Globals.GNOME_STATE.IDLE)
 			print("gnome set to idle after planting seed")
 			start_grow_timer(
 				map_pos, 
 				current_level.PLANT_1_GROW_TIME, 
-				current_level.PLANT_1, 
+				current_level.PLANTS["PLANT_1"], 
 				0
 			)
 
@@ -417,27 +417,27 @@ func _on_gnome_finished_busy_animation(job, pos, current_gnome):
 				current_level.FOREGROUND, 
 				map_pos, 
 				current_level.TILEMAP_SOURCE_ID,  
-				current_level.PLANT_2[0]
+				current_level.PLANTS["PLANT_2"][0]
 			)
 			current_gnome.set_state(Globals.GNOME_STATE.IDLE)
 			start_grow_timer(
 				map_pos, 
 				current_level.PLANT_2_GROW_TIME, 
-				current_level.PLANT_2, 
+				current_level.PLANTS["PLANT_2"], 
 				0
 			)
 			print("gnome set to idle after planting seed2")
 		
 		Globals.GNOME_STATE.TENDING_PLANT:
 			var seedling_id = current_level.get_cell_atlas_coords(current_level.FOREGROUND, map_pos)
-			if current_level.PLANT_1.has(seedling_id):
-				var plant_stage = current_level.PLANT_1.find(seedling_id)
+			if current_level.PLANTS["PLANT_1"].has(seedling_id):
+				var plant_stage = current_level.PLANTS["PLANT_1"].find(seedling_id)
 				
-				if seedling_id == current_level.PLANT_1[-2]:
+				if seedling_id == current_level.PLANTS["PLANT_1"][-2]:
 					start_harvest_timer(
 						map_pos, 
 						current_level.PLANT_1_GROW_TIME, 
-						current_level.PLANT_1, 
+						current_level.PLANTS["PLANT_1"], 
 						plant_stage
 					)
 					
@@ -445,25 +445,25 @@ func _on_gnome_finished_busy_animation(job, pos, current_gnome):
 					start_grow_timer(
 						map_pos, 
 						current_level.PLANT_1_GROW_TIME,
-						current_level.PLANT_1,  
+						current_level.PLANTS["PLANT_1"],  
 						plant_stage
 					)
 					
-			if current_level.PLANT_2.has(seedling_id):
-				var plant_stage = current_level.PLANT_2.find(seedling_id)
+			if current_level.PLANTS["PLANT_2"].has(seedling_id):
+				var plant_stage = current_level.PLANTS["PLANT_2"].find(seedling_id)
 				
-				if seedling_id == current_level.PLANT_2[-2]:
+				if seedling_id == current_level.PLANTS["PLANT_2"][-2]:
 					start_harvest_timer(
 						map_pos, 
 						current_level.PLANT_2_GROW_TIME,
-						current_level.PLANT_2, 
+						current_level.PLANTS["PLANT_2"], 
 						plant_stage
 					)
 				else:
 					start_grow_timer(
 						map_pos, 
 						current_level.PLANT_2_GROW_TIME,
-						current_level.PLANT_2,  
+						current_level.PLANTS["PLANT_2"],  
 						plant_stage
 					)
 			

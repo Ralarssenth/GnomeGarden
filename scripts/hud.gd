@@ -67,4 +67,3 @@ func update_plant_button_visibility(fruit_count):
 	if fruit_count >= 3:
 		plant2_button.set_visible(true)
 
-
