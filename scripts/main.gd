@@ -54,6 +54,10 @@ func register_buttons():
 		var callable = Callable(self, "_on_button_pressed").bind(button.name)
 		# Connects the button's signal to the node's callable
 		button.connect("pressed", callable)
+	var toggle_buttons = get_tree().get_nodes_in_group("toggle_buttons")
+	for button in toggle_buttons:
+		var callable = Callable(self, "_on_toggled_button").bind(button.name)
+		button.connect("toggled", callable)
 
 func start_level(level):
 	current_level = level.instantiate()
@@ -79,7 +83,14 @@ func register_gnome_signals(current_gnome):
 
 # Called on menu button press
 func _on_button_pressed(name):
-	if mode == MODES.NULL:
+	match name:
+		"TutorialLevel":
+			start_level(tutorial_level)
+		"SandboxLevel":
+			start_level(sandbox_level)
+
+func _on_toggled_button(on, name):
+	if on:
 		match name:
 			"ClearDebrisButton":
 				set_mode(MODES.CLEAR_DEBRIS)
@@ -89,13 +100,19 @@ func _on_button_pressed(name):
 				set_mode(MODES.HARVEST)
 			"PlantCrop2MenuButton":
 				set_mode(MODES.PLANT2)
-			"TutorialLevel":
-				start_level(tutorial_level)
-			"SandboxLevel":
-				start_level(sandbox_level)
-
+			"PauseButton":
+				set_game_speed(name)
+			"PlayButton":
+				set_game_speed(name)
+			"FastForwardButton":
+				set_game_speed(name)
+				
 	else:
-		set_mode(MODES.NULL)
+		match name:
+			"ClearDebrisButton", "PlantCropMenuButton", "HarvestButton", "PlantCrop2MenuButton":
+				set_mode(MODES.NULL)
+			"PauseButton", "PlayButton", "FastForwardButton":
+				pass
 
 # handles player inputs
 func _unhandled_input(event):
@@ -192,6 +209,16 @@ func _unhandled_input(event):
 			
 			_:
 				pass
+
+#Sets the game speed
+func set_game_speed(speed):
+	match speed:
+		"PauseButton": 
+			Engine.set_time_scale(0.0)
+		"PlayButton":
+			Engine.set_time_scale(1.0)
+		"FastForwardButton":
+			Engine.set_time_scale(2.0)
 
 #Sets the player's game mode
 func set_mode(_mode):
