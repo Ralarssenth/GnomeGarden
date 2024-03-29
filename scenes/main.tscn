@@ -1,11 +1,13 @@
-[gd_scene load_steps=3 format=3 uid="uid://dlu7ttpsdrxvx"]
+[gd_scene load_steps=4 format=3 uid="uid://dlu7ttpsdrxvx"]
 
 [ext_resource type="Script" path="res://scripts/main.gd" id="1_a81db"]
+[ext_resource type="Resource" uid="uid://w8lf5c4wwkd" path="res://scripts/savegame.tres" id="2_pb3al"]
 [ext_resource type="PackedScene" uid="uid://f1xug5peqhti" path="res://scenes/hud.tscn" id="2_rkjnl"]
 
 [node name="Node2D" type="Node2D"]
 process_mode = 3
 script = ExtResource("1_a81db")
+save_game_resource = ExtResource("2_pb3al")
 
 [node name="Camera2D" type="Camera2D" parent="."]
 zoom = Vector2(3, 3)
