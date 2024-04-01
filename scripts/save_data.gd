@@ -7,8 +7,14 @@ const LEVEL_SAVE_PATH = "user://level_savegame.tscn"
 @export var level_tilemap : PackedScene
 @export var days : int 
 
-func update_save_data(_days, _level):
-	days = _days
+@export var clearDebrisPos: Array[Vector2i] = []
+
+# score keeping
+@export var flower_count : int
+@export var fruit_count : int
+@export var biodiversity : int
+
+func update_save_data(_level):
 	level_tilemap = _level
 	
 func write_savegame():

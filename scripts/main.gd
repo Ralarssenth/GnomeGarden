@@ -13,17 +13,11 @@ var camera_zoom
 
 # object tracking
 var gnomes = []
-var clearDebrisPos = []
 var plantSeedPos = []
 var plantSeed2Pos = []
 var seedlingPos = []
 var harvestablePos = []
 var harvestPos = []
-
-# score keeping
-var flower_count = 0
-var fruit_count = 0
-var biodiversity = 1
 
 # Day tracking
 @onready var day_timer = $DayTimer
@@ -79,6 +73,14 @@ func exit_level():
 	for gnome in gnomes:
 		gnome.queue_free()
 	gnomes.clear()
+		
+	save_game_resource.clearDebrisPos.clear()
+	plantSeedPos.clear()
+	plantSeed2Pos.clear()
+	seedlingPos.clear()
+	harvestablePos.clear()
+	harvestPos.clear()
+	
 	current_level.queue_free()
 	Globals.in_level = false
 	hud.show_menu_hud()
@@ -162,13 +164,13 @@ func _unhandled_input(event):
 						current_level.TILEMAP_SOURCE_ID, 
 						current_level.HIGHLIGHT_ATLAS_COORDS
 					)
-					clearDebrisPos.push_back(tile_mouse_pos)
+					save_game_resource.clearDebrisPos.push_back(tile_mouse_pos)
 					print("appended clear debris array")
 					
 				#right click in CLEAR MODE
 				if event.is_action_pressed("right click"):
 					current_level.erase_cell(current_level.CLEAR_SELECTION, tile_mouse_pos)
-					clearDebrisPos.erase(tile_mouse_pos)
+					save_game_resource.clearDebrisPos.erase(tile_mouse_pos)
 					print("erased a position from the clear debris array")
 				
 			MODES.PLANT:
@@ -231,7 +233,7 @@ func _unhandled_input(event):
 func save_game():
 	var packaged_level = PackedScene.new()
 	packaged_level.pack(current_level)
-	save_game_resource.update_save_data(day_tracker, packaged_level)
+	save_game_resource.update_save_data(packaged_level)
 	save_game_resource.write_savegame()
 
 func load_game():
@@ -306,8 +308,8 @@ func _on_gnome_idle(current_gnome):
 		job = Globals.GNOME_STATE.HARVESTING
 		print("gnome told to harvest")
 		
-	elif not clearDebrisPos.is_empty():
-		pos = current_level.map_to_local(clearDebrisPos.pop_front())
+	elif not save_game_resource.clearDebrisPos.is_empty():
+		pos = current_level.map_to_local(save_game_resource.clearDebrisPos.pop_front())
 		job = Globals.GNOME_STATE.CLEARING_DEBRIS
 		print("gnome told to clear debris")
 		
@@ -392,10 +394,10 @@ func _on_gnome_arrived(pos: Vector2, job, reachable, current_gnome):
 				current_gnome.set_state(job)
 		
 		Globals.GNOME_STATE.HAULING:
-			fruit_count = fruit_count + 1
-			hud.update_fruit_counter(fruit_count)
+			save_game_resource.fruit_count = save_game_resource.fruit_count + 1
+			hud.update_fruit_counter(save_game_resource.fruit_count)
 			current_gnome.set_state(Globals.GNOME_STATE.IDLE)
-			hud.update_plant_button_visibility(fruit_count)
+			hud.update_plant_button_visibility(save_game_resource.fruit_count)
 
 # Updates the tilemap based on what the gnome was just doing
 # Sets the gnome back to idle now that he's done his job
@@ -528,11 +530,11 @@ func update_hud_messages(messages):
 
 # Updates the contents of the flower_count variable and pushes it to the hud
 func update_flower_count():
-	flower_count =  current_level.get_flowers()
-	hud.update_flower_counter(flower_count)
+	save_game_resource.flower_count =  current_level.get_flowers()
+	hud.update_flower_counter(save_game_resource.flower_count)
 	
 	var number_of_gnomes = gnomes.size()
-	if number_of_gnomes <= float(flower_count) / 5:
+	if number_of_gnomes <= float(save_game_resource.flower_count) / 5:
 		spawn_gnome()
 
 func start_grow_timer(map_pos, time, plant_array, plant_stage):
@@ -583,8 +585,8 @@ func update_garden_score():
 		current_level.ROCK_ATLAS_COORDS
 	)
 	
-	biodiversity = current_level.get_biodiversity() 
-	var score = (rocks.size() * -2) + (flower_count * biodiversity)
+	save_game_resource.biodiversity = current_level.get_biodiversity() 
+	var score = (rocks.size() * -2) + (save_game_resource.flower_count * save_game_resource.biodiversity)
 	hud.update_garden_score(score)
 	print("garden score updated")
 
