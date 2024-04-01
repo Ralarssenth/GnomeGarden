@@ -9,6 +9,7 @@ var sandbox_level = preload("res://scenes/sandbox.tscn")
 
 # level tracking
 var current_level
+var in_level = false
 var camera_zoom
 
 # object tracking
@@ -33,7 +34,6 @@ var day_tracker = 0
 enum MODES {NULL, CLEAR_DEBRIS, PLANT, PLANT2, HARVEST, DRAG}
 var mode = MODES.NULL
 
-@export var save_game_resource: SaveGame
 
 # Called when the node enters the scene tree for the first time.
 func _ready():
@@ -59,12 +59,12 @@ func register_buttons():
 		var callable = Callable(self, "_on_toggled_button").bind(button.name)
 		button.connect("toggled", callable)
 
-func start_level(_level):
-	current_level = _level.instantiate()
+func start_level(level):
+	current_level = level.instantiate()
 	add_child(current_level)
-	Globals.in_level = true
+	in_level = true
 	camera_zoom = camera.get_zoom()
-	hud.toggle_hud()
+	hud.show_game_hud()
 	spawn_gnome()
 	update_hud_messages(current_level.get_welcome())
 	start_days()
@@ -73,16 +73,6 @@ func start_level(_level):
 func game_over():
 	update_hud_messages(["Game Over", "Thanks for gardening!"])
 	get_tree().paused = true
-
-func exit_level():
-	day_timer.stop()
-	for gnome in gnomes:
-		gnome.queue_free()
-	gnomes.clear()
-	current_level.queue_free()
-	Globals.in_level = false
-	hud.show_menu_hud()
-	hud.end_messages_early()
 
 # Connects all the custom signals from gnome
 # Called in the ready function
@@ -98,14 +88,6 @@ func _on_button_pressed(name):
 			start_level(tutorial_level)
 		"SandboxLevel":
 			start_level(sandbox_level)
-		"SaveGame":
-			save_game()
-		"LoadGame":
-			load_game()
-		"MenuButton":
-			hud.toggle_hud()
-		"QuitToMenu":
-			exit_level()
 
 func _on_toggled_button(on, name):
 	if on:
@@ -135,7 +117,7 @@ func _on_toggled_button(on, name):
 # handles player inputs
 func _unhandled_input(event):
 	var mouse_pos = get_global_mouse_position()
-	if Globals.in_level:
+	if in_level:
 		if event.is_action_pressed("scroll up") and camera_zoom < Vector2(5, 5):
 			camera_zoom = camera.get_zoom()
 			camera_zoom += Vector2(1,1)
@@ -227,24 +209,6 @@ func _unhandled_input(event):
 			
 			_:
 				pass
-
-func save_game():
-	var packaged_level = PackedScene.new()
-	packaged_level.pack(current_level)
-	save_game_resource.update_save_data(day_tracker, packaged_level)
-	save_game_resource.write_savegame()
-
-func load_game():
-	if Globals.in_level:
-		save_game_resource.load_savegame()
-		exit_level()
-		start_level(save_game_resource.level_tilemap)
-	else:
-		save_game_resource.load_savegame()
-		day_tracker = save_game_resource.days
-		print("day_tracker:" + str(day_tracker))
-		start_level(save_game_resource.level_tilemap)
-		
 
 #Sets the game speed
 func set_game_speed(speed):
@@ -561,13 +525,13 @@ func start_harvest_timer(map_pos, time, plant_array, plant_stage):
 
 # Starts the day tracking based on the current_level
 func start_days():
-	if Globals.in_level:
+	if in_level:
 		day_timer.set_wait_time(current_level.get_day_length())
 		day_timer.start()
 	
 # Tracks the days elapsed and triggers game_over() based on the current_level
 func _on_day_timer_timeout():
-	if Globals.in_level:
+	if in_level:
 		day_tracker += 1
 		print("day timer incremented")
 		hud.day.set_text(str(day_tracker))

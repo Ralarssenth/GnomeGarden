@@ -1,28 +1,21 @@
 extends CanvasLayer
 
 @onready var buttons_container = $ButtonsContainer
-@onready var plant2_button = $ButtonsContainer/HBoxContainer/PlantCrop2MenuButton
-
-@onready var menu_container = $MenuContainer
-@onready var levels_container = $MenuContainer/MarginContainer/VBoxContainer/LevelsContainer
-@onready var save_button = $MenuContainer/MarginContainer/VBoxContainer/SaveGame
-@onready var load_button = $MenuContainer/MarginContainer/VBoxContainer/LoadGame
-@onready var quit_button = $MenuContainer/MarginContainer/VBoxContainer/QuitToMenu
-
 @onready var message_container = $MessageContainer
+@onready var score_container = $ScoreContainer
+@onready var menu_container = $MenuContainer
 @onready var message_label = $MessageContainer/HBoxContainer/Label
 @onready var message_timer = $MessageContainer/Timer
 @onready var message_buffer_timer = $MessageContainer/Timer2
-
-@onready var score_container = $ScoreContainer
 @onready var flower_counter = $ScoreContainer/HBoxContainer/HBoxContainer/FlowersCount
 @onready var fruit_counter = $ScoreContainer/HBoxContainer/HBoxContainer2/FruitsCount
 @onready var garden_score = $ScoreContainer/HBoxContainer/HBoxContainer3/GardenScore
+@onready var plant2_button = $ButtonsContainer/HBoxContainer/PlantCrop2MenuButton
 @onready var day = $ScoreContainer/TimeContainer/Day
-
+@onready var day_timer = $ScoreContainer/TimeContainer/DayTimer
 
 var message_list = []
-var menu_on = true
+
 # Called when the node enters the scene tree for the first time.
 func _ready():
 	pass # Replace with function body.
@@ -32,34 +25,16 @@ func _ready():
 func _process(delta):
 	pass
 
-func toggle_hud():
-	if menu_on:
-		show_game_hud()
-	else:
-		show_menu_hud()
-	menu_on = !menu_on
-
 func show_game_hud():
 	menu_container.set_visible(false)
 	buttons_container.set_visible(true)
 	score_container.set_visible(true)
+	day_timer.start()
 
 func show_menu_hud():
-	if Globals.in_level:
-		menu_container.set_visible(true)
-		levels_container.set_visible(false)
-		load_button.set_visible(true)
-		save_button.set_visible(true)
-		quit_button.set_visible(true)
-		
-	else:
-		menu_container.set_visible(true)
-		levels_container.set_visible(true)
-		buttons_container.set_visible(false)
-		score_container.set_visible(false)
-		load_button.set_visible(true)
-		save_button.set_visible(false)
-		quit_button.set_visible(false)
+	buttons_container.set_visible(false)
+	score_container.set_visible(false)
+	menu_container.set_visible(true)
 
 func update_message_list(text):
 	message_list.append_array(text)
@@ -72,12 +47,6 @@ func show_message_text():
 		message_timer.set_wait_time(5.0)
 		message_timer.start()
 		await message_buffer_timer.timeout
-
-func end_messages_early():
-	message_container.set_visible(false)
-	message_timer.stop()
-	message_buffer_timer.stop()
-	message_list.clear()
 
 # Hides the message when the timer is up
 func _on_timer_timeout():

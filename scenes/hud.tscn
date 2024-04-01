@@ -1,11 +1,9 @@
-[gd_scene load_steps=21 format=3 uid="uid://f1xug5peqhti"]
+[gd_scene load_steps=19 format=3 uid="uid://f1xug5peqhti"]
 
 [ext_resource type="Script" path="res://scripts/hud.gd" id="1_g56gc"]
-[ext_resource type="Texture2D" uid="uid://cu3kihpvvoo6e" path="res://assets/fonts/menu.png" id="2_4b8xr"]
 [ext_resource type="FontFile" uid="uid://b5k5jn21eha6y" path="res://assets/fonts/VarelaRound-Regular.ttf" id="2_qdxsb"]
 [ext_resource type="ButtonGroup" uid="uid://c6a4qoot8e063" path="res://scenes/plant_buttons.tres" id="3_f7wew"]
 [ext_resource type="Texture2D" uid="uid://ja83wm1ith2n" path="res://assets/free version/debris_icon.png" id="3_hwei1"]
-[ext_resource type="Texture2D" uid="uid://c74f5padangbt" path="res://assets/fonts/menu_pressed.png" id="3_jvcpd"]
 [ext_resource type="Texture2D" uid="uid://vnvq51qo64qe" path="res://assets/fonts/pause.png" id="3_lg2bv"]
 [ext_resource type="Texture2D" uid="uid://cmn86j80etfbm" path="res://assets/fonts/pause_white.png" id="4_73n0a"]
 [ext_resource type="Texture2D" uid="uid://cg8uef2jlgaaq" path="res://assets/free version/tomato_icon.png" id="4_kwcus"]
@@ -40,12 +38,6 @@ theme_override_constants/margin_bottom = 4
 layout_mode = 2
 mouse_filter = 2
 theme_override_constants/separation = 4
-
-[node name="MenuButton" type="TextureButton" parent="ButtonsContainer/HBoxContainer" groups=["buttons"]]
-layout_mode = 2
-texture_normal = ExtResource("2_4b8xr")
-texture_pressed = ExtResource("3_jvcpd")
-stretch_mode = 5
 
 [node name="ClearDebrisButton" type="TextureButton" parent="ButtonsContainer/HBoxContainer" groups=["toggle_buttons"]]
 layout_mode = 2
@@ -241,6 +233,10 @@ theme_override_fonts/font = ExtResource("2_qdxsb")
 theme_override_font_sizes/font_size = 24
 text = "0"
 
+[node name="DayTimer" type="Timer" parent="ScoreContainer/TimeContainer"]
+wait_time = 5.0
+one_shot = true
+
 [node name="MenuContainer" type="MarginContainer" parent="."]
 process_mode = 3
 anchors_preset = 8
@@ -283,27 +279,7 @@ theme_override_font_sizes/font_size = 24
 text = "Gnome Garden"
 horizontal_alignment = 1
 
-[node name="SaveGame" type="Button" parent="MenuContainer/MarginContainer/VBoxContainer" groups=["buttons"]]
-visible = false
-layout_mode = 2
-theme_override_colors/font_outline_color = Color(0, 0, 0, 1)
-theme_override_constants/outline_size = 5
-theme_override_fonts/font = ExtResource("2_qdxsb")
-theme_override_font_sizes/font_size = 24
-text = "Save Game"
-
-[node name="LoadGame" type="Button" parent="MenuContainer/MarginContainer/VBoxContainer" groups=["buttons"]]
-layout_mode = 2
-theme_override_colors/font_outline_color = Color(0, 0, 0, 1)
-theme_override_constants/outline_size = 5
-theme_override_fonts/font = ExtResource("2_qdxsb")
-theme_override_font_sizes/font_size = 24
-text = "Load Game"
-
-[node name="LevelsContainer" type="VBoxContainer" parent="MenuContainer/MarginContainer/VBoxContainer"]
-layout_mode = 2
-
-[node name="Label2" type="Label" parent="MenuContainer/MarginContainer/VBoxContainer/LevelsContainer"]
+[node name="Label2" type="Label" parent="MenuContainer/MarginContainer/VBoxContainer"]
 layout_mode = 2
 theme_override_colors/font_outline_color = Color(0, 0, 0, 1)
 theme_override_constants/outline_size = 4
@@ -312,7 +288,7 @@ theme_override_font_sizes/font_size = 16
 text = "Level Select"
 horizontal_alignment = 1
 
-[node name="TutorialLevel" type="Button" parent="MenuContainer/MarginContainer/VBoxContainer/LevelsContainer" groups=["buttons"]]
+[node name="TutorialLevel" type="Button" parent="MenuContainer/MarginContainer/VBoxContainer" groups=["buttons"]]
 layout_mode = 2
 theme_override_colors/font_outline_color = Color(0, 0, 0, 1)
 theme_override_constants/outline_size = 5
@@ -320,7 +296,7 @@ theme_override_fonts/font = ExtResource("2_qdxsb")
 theme_override_font_sizes/font_size = 24
 text = "Tutorial Level"
 
-[node name="SandboxLevel" type="Button" parent="MenuContainer/MarginContainer/VBoxContainer/LevelsContainer" groups=["buttons"]]
+[node name="SandboxLevel" type="Button" parent="MenuContainer/MarginContainer/VBoxContainer" groups=["buttons"]]
 layout_mode = 2
 theme_override_colors/font_outline_color = Color(0, 0, 0, 1)
 theme_override_constants/outline_size = 5
@@ -328,12 +304,5 @@ theme_override_fonts/font = ExtResource("2_qdxsb")
 theme_override_font_sizes/font_size = 24
 text = "Sandbox Mode"
 
-[node name="QuitToMenu" type="Button" parent="MenuContainer/MarginContainer/VBoxContainer" groups=["buttons"]]
-layout_mode = 2
-theme_override_colors/font_outline_color = Color(0, 0, 0, 1)
-theme_override_constants/outline_size = 5
-theme_override_fonts/font = ExtResource("2_qdxsb")
-theme_override_font_sizes/font_size = 24
-text = "Quit to Menu"
-
 [connection signal="timeout" from="MessageContainer/Timer" to="." method="_on_timer_timeout"]
+[connection signal="timeout" from="ScoreContainer/TimeContainer/DayTimer" to="." method="_on_day_timer_timeout"]

@@ -10,11 +10,6 @@ const REMOVE_COLOR = Color(1,1,1,1)
 const HIGHLIGHT_COLOR = Color(1,1,1,0.4)
 const REMOVE_HIGHLIGHT_COLOR = Color(1,1,1,0)
 
-
-var in_level = false
-
-var save_path = "user://level.save"
-
 # Called when the node enters the scene tree for the first time.
 func _ready():
 	pass # Replace with function body.

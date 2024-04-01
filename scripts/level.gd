@@ -1,4 +1,3 @@
-class_name Level
 extends TileMap
 
 #tile map shortcut constants
