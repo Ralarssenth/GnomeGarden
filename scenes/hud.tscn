@@ -1,4 +1,4 @@
-[gd_scene load_steps=19 format=3 uid="uid://f1xug5peqhti"]
+[gd_scene load_steps=21 format=3 uid="uid://f1xug5peqhti"]
 
 [ext_resource type="Script" path="res://scripts/hud.gd" id="1_g56gc"]
 [ext_resource type="FontFile" uid="uid://b5k5jn21eha6y" path="res://assets/fonts/VarelaRound-Regular.ttf" id="2_qdxsb"]
@@ -9,21 +9,23 @@
 [ext_resource type="Texture2D" uid="uid://cg8uef2jlgaaq" path="res://assets/free version/tomato_icon.png" id="4_kwcus"]
 [ext_resource type="Texture2D" uid="uid://cn0s7hnku82gw" path="res://assets/free version/debris_icon_pressed.png" id="4_pxmpo"]
 [ext_resource type="ButtonGroup" uid="uid://d0uho0lle8j7w" path="res://scenes/speed_buttons.tres" id="4_thxhc"]
-[ext_resource type="Texture2D" uid="uid://cgse6wej07ymu" path="res://assets/free version/tomato_icon_pressed.png" id="5_lcnxo"]
 [ext_resource type="Texture2D" uid="uid://bel3drj6vp0q" path="res://assets/gnome/hats/harvest_icon.png" id="5_ol62m"]
 [ext_resource type="Texture2D" uid="uid://bokqenahrgtfi" path="res://assets/fonts/play_arrow.png" id="5_vsnuh"]
 [ext_resource type="Texture2D" uid="uid://d3fxdu071utg5" path="res://assets/free version/potato_icon.png" id="5_y7dov"]
 [ext_resource type="Texture2D" uid="uid://be0q5ayoc4sbi" path="res://assets/fonts/play_arrow_white.png" id="6_pkd1k"]
 [ext_resource type="Texture2D" uid="uid://bow5ar4gbewbj" path="res://assets/gnome/hats/harvest_icon_pressed.png" id="6_yqk3p"]
-[ext_resource type="Texture2D" uid="uid://pmgxfui42nqj" path="res://assets/free version/potato_icon_pressed.png" id="7_dui7i"]
+[ext_resource type="Texture2D" uid="uid://dk6bj18op0rt4" path="res://assets/free version/tomatoSeed_icon.png" id="7_k3i68"]
 [ext_resource type="Texture2D" uid="uid://ce2boa0pe282q" path="res://assets/fonts/fast_forward.png" id="7_xu3i2"]
+[ext_resource type="Texture2D" uid="uid://dmhrm6xyinrsh" path="res://assets/free version/tomatoSeed_icon_pressed.png" id="8_y35mg"]
 [ext_resource type="Texture2D" uid="uid://bmq7xesi3one8" path="res://assets/fonts/fast_forward_white.png" id="8_ydy76"]
+[ext_resource type="Texture2D" uid="uid://65hd5ujfymg5" path="res://assets/free version/potatoSeed_icon.png" id="9_gymll"]
+[ext_resource type="Texture2D" uid="uid://cabcf8rb6fpvf" path="res://assets/free version/potatoSeed_icon_pressed.png" id="10_nykba"]
 
 [node name="HUD" type="CanvasLayer"]
 process_mode = 1
 script = ExtResource("1_g56gc")
 
-[node name="ButtonsContainer" type="MarginContainer" parent="."]
+[node name="TopMarginContainer" type="MarginContainer" parent="."]
 anchors_preset = 10
 anchor_right = 1.0
 offset_bottom = 39.0
@@ -34,66 +36,72 @@ theme_override_constants/margin_top = 4
 theme_override_constants/margin_right = 4
 theme_override_constants/margin_bottom = 4
 
-[node name="HBoxContainer" type="HBoxContainer" parent="ButtonsContainer"]
+[node name="HBoxContainer" type="HBoxContainer" parent="TopMarginContainer"]
 layout_mode = 2
 mouse_filter = 2
 theme_override_constants/separation = 4
 
-[node name="ClearDebrisButton" type="TextureButton" parent="ButtonsContainer/HBoxContainer" groups=["toggle_buttons"]]
+[node name="ClearDebrisButton" type="TextureButton" parent="TopMarginContainer/HBoxContainer" groups=["toggle_buttons"]]
 layout_mode = 2
+tooltip_text = "Clear Debris"
 toggle_mode = true
 button_group = ExtResource("3_f7wew")
 texture_normal = ExtResource("3_hwei1")
 texture_pressed = ExtResource("4_pxmpo")
 stretch_mode = 5
 
-[node name="HarvestButton" type="TextureButton" parent="ButtonsContainer/HBoxContainer" groups=["toggle_buttons"]]
+[node name="HarvestButton" type="TextureButton" parent="TopMarginContainer/HBoxContainer" groups=["toggle_buttons"]]
 layout_mode = 2
+tooltip_text = "Harvest Fruits"
 toggle_mode = true
 button_group = ExtResource("3_f7wew")
 texture_normal = ExtResource("5_ol62m")
 texture_pressed = ExtResource("6_yqk3p")
 stretch_mode = 5
 
-[node name="PlantCropMenuButton" type="TextureButton" parent="ButtonsContainer/HBoxContainer" groups=["toggle_buttons"]]
+[node name="PlantCropMenuButton" type="TextureButton" parent="TopMarginContainer/HBoxContainer" groups=["toggle_buttons"]]
 layout_mode = 2
+tooltip_text = "Plant Tomato Seed"
 toggle_mode = true
 button_group = ExtResource("3_f7wew")
-texture_normal = ExtResource("4_kwcus")
-texture_pressed = ExtResource("5_lcnxo")
+texture_normal = ExtResource("7_k3i68")
+texture_pressed = ExtResource("8_y35mg")
 stretch_mode = 5
 
-[node name="PlantCrop2MenuButton" type="TextureButton" parent="ButtonsContainer/HBoxContainer" groups=["toggle_buttons"]]
-visible = false
+[node name="PlantCrop2MenuButton" type="TextureButton" parent="TopMarginContainer/HBoxContainer" groups=["toggle_buttons"]]
 layout_mode = 2
+tooltip_text = "Plant Potato Seed"
 toggle_mode = true
 button_group = ExtResource("3_f7wew")
-texture_normal = ExtResource("5_y7dov")
-texture_pressed = ExtResource("7_dui7i")
+texture_normal = ExtResource("9_gymll")
+texture_pressed = ExtResource("10_nykba")
 stretch_mode = 5
 
-[node name="HBoxContainer2" type="HBoxContainer" parent="ButtonsContainer"]
+[node name="HBoxContainer2" type="HBoxContainer" parent="TopMarginContainer"]
 layout_mode = 2
 mouse_filter = 2
 alignment = 2
 
-[node name="PauseButton" type="TextureButton" parent="ButtonsContainer/HBoxContainer2" groups=["toggle_buttons"]]
+[node name="PauseButton" type="TextureButton" parent="TopMarginContainer/HBoxContainer2" groups=["toggle_buttons"]]
 layout_mode = 2
+tooltip_text = "Pause Time"
 toggle_mode = true
 button_group = ExtResource("4_thxhc")
 texture_normal = ExtResource("3_lg2bv")
 texture_pressed = ExtResource("4_73n0a")
 
-[node name="PlayButton" type="TextureButton" parent="ButtonsContainer/HBoxContainer2" groups=["toggle_buttons"]]
+[node name="PlayButton" type="TextureButton" parent="TopMarginContainer/HBoxContainer2" groups=["toggle_buttons"]]
 layout_mode = 2
+tooltip_text = "Normal Speed"
 toggle_mode = true
 button_pressed = true
 button_group = ExtResource("4_thxhc")
 texture_normal = ExtResource("5_vsnuh")
 texture_pressed = ExtResource("6_pkd1k")
 
-[node name="FastForwardButton" type="TextureButton" parent="ButtonsContainer/HBoxContainer2" groups=["toggle_buttons"]]
+[node name="FastForwardButton" type="TextureButton" parent="TopMarginContainer/HBoxContainer2" groups=["toggle_buttons"]]
 layout_mode = 2
+tooltip_text = "Double Speed"
 toggle_mode = true
 button_group = ExtResource("4_thxhc")
 texture_normal = ExtResource("7_xu3i2")
@@ -137,7 +145,89 @@ horizontal_alignment = 1
 
 [node name="Timer2" type="Timer" parent="MessageContainer"]
 
-[node name="ScoreContainer" type="MarginContainer" parent="."]
+[node name="LeftSideContainer" type="VBoxContainer" parent="."]
+anchors_preset = 2
+anchor_top = 1.0
+anchor_bottom = 1.0
+offset_top = -136.0
+offset_right = 189.0
+grow_vertical = 0
+
+[node name="HBoxContainer2" type="HBoxContainer" parent="LeftSideContainer"]
+layout_mode = 2
+theme_override_constants/separation = 4
+
+[node name="TextureRect" type="TextureRect" parent="LeftSideContainer/HBoxContainer2"]
+layout_mode = 2
+texture = ExtResource("4_kwcus")
+
+[node name="FruitsCount" type="Label" parent="LeftSideContainer/HBoxContainer2"]
+layout_mode = 2
+theme_override_colors/font_outline_color = Color(0, 0, 0, 1)
+theme_override_constants/outline_size = 5
+theme_override_fonts/font = ExtResource("2_qdxsb")
+theme_override_font_sizes/font_size = 24
+text = ": 0"
+horizontal_alignment = 2
+
+[node name="HBoxContainer4" type="HBoxContainer" parent="LeftSideContainer"]
+layout_mode = 2
+theme_override_constants/separation = 4
+
+[node name="TextureRect" type="TextureRect" parent="LeftSideContainer/HBoxContainer4"]
+layout_mode = 2
+texture = ExtResource("5_y7dov")
+
+[node name="FruitsCount" type="Label" parent="LeftSideContainer/HBoxContainer4"]
+layout_mode = 2
+theme_override_colors/font_outline_color = Color(0, 0, 0, 1)
+theme_override_constants/outline_size = 5
+theme_override_fonts/font = ExtResource("2_qdxsb")
+theme_override_font_sizes/font_size = 24
+text = ": 0"
+horizontal_alignment = 2
+
+[node name="HBoxContainer" type="HBoxContainer" parent="LeftSideContainer"]
+layout_mode = 2
+theme_override_constants/separation = 4
+
+[node name="FlowersLabel" type="Label" parent="LeftSideContainer/HBoxContainer"]
+layout_mode = 2
+theme_override_colors/font_outline_color = Color(0, 0, 0, 1)
+theme_override_constants/outline_size = 5
+theme_override_fonts/font = ExtResource("2_qdxsb")
+theme_override_font_sizes/font_size = 24
+text = "Flowers: "
+
+[node name="FlowersCount" type="Label" parent="LeftSideContainer/HBoxContainer"]
+layout_mode = 2
+theme_override_colors/font_outline_color = Color(0, 0, 0, 1)
+theme_override_constants/outline_size = 5
+theme_override_fonts/font = ExtResource("2_qdxsb")
+theme_override_font_sizes/font_size = 24
+text = "0"
+
+[node name="HBoxContainer3" type="HBoxContainer" parent="LeftSideContainer"]
+layout_mode = 2
+theme_override_constants/separation = 4
+
+[node name="GardenScoreLabel" type="Label" parent="LeftSideContainer/HBoxContainer3"]
+layout_mode = 2
+theme_override_colors/font_outline_color = Color(0, 0, 0, 1)
+theme_override_constants/outline_size = 5
+theme_override_fonts/font = ExtResource("2_qdxsb")
+theme_override_font_sizes/font_size = 24
+text = "Garden Score:"
+
+[node name="GardenScore" type="Label" parent="LeftSideContainer/HBoxContainer3"]
+layout_mode = 2
+theme_override_colors/font_outline_color = Color(0, 0, 0, 1)
+theme_override_constants/outline_size = 5
+theme_override_fonts/font = ExtResource("2_qdxsb")
+theme_override_font_sizes/font_size = 24
+text = "0"
+
+[node name="BottomMarginContainer" type="MarginContainer" parent="."]
 anchors_preset = 12
 anchor_top = 1.0
 anchor_right = 1.0
@@ -149,75 +239,15 @@ theme_override_constants/margin_top = 4
 theme_override_constants/margin_right = 4
 theme_override_constants/margin_bottom = 4
 
-[node name="HBoxContainer" type="HBoxContainer" parent="ScoreContainer"]
+[node name="HBoxContainer" type="HBoxContainer" parent="BottomMarginContainer"]
 layout_mode = 2
 theme_override_constants/separation = 32
 
-[node name="HBoxContainer" type="HBoxContainer" parent="ScoreContainer/HBoxContainer"]
-layout_mode = 2
-theme_override_constants/separation = 4
-
-[node name="FlowersLabel" type="Label" parent="ScoreContainer/HBoxContainer/HBoxContainer"]
-layout_mode = 2
-theme_override_colors/font_outline_color = Color(0, 0, 0, 1)
-theme_override_constants/outline_size = 5
-theme_override_fonts/font = ExtResource("2_qdxsb")
-theme_override_font_sizes/font_size = 24
-text = "Flowers: "
-
-[node name="FlowersCount" type="Label" parent="ScoreContainer/HBoxContainer/HBoxContainer"]
-layout_mode = 2
-theme_override_colors/font_outline_color = Color(0, 0, 0, 1)
-theme_override_constants/outline_size = 5
-theme_override_fonts/font = ExtResource("2_qdxsb")
-theme_override_font_sizes/font_size = 24
-text = "0"
-
-[node name="HBoxContainer2" type="HBoxContainer" parent="ScoreContainer/HBoxContainer"]
-layout_mode = 2
-theme_override_constants/separation = 4
-
-[node name="FruitsLabel" type="Label" parent="ScoreContainer/HBoxContainer/HBoxContainer2"]
-layout_mode = 2
-theme_override_colors/font_outline_color = Color(0, 0, 0, 1)
-theme_override_constants/outline_size = 5
-theme_override_fonts/font = ExtResource("2_qdxsb")
-theme_override_font_sizes/font_size = 24
-text = "Fruits: "
-
-[node name="FruitsCount" type="Label" parent="ScoreContainer/HBoxContainer/HBoxContainer2"]
-layout_mode = 2
-theme_override_colors/font_outline_color = Color(0, 0, 0, 1)
-theme_override_constants/outline_size = 5
-theme_override_fonts/font = ExtResource("2_qdxsb")
-theme_override_font_sizes/font_size = 24
-text = "0"
-
-[node name="HBoxContainer3" type="HBoxContainer" parent="ScoreContainer/HBoxContainer"]
-layout_mode = 2
-theme_override_constants/separation = 4
-
-[node name="GardenScoreLabel" type="Label" parent="ScoreContainer/HBoxContainer/HBoxContainer3"]
-layout_mode = 2
-theme_override_colors/font_outline_color = Color(0, 0, 0, 1)
-theme_override_constants/outline_size = 5
-theme_override_fonts/font = ExtResource("2_qdxsb")
-theme_override_font_sizes/font_size = 24
-text = "Garden Score:"
-
-[node name="GardenScore" type="Label" parent="ScoreContainer/HBoxContainer/HBoxContainer3"]
-layout_mode = 2
-theme_override_colors/font_outline_color = Color(0, 0, 0, 1)
-theme_override_constants/outline_size = 5
-theme_override_fonts/font = ExtResource("2_qdxsb")
-theme_override_font_sizes/font_size = 24
-text = "0"
-
-[node name="TimeContainer" type="HBoxContainer" parent="ScoreContainer"]
+[node name="TimeContainer" type="HBoxContainer" parent="BottomMarginContainer"]
 layout_mode = 2
 alignment = 2
 
-[node name="DayLabel" type="Label" parent="ScoreContainer/TimeContainer"]
+[node name="DayLabel" type="Label" parent="BottomMarginContainer/TimeContainer"]
 layout_mode = 2
 theme_override_colors/font_outline_color = Color(0, 0, 0, 1)
 theme_override_constants/outline_size = 5
@@ -225,7 +255,7 @@ theme_override_fonts/font = ExtResource("2_qdxsb")
 theme_override_font_sizes/font_size = 24
 text = "Day:"
 
-[node name="Day" type="Label" parent="ScoreContainer/TimeContainer"]
+[node name="Day" type="Label" parent="BottomMarginContainer/TimeContainer"]
 layout_mode = 2
 theme_override_colors/font_outline_color = Color(0, 0, 0, 1)
 theme_override_constants/outline_size = 5
@@ -233,7 +263,7 @@ theme_override_fonts/font = ExtResource("2_qdxsb")
 theme_override_font_sizes/font_size = 24
 text = "0"
 
-[node name="DayTimer" type="Timer" parent="ScoreContainer/TimeContainer"]
+[node name="DayTimer" type="Timer" parent="BottomMarginContainer/TimeContainer"]
 wait_time = 5.0
 one_shot = true
 
@@ -290,6 +320,7 @@ horizontal_alignment = 1
 
 [node name="TutorialLevel" type="Button" parent="MenuContainer/MarginContainer/VBoxContainer" groups=["buttons"]]
 layout_mode = 2
+tooltip_text = "Start Level"
 theme_override_colors/font_outline_color = Color(0, 0, 0, 1)
 theme_override_constants/outline_size = 5
 theme_override_fonts/font = ExtResource("2_qdxsb")
@@ -298,6 +329,7 @@ text = "Tutorial Level"
 
 [node name="SandboxLevel" type="Button" parent="MenuContainer/MarginContainer/VBoxContainer" groups=["buttons"]]
 layout_mode = 2
+tooltip_text = "Start Level"
 theme_override_colors/font_outline_color = Color(0, 0, 0, 1)
 theme_override_constants/outline_size = 5
 theme_override_fonts/font = ExtResource("2_qdxsb")
@@ -305,4 +337,4 @@ theme_override_font_sizes/font_size = 24
 text = "Sandbox Mode"
 
 [connection signal="timeout" from="MessageContainer/Timer" to="." method="_on_timer_timeout"]
-[connection signal="timeout" from="ScoreContainer/TimeContainer/DayTimer" to="." method="_on_day_timer_timeout"]
+[connection signal="timeout" from="BottomMarginContainer/TimeContainer/DayTimer" to="." method="_on_day_timer_timeout"]

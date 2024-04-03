@@ -1,18 +1,19 @@
 extends CanvasLayer
 
-@onready var buttons_container = $ButtonsContainer
+@onready var buttons_container = $TopMarginContainer
 @onready var message_container = $MessageContainer
-@onready var score_container = $ScoreContainer
+@onready var bottom_margin_container = $BottomMarginContainer
 @onready var menu_container = $MenuContainer
 @onready var message_label = $MessageContainer/HBoxContainer/Label
 @onready var message_timer = $MessageContainer/Timer
 @onready var message_buffer_timer = $MessageContainer/Timer2
-@onready var flower_counter = $ScoreContainer/HBoxContainer/HBoxContainer/FlowersCount
-@onready var fruit_counter = $ScoreContainer/HBoxContainer/HBoxContainer2/FruitsCount
-@onready var garden_score = $ScoreContainer/HBoxContainer/HBoxContainer3/GardenScore
-@onready var plant2_button = $ButtonsContainer/HBoxContainer/PlantCrop2MenuButton
-@onready var day = $ScoreContainer/TimeContainer/Day
-@onready var day_timer = $ScoreContainer/TimeContainer/DayTimer
+@onready var flower_counter = $LeftSideContainer/HBoxContainer/FlowersCount
+@onready var fruit_counter = $LeftSideContainer/HBoxContainer2/FruitsCount
+@onready var garden_score = $LeftSideContainer/HBoxContainer3/GardenScore
+@onready var plant2_button = $TopMarginContainer/HBoxContainer/PlantCrop2MenuButton
+@onready var day = $BottomMarginContainer/TimeContainer/Day
+@onready var day_timer = $BottomMarginContainer/TimeContainer/DayTimer
+@onready var left_side_container = $LeftSideContainer
 
 var message_list = []
 
@@ -28,12 +29,14 @@ func _process(delta):
 func show_game_hud():
 	menu_container.set_visible(false)
 	buttons_container.set_visible(true)
-	score_container.set_visible(true)
+	bottom_margin_container.set_visible(true)
+	left_side_container.set_visible(true)
 	day_timer.start()
 
 func show_menu_hud():
 	buttons_container.set_visible(false)
-	score_container.set_visible(false)
+	bottom_margin_container.set_visible(false)
+	left_side_container.set_visible(false)
 	menu_container.set_visible(true)
 
 func update_message_list(text):
