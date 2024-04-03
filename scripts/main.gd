@@ -92,6 +92,8 @@ func _on_button_pressed(name):
 func _on_toggled_button(on, name):
 	if on:
 		match name:
+			"ShopButton":
+				hud.show_shop(true)
 			"ClearDebrisButton":
 				set_mode(MODES.CLEAR_DEBRIS)
 			"PlantCropMenuButton":
@@ -113,6 +115,8 @@ func _on_toggled_button(on, name):
 				set_mode(MODES.NULL)
 			"PauseButton", "PlayButton", "FastForwardButton":
 				pass
+			"ShopButton":
+				hud.show_shop(false)
 
 # handles player inputs
 func _unhandled_input(event):

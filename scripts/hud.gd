@@ -26,6 +26,8 @@ extends CanvasLayer
 @onready var day = $BottomMarginContainer/TimeContainer/Day
 @onready var day_timer = $BottomMarginContainer/TimeContainer/DayTimer
 
+@onready var shop_container = $ShopContainer
+
 var message_list = []
 
 # Called when the node enters the scene tree for the first time.
@@ -83,3 +85,8 @@ func update_plant_button_visibility(fruit_count):
 		plant2_button.set_visible(true)
 		fruit_counter_containers[1].set_visible(true)
 
+func show_shop(shopping):
+	if shopping:
+		shop_container.set_visible(true)
+	else:
+		shop_container.set_visible(false)
