@@ -7,10 +7,20 @@ extends CanvasLayer
 @onready var message_label = $MessageContainer/HBoxContainer/Label
 @onready var message_timer = $MessageContainer/Timer
 @onready var message_buffer_timer = $MessageContainer/Timer2
+
 @onready var flower_counter = $LeftSideContainer/HBoxContainer/FlowersCount
-@onready var fruit_counter = $LeftSideContainer/HBoxContainer2/FruitsCount
+@onready var fruit_counters = [
+	$LeftSideContainer/HBoxContainer2/FruitsCount, 
+	$LeftSideContainer/HBoxContainer4/FruitsCount
+]
+@onready var fruit_counter_containers = [
+	$LeftSideContainer/HBoxContainer2,
+	$LeftSideContainer/HBoxContainer4
+]
+
 @onready var garden_score = $LeftSideContainer/HBoxContainer3/GardenScore
 @onready var plant2_button = $TopMarginContainer/HBoxContainer/PlantCrop2MenuButton
+
 @onready var day = $BottomMarginContainer/TimeContainer/Day
 @onready var day_timer = $BottomMarginContainer/TimeContainer/DayTimer
 @onready var left_side_container = $LeftSideContainer
@@ -60,13 +70,15 @@ func _on_timer_timeout():
 func update_flower_counter(count):
 	flower_counter.set_text(str(count))
 
-func update_fruit_counter(count):
-	fruit_counter.set_text(str(count))
+func update_fruit_counter(fruits_count_array):
+	for i in range(0, fruits_count_array.size()):
+		fruit_counters[i].set_text(": " + str(fruits_count_array[i]))
 
 func update_garden_score(score):
 	garden_score.set_text(str(score))
 
 func update_plant_button_visibility(fruit_count):
-	if fruit_count >= 3:
+	if fruit_count[0] >= 3:
 		plant2_button.set_visible(true)
+		fruit_counter_containers[1].set_visible(true)
 

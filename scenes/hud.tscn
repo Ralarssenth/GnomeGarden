@@ -69,6 +69,7 @@ texture_pressed = ExtResource("8_y35mg")
 stretch_mode = 5
 
 [node name="PlantCrop2MenuButton" type="TextureButton" parent="TopMarginContainer/HBoxContainer" groups=["toggle_buttons"]]
+visible = false
 layout_mode = 2
 tooltip_text = "Plant Potato Seed"
 toggle_mode = true
@@ -171,6 +172,7 @@ text = ": 0"
 horizontal_alignment = 2
 
 [node name="HBoxContainer4" type="HBoxContainer" parent="LeftSideContainer"]
+visible = false
 layout_mode = 2
 theme_override_constants/separation = 4
 

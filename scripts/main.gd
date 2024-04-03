@@ -23,7 +23,7 @@ var harvestPos = []
 
 # score keeping
 var flower_count = 0
-var fruit_count = 0
+var fruit_count = [0, 0]
 var biodiversity = 1
 
 # Day tracking
@@ -356,7 +356,6 @@ func _on_gnome_arrived(pos: Vector2, job, reachable, current_gnome):
 				current_gnome.set_state(job)
 		
 		Globals.GNOME_STATE.HAULING:
-			fruit_count = fruit_count + 1
 			hud.update_fruit_counter(fruit_count)
 			current_gnome.set_state(Globals.GNOME_STATE.IDLE)
 			hud.update_plant_button_visibility(fruit_count)
@@ -471,6 +470,14 @@ func _on_gnome_finished_busy_animation(job, pos, current_gnome):
 			print("gnome set to idle after tending plant")
 		
 		Globals.GNOME_STATE.HARVESTING:
+			var fruit_type = current_level.get_cell_atlas_coords(current_level.FOREGROUND, map_pos)
+			var plant_number = 0
+			for plant in current_level.PLANTS:
+				if current_level.PLANTS[plant].find(fruit_type) != -1:
+					break
+				plant_number += 1
+			fruit_count[plant_number] += 1
+				 
 			current_level.erase_cell(current_level.FOREGROUND, map_pos)
 			current_level.erase_cell(current_level.HARVEST_SELECTION, map_pos)
 			current_level.set_cell(
