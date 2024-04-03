@@ -1,29 +1,30 @@
 extends CanvasLayer
 
 @onready var buttons_container = $TopMarginContainer
-@onready var message_container = $MessageContainer
-@onready var bottom_margin_container = $BottomMarginContainer
+@onready var plant2_button = $TopMarginContainer/HBoxContainer/PlantCrop2MenuButton
+
 @onready var menu_container = $MenuContainer
+
+@onready var message_container = $MessageContainer
 @onready var message_label = $MessageContainer/HBoxContainer/Label
 @onready var message_timer = $MessageContainer/Timer
 @onready var message_buffer_timer = $MessageContainer/Timer2
 
-@onready var flower_counter = $LeftSideContainer/HBoxContainer/FlowersCount
+@onready var left_side_container = $LeftSideContainer
+@onready var flower_counter = $LeftSideContainer/VBoxContainer/HBoxContainer/FlowersCount
 @onready var fruit_counters = [
-	$LeftSideContainer/HBoxContainer2/FruitsCount, 
-	$LeftSideContainer/HBoxContainer4/FruitsCount
+	$LeftSideContainer/VBoxContainer/HBoxContainer2/FruitsCount, 
+	$LeftSideContainer/VBoxContainer/HBoxContainer4/FruitsCount
 ]
 @onready var fruit_counter_containers = [
-	$LeftSideContainer/HBoxContainer2,
-	$LeftSideContainer/HBoxContainer4
+	$LeftSideContainer/VBoxContainer/HBoxContainer2,
+	$LeftSideContainer/VBoxContainer/HBoxContainer4
 ]
+@onready var garden_score = $LeftSideContainer/VBoxContainer/HBoxContainer3/GardenScore
 
-@onready var garden_score = $LeftSideContainer/HBoxContainer3/GardenScore
-@onready var plant2_button = $TopMarginContainer/HBoxContainer/PlantCrop2MenuButton
-
+@onready var bottom_margin_container = $BottomMarginContainer
 @onready var day = $BottomMarginContainer/TimeContainer/Day
 @onready var day_timer = $BottomMarginContainer/TimeContainer/DayTimer
-@onready var left_side_container = $LeftSideContainer
 
 var message_list = []
 

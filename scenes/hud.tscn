@@ -146,23 +146,34 @@ horizontal_alignment = 1
 
 [node name="Timer2" type="Timer" parent="MessageContainer"]
 
-[node name="LeftSideContainer" type="VBoxContainer" parent="."]
+[node name="LeftSideContainer" type="MarginContainer" parent="."]
 anchors_preset = 2
 anchor_top = 1.0
 anchor_bottom = 1.0
-offset_top = -136.0
+offset_top = -108.0
 offset_right = 189.0
 grow_vertical = 0
+size_flags_horizontal = 0
+size_flags_vertical = 0
+theme_override_constants/margin_left = 4
+theme_override_constants/margin_top = 4
+theme_override_constants/margin_right = 4
+theme_override_constants/margin_bottom = 4
 
-[node name="HBoxContainer2" type="HBoxContainer" parent="LeftSideContainer"]
+[node name="VBoxContainer" type="VBoxContainer" parent="LeftSideContainer"]
+layout_mode = 2
+size_flags_horizontal = 0
+size_flags_vertical = 0
+
+[node name="HBoxContainer2" type="HBoxContainer" parent="LeftSideContainer/VBoxContainer"]
 layout_mode = 2
 theme_override_constants/separation = 4
 
-[node name="TextureRect" type="TextureRect" parent="LeftSideContainer/HBoxContainer2"]
+[node name="TextureRect" type="TextureRect" parent="LeftSideContainer/VBoxContainer/HBoxContainer2"]
 layout_mode = 2
 texture = ExtResource("4_kwcus")
 
-[node name="FruitsCount" type="Label" parent="LeftSideContainer/HBoxContainer2"]
+[node name="FruitsCount" type="Label" parent="LeftSideContainer/VBoxContainer/HBoxContainer2"]
 layout_mode = 2
 theme_override_colors/font_outline_color = Color(0, 0, 0, 1)
 theme_override_constants/outline_size = 5
@@ -171,16 +182,16 @@ theme_override_font_sizes/font_size = 24
 text = ": 0"
 horizontal_alignment = 2
 
-[node name="HBoxContainer4" type="HBoxContainer" parent="LeftSideContainer"]
+[node name="HBoxContainer4" type="HBoxContainer" parent="LeftSideContainer/VBoxContainer"]
 visible = false
 layout_mode = 2
 theme_override_constants/separation = 4
 
-[node name="TextureRect" type="TextureRect" parent="LeftSideContainer/HBoxContainer4"]
+[node name="TextureRect" type="TextureRect" parent="LeftSideContainer/VBoxContainer/HBoxContainer4"]
 layout_mode = 2
 texture = ExtResource("5_y7dov")
 
-[node name="FruitsCount" type="Label" parent="LeftSideContainer/HBoxContainer4"]
+[node name="FruitsCount" type="Label" parent="LeftSideContainer/VBoxContainer/HBoxContainer4"]
 layout_mode = 2
 theme_override_colors/font_outline_color = Color(0, 0, 0, 1)
 theme_override_constants/outline_size = 5
@@ -189,11 +200,11 @@ theme_override_font_sizes/font_size = 24
 text = ": 0"
 horizontal_alignment = 2
 
-[node name="HBoxContainer" type="HBoxContainer" parent="LeftSideContainer"]
+[node name="HBoxContainer" type="HBoxContainer" parent="LeftSideContainer/VBoxContainer"]
 layout_mode = 2
 theme_override_constants/separation = 4
 
-[node name="FlowersLabel" type="Label" parent="LeftSideContainer/HBoxContainer"]
+[node name="FlowersLabel" type="Label" parent="LeftSideContainer/VBoxContainer/HBoxContainer"]
 layout_mode = 2
 theme_override_colors/font_outline_color = Color(0, 0, 0, 1)
 theme_override_constants/outline_size = 5
@@ -201,7 +212,7 @@ theme_override_fonts/font = ExtResource("2_qdxsb")
 theme_override_font_sizes/font_size = 24
 text = "Flowers: "
 
-[node name="FlowersCount" type="Label" parent="LeftSideContainer/HBoxContainer"]
+[node name="FlowersCount" type="Label" parent="LeftSideContainer/VBoxContainer/HBoxContainer"]
 layout_mode = 2
 theme_override_colors/font_outline_color = Color(0, 0, 0, 1)
 theme_override_constants/outline_size = 5
@@ -209,11 +220,11 @@ theme_override_fonts/font = ExtResource("2_qdxsb")
 theme_override_font_sizes/font_size = 24
 text = "0"
 
-[node name="HBoxContainer3" type="HBoxContainer" parent="LeftSideContainer"]
+[node name="HBoxContainer3" type="HBoxContainer" parent="LeftSideContainer/VBoxContainer"]
 layout_mode = 2
 theme_override_constants/separation = 4
 
-[node name="GardenScoreLabel" type="Label" parent="LeftSideContainer/HBoxContainer3"]
+[node name="GardenScoreLabel" type="Label" parent="LeftSideContainer/VBoxContainer/HBoxContainer3"]
 layout_mode = 2
 theme_override_colors/font_outline_color = Color(0, 0, 0, 1)
 theme_override_constants/outline_size = 5
@@ -221,7 +232,7 @@ theme_override_fonts/font = ExtResource("2_qdxsb")
 theme_override_font_sizes/font_size = 24
 text = "Garden Score:"
 
-[node name="GardenScore" type="Label" parent="LeftSideContainer/HBoxContainer3"]
+[node name="GardenScore" type="Label" parent="LeftSideContainer/VBoxContainer/HBoxContainer3"]
 layout_mode = 2
 theme_override_colors/font_outline_color = Color(0, 0, 0, 1)
 theme_override_constants/outline_size = 5
@@ -234,16 +245,14 @@ anchors_preset = 12
 anchor_top = 1.0
 anchor_right = 1.0
 anchor_bottom = 1.0
+offset_left = 362.0
+offset_top = -38.0
 grow_horizontal = 2
 grow_vertical = 0
 theme_override_constants/margin_left = 4
 theme_override_constants/margin_top = 4
 theme_override_constants/margin_right = 4
 theme_override_constants/margin_bottom = 4
-
-[node name="HBoxContainer" type="HBoxContainer" parent="BottomMarginContainer"]
-layout_mode = 2
-theme_override_constants/separation = 32
 
 [node name="TimeContainer" type="HBoxContainer" parent="BottomMarginContainer"]
 layout_mode = 2
