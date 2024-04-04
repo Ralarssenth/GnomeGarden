@@ -26,7 +26,7 @@ extends CanvasLayer
 @onready var day = $BottomMarginContainer/TimeContainer/Day
 @onready var day_timer = $BottomMarginContainer/TimeContainer/DayTimer
 
-@onready var shop_container = $ShopContainer
+@onready var shop = $Shop
 
 var message_list = []
 
@@ -87,6 +87,6 @@ func update_plant_button_visibility(fruit_count):
 
 func show_shop(shopping):
 	if shopping:
-		shop_container.set_visible(true)
+		shop.set_visible(true)
 	else:
-		shop_container.set_visible(false)
+		shop.set_visible(false)
