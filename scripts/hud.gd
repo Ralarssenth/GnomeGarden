@@ -1,7 +1,10 @@
 extends CanvasLayer
 
 @onready var buttons_container = $TopMarginContainer
-@onready var plant2_button = $TopMarginContainer/HBoxContainer/PlantCrop2MenuButton
+@onready var plant_buttons = [
+	$TopMarginContainer/HBoxContainer/PlantCropMenuButton,
+	$TopMarginContainer/HBoxContainer/PlantCrop2MenuButton
+]
 
 @onready var menu_container = $MenuContainer
 
@@ -74,16 +77,15 @@ func update_flower_counter(count):
 	flower_counter.set_text(str(count))
 
 func update_fruit_counter(fruits_count_array):
-	for i in range(0, fruits_count_array.size()):
+	for i in range(0, fruits_count_array.size()-1):
 		fruit_counters[i].set_text(": " + str(fruits_count_array[i]))
 
 func update_garden_score(score):
 	garden_score.set_text(str(score))
 
-func update_plant_button_visibility(fruit_count):
-	if fruit_count[0] >= 3:
-		plant2_button.set_visible(true)
-		fruit_counter_containers[1].set_visible(true)
+func update_plant_button_visibility(fruit_id):
+	plant_buttons[fruit_id].set_visible(true)
+	fruit_counter_containers[fruit_id].set_visible(true)
 
 func show_shop(shopping):
 		shop.set_visible(shopping)

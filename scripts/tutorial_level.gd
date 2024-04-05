@@ -5,7 +5,7 @@ extends "res://scripts/level.gd"
 func _ready():
 	set_welcome([
 		"Welcome to Gnome Garden!!", 
-		"Click the Plant Seed button to get started."
+		"Click the Shop button to get started."
 		])
 	set_game_mode(Globals.GAME_MODES.STANDARD)
 	set_days(90)

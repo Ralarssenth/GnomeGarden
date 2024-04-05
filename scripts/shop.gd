@@ -12,7 +12,6 @@ var default_top_text = [
 	"The first one's free!"
 ]
 
-
 # Called when the node enters the scene tree for the first time.
 func _ready():
 	bottom_message.set_text(default_bottom_text)
@@ -37,9 +36,17 @@ func _on_item_list_item_selected(index):
 			top_message.set_text(default_top_text[randi_range(0, default_top_text.size()-1)])
 
 
-
 func _on_no_button_pressed():
 	confirmation_buttons.set_visible(false)
 	item_list.deselect_all()
 	bottom_message.set_text(default_bottom_text)
 	top_message.set_text(default_top_text[randi_range(0, default_top_text.size()-1)])
+
+
+
+func _on_yes_button_pressed():
+	var selected_items = item_list.get_selected_items()
+	var item_index = selected_items[0]
+	item_list.set_item_disabled(item_index, true)
+	Globals.purchased.emit(item_index)
+

@@ -10,6 +10,7 @@ var sandbox_level = preload("res://scenes/sandbox.tscn")
 # level tracking
 var current_level
 var in_level = false
+var in_shop = false
 var camera_zoom
 
 # object tracking
@@ -23,7 +24,7 @@ var harvestPos = []
 
 # score keeping
 var flower_count = 0
-var fruit_count = [0, 0]
+var fruit_count = Globals.fruit_counter
 var biodiversity = 1
 
 # Day tracking
@@ -38,6 +39,7 @@ var mode = MODES.NULL
 # Called when the node enters the scene tree for the first time.
 func _ready():
 	register_buttons()
+	register_signals()
 	hud.show_menu_hud()
 	
 
@@ -58,6 +60,10 @@ func register_buttons():
 	for button in toggle_buttons:
 		var callable = Callable(self, "_on_toggled_button").bind(button.name)
 		button.connect("toggled", callable)
+
+func register_signals():
+	var callable = Callable(self, "_on_purchase")
+	Globals.connect("purchased", callable)
 
 func start_level(level):
 	current_level = level.instantiate()
@@ -93,7 +99,8 @@ func _on_toggled_button(on, name):
 	if on:
 		match name:
 			"ShopButton":
-				hud.show_shop(true)
+				in_shop = true
+				hud.show_shop(in_shop)
 			"ClearDebrisButton":
 				set_mode(MODES.CLEAR_DEBRIS)
 			"PlantCropMenuButton":
@@ -116,12 +123,13 @@ func _on_toggled_button(on, name):
 			"PauseButton", "PlayButton", "FastForwardButton":
 				pass
 			"ShopButton":
-				hud.show_shop(false)
+				in_shop = false
+				hud.show_shop(in_shop)
 
 # handles player inputs
 func _unhandled_input(event):
 	var mouse_pos = get_global_mouse_position()
-	if in_level:
+	if in_level and not in_shop:
 		if event.is_action_pressed("scroll up") and camera_zoom < Vector2(5, 5):
 			camera_zoom = camera.get_zoom()
 			camera_zoom += Vector2(1,1)
@@ -360,9 +368,7 @@ func _on_gnome_arrived(pos: Vector2, job, reachable, current_gnome):
 				current_gnome.set_state(job)
 		
 		Globals.GNOME_STATE.HAULING:
-			hud.update_fruit_counter(fruit_count)
 			current_gnome.set_state(Globals.GNOME_STATE.IDLE)
-			hud.update_plant_button_visibility(fruit_count)
 
 # Updates the tilemap based on what the gnome was just doing
 # Sets the gnome back to idle now that he's done his job
@@ -481,6 +487,7 @@ func _on_gnome_finished_busy_animation(job, pos, current_gnome):
 					break
 				plant_number += 1
 			fruit_count[plant_number] += 1
+			hud.update_fruit_counter(fruit_count)
 				 
 			current_level.erase_cell(current_level.FOREGROUND, map_pos)
 			current_level.erase_cell(current_level.HARVEST_SELECTION, map_pos)
@@ -563,4 +570,6 @@ func update_garden_score():
 	hud.update_garden_score(score)
 	print("garden score updated")
 
-
+func _on_purchase(index):
+	if index < current_level.PLANTS.size():
+		hud.update_plant_button_visibility(index)

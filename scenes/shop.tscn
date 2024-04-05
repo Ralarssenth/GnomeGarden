@@ -179,7 +179,7 @@ theme_override_constants/margin_bottom = 4
 layout_mode = 2
 alignment = 1
 
-[node name="YesButton" type="TextureButton" parent="ConfirmationButtonsContainer/HBoxContainer" groups=["buttons"]]
+[node name="YesButton" type="TextureButton" parent="ConfirmationButtonsContainer/HBoxContainer"]
 layout_mode = 2
 texture_normal = ExtResource("4_3en3s")
 texture_pressed = ExtResource("5_hax5p")
@@ -218,4 +218,5 @@ horizontal_alignment = 1
 vertical_alignment = 1
 
 [connection signal="item_selected" from="ItemListContainer/ItemList" to="." method="_on_item_list_item_selected"]
+[connection signal="pressed" from="ConfirmationButtonsContainer/HBoxContainer/YesButton" to="." method="_on_yes_button_pressed"]
 [connection signal="pressed" from="ConfirmationButtonsContainer/HBoxContainer/NoButton" to="." method="_on_no_button_pressed"]
