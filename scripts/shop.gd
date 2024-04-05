@@ -14,14 +14,17 @@ var default_top_text = [
 
 # Called when the node enters the scene tree for the first time.
 func _ready():
-	bottom_message.set_text(default_bottom_text)
-	top_message.set_text(default_top_text[randi_range(0, default_top_text.size()-1)])
+	set_default_values()
 
 
 # Called every frame. 'delta' is the elapsed time since the previous frame.
 func _process(delta):
 	pass
 
+func set_default_values():
+	bottom_message.set_text(default_bottom_text)
+	top_message.set_text(default_top_text[randi_range(0, default_top_text.size()-1)])
+	item_list.deselect_all()
 
 func _on_item_list_item_selected(index):
 	confirmation_buttons.set_visible(true)
