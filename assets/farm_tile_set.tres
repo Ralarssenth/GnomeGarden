@@ -1,10 +1,6 @@
-[gd_resource type="TileSet" load_steps=14 format=3 uid="uid://bw3no5fgo7o1"]
+[gd_resource type="TileSet" load_steps=9 format=3 uid="uid://bw3no5fgo7o1"]
 
 [ext_resource type="Texture2D" uid="uid://ck51e4inylskx" path="res://assets/free version/tileset1.png" id="1_8cuvo"]
-[ext_resource type="PackedScene" uid="uid://00mgsdnce8op" path="res://scenes/plant_1a.tscn" id="2_2bv60"]
-[ext_resource type="PackedScene" uid="uid://jgtitofpug0" path="res://scenes/plant_1b.tscn" id="3_5i45a"]
-[ext_resource type="PackedScene" uid="uid://iwqem6g4tks0" path="res://scenes/plant_2a.tscn" id="4_sx5x2"]
-[ext_resource type="PackedScene" uid="uid://da6cpy1a7lkd0" path="res://scenes/plant_2b.tscn" id="5_7lcmb"]
 
 [sub_resource type="NavigationPolygon" id="NavigationPolygon_o0q3j"]
 vertices = PackedVector2Array(8, 8, -8, 8, -8, -8, 8, -8)
@@ -89,13 +85,6 @@ texture = ExtResource("1_8cuvo")
 1:1/0 = 0
 1:1/0/custom_data_0 = true
 
-[sub_resource type="TileSetScenesCollectionSource" id="TileSetScenesCollectionSource_ww8e1"]
-resource_name = "plant1"
-scenes/0/scene = ExtResource("2_2bv60")
-scenes/1/scene = ExtResource("3_5i45a")
-scenes/2/scene = ExtResource("4_sx5x2")
-scenes/3/scene = ExtResource("5_7lcmb")
-
 [resource]
 terrain_set_0/mode = 0
 terrain_set_0/terrain_0/name = "Grass"
@@ -107,5 +96,4 @@ custom_data_layer_0/name = "debris"
 custom_data_layer_0/type = 1
 custom_data_layer_1/name = "infertility"
 custom_data_layer_1/type = 3
-sources/1 = SubResource("TileSetScenesCollectionSource_ww8e1")
 sources/0 = SubResource("TileSetAtlasSource_fcur7")

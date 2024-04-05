@@ -86,7 +86,4 @@ func update_plant_button_visibility(fruit_count):
 		fruit_counter_containers[1].set_visible(true)
 
 func show_shop(shopping):
-	if shopping:
-		shop.set_visible(true)
-	else:
-		shop.set_visible(false)
+		shop.set_visible(shopping)

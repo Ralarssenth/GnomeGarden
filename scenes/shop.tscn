@@ -1,123 +1,221 @@
-[gd_scene load_steps=5 format=3 uid="uid://g4ig6h8qbxvl"]
+[gd_scene load_steps=12 format=3 uid="uid://g4ig6h8qbxvl"]
 
+[ext_resource type="Script" path="res://scripts/shop.gd" id="1_a0og2"]
 [ext_resource type="Texture2D" uid="uid://bken6it4e2dft" path="res://assets/made by me/Shop.png" id="1_j4vkj"]
-[ext_resource type="Texture2D" uid="uid://322j1dgcjvw1" path="res://assets/free version/bird.png" id="2_ngih0"]
+[ext_resource type="Texture2D" uid="uid://bd43t4lhuporh" path="res://assets/free version/bird_animation_spritesheet.png" id="2_5m16l"]
 [ext_resource type="FontFile" uid="uid://b5k5jn21eha6y" path="res://assets/fonts/VarelaRound-Regular.ttf" id="3_yignr"]
+[ext_resource type="Texture2D" uid="uid://c5vd2d2dygxqw" path="res://assets/fonts/small_button.png" id="4_3en3s"]
 [ext_resource type="Texture2D" uid="uid://65hd5ujfymg5" path="res://assets/free version/potatoSeed_icon.png" id="4_s6rbk"]
+[ext_resource type="Texture2D" uid="uid://dvlu7dhdinqdj" path="res://assets/fonts/small_button_pressed.png" id="5_hax5p"]
+[ext_resource type="Texture2D" uid="uid://dk6bj18op0rt4" path="res://assets/free version/tomatoSeed_icon.png" id="5_kqex2"]
 
-[node name="ShopContainer" type="MarginContainer"]
+[sub_resource type="Animation" id="Animation_3o186"]
+length = 0.001
+tracks/0/type = "value"
+tracks/0/imported = false
+tracks/0/enabled = true
+tracks/0/path = NodePath(".:frame")
+tracks/0/interp = 1
+tracks/0/loop_wrap = true
+tracks/0/keys = {
+"times": PackedFloat32Array(0),
+"transitions": PackedFloat32Array(1),
+"update": 1,
+"values": [0]
+}
+
+[sub_resource type="Animation" id="Animation_1ianj"]
+resource_name = "talking"
+length = 1.6
+loop_mode = 1
+tracks/0/type = "value"
+tracks/0/imported = false
+tracks/0/enabled = true
+tracks/0/path = NodePath(".:frame")
+tracks/0/interp = 1
+tracks/0/loop_wrap = true
+tracks/0/keys = {
+"times": PackedFloat32Array(0, 0.4, 0.8, 1.2),
+"transitions": PackedFloat32Array(1, 1, 1, 1),
+"update": 1,
+"values": [0, 3, 2, 1]
+}
+
+[sub_resource type="AnimationLibrary" id="AnimationLibrary_gonk5"]
+_data = {
+"RESET": SubResource("Animation_3o186"),
+"talking": SubResource("Animation_1ianj")
+}
+
+[node name="Shop" type="CanvasLayer"]
+script = ExtResource("1_a0og2")
+
+[node name="ShopBackground" type="TextureRect" parent="."]
 anchors_preset = 5
 anchor_left = 0.5
 anchor_right = 0.5
-offset_left = -400.0
-offset_right = 400.0
-offset_bottom = 891.0
+offset_left = -406.0
+offset_right = 406.0
+offset_bottom = 649.0
 grow_horizontal = 2
-
-[node name="ShopBackground" type="TextureRect" parent="."]
-layout_mode = 2
 texture = ExtResource("1_j4vkj")
 stretch_mode = 4
 
-[node name="MarginContainer" type="MarginContainer" parent="ShopBackground"]
-layout_mode = 2
-offset_left = 60.0
-offset_top = 55.0
-offset_right = 800.0
-offset_bottom = 891.0
-grow_horizontal = 2
-theme_override_constants/margin_left = 4
-theme_override_constants/margin_top = 4
-theme_override_constants/margin_right = 4
-theme_override_constants/margin_bottom = 4
+[node name="BirdSprite" type="Sprite2D" parent="."]
+position = Vector2(300, 105)
+scale = Vector2(8, 8)
+texture = ExtResource("2_5m16l")
+hframes = 4
+vframes = 2
 
-[node name="VBoxContainer" type="VBoxContainer" parent="ShopBackground/MarginContainer"]
-layout_mode = 2
+[node name="AnimationPlayer" type="AnimationPlayer" parent="BirdSprite"]
+libraries = {
+"": SubResource("AnimationLibrary_gonk5")
+}
 
-[node name="HBoxContainer" type="HBoxContainer" parent="ShopBackground/MarginContainer/VBoxContainer"]
-layout_mode = 2
-
-[node name="VBoxContainer" type="VBoxContainer" parent="ShopBackground/MarginContainer/VBoxContainer/HBoxContainer"]
-layout_mode = 2
-
-[node name="TextureRect" type="TextureRect" parent="ShopBackground/MarginContainer/VBoxContainer/HBoxContainer/VBoxContainer"]
-layout_mode = 2
-texture = ExtResource("2_ngih0")
-expand_mode = 5
-stretch_mode = 5
-
-[node name="ReferenceRect" type="ReferenceRect" parent="ShopBackground/MarginContainer/VBoxContainer/HBoxContainer/VBoxContainer"]
-custom_minimum_size = Vector2(128, 10)
-layout_mode = 2
-
-[node name="ReferenceRect2" type="ReferenceRect" parent="ShopBackground/MarginContainer/VBoxContainer/HBoxContainer"]
-custom_minimum_size = Vector2(50, 0)
-layout_mode = 2
-border_width = 0.0
-
-[node name="MarginContainer2" type="MarginContainer" parent="ShopBackground/MarginContainer/VBoxContainer/HBoxContainer"]
-layout_mode = 2
-
-[node name="VBoxContainer2" type="VBoxContainer" parent="ShopBackground/MarginContainer/VBoxContainer/HBoxContainer/MarginContainer2"]
-layout_mode = 2
-
-[node name="ReferenceRect" type="ReferenceRect" parent="ShopBackground/MarginContainer/VBoxContainer/HBoxContainer/MarginContainer2/VBoxContainer2"]
-custom_minimum_size = Vector2(530, 82)
-layout_mode = 2
-border_width = 0.0
-
-[node name="MarginContainer" type="MarginContainer" parent="ShopBackground/MarginContainer/VBoxContainer/HBoxContainer/MarginContainer2/VBoxContainer2"]
-custom_minimum_size = Vector2(0, 80)
-layout_mode = 2
-theme_override_constants/margin_left = 0
-
-[node name="ColorRect" type="ColorRect" parent="ShopBackground/MarginContainer/VBoxContainer/HBoxContainer/MarginContainer2/VBoxContainer2/MarginContainer"]
-layout_mode = 2
+[node name="TopMessageRect" type="ColorRect" parent="."]
+offset_left = 428.0
+offset_top = 151.0
+offset_right = 957.0
+offset_bottom = 231.0
 color = Color(0, 0, 0, 0.588235)
 
-[node name="MarginContainer" type="MarginContainer" parent="ShopBackground/MarginContainer/VBoxContainer/HBoxContainer/MarginContainer2/VBoxContainer2/MarginContainer"]
+[node name="TopMessage" type="Label" parent="TopMessageRect"]
 layout_mode = 2
-theme_override_constants/margin_left = 4
-theme_override_constants/margin_top = 4
-theme_override_constants/margin_right = 4
-theme_override_constants/margin_bottom = 4
+offset_left = 4.0
+offset_top = 4.0
+offset_right = 525.0
+offset_bottom = 75.0
+size_flags_horizontal = 3
+theme_override_colors/font_outline_color = Color(0, 0, 0, 1)
+theme_override_constants/outline_size = 5
+theme_override_fonts/font = ExtResource("3_yignr")
+theme_override_font_sizes/font_size = 24
+text = "This is bird words! Two lines of them! And they go on for a bit..."
+horizontal_alignment = 1
+vertical_alignment = 1
+autowrap_mode = 3
+clip_text = true
+text_overrun_behavior = 4
 
-[node name="HBoxContainer4" type="HBoxContainer" parent="ShopBackground/MarginContainer/VBoxContainer/HBoxContainer/MarginContainer2/VBoxContainer2/MarginContainer/MarginContainer"]
-layout_mode = 2
-mouse_filter = 2
+[node name="ItemListContainer" type="MarginContainer" parent="."]
+anchors_preset = 8
+anchor_left = 0.5
+anchor_top = 0.5
+anchor_right = 0.5
+anchor_bottom = 0.5
+offset_left = -239.0
+offset_top = -71.0
+offset_right = 320.0
+offset_bottom = 164.0
+grow_horizontal = 2
+grow_vertical = 2
+theme_override_constants/margin_left = 8
+theme_override_constants/margin_top = 8
+theme_override_constants/margin_right = 8
+theme_override_constants/margin_bottom = 8
 
-[node name="TopMessage" type="Label" parent="ShopBackground/MarginContainer/VBoxContainer/HBoxContainer/MarginContainer2/VBoxContainer2/MarginContainer/MarginContainer/HBoxContainer4"]
+[node name="ItemList" type="ItemList" parent="ItemListContainer"]
 layout_mode = 2
 theme_override_colors/font_outline_color = Color(0, 0, 0, 1)
 theme_override_constants/outline_size = 5
 theme_override_fonts/font = ExtResource("3_yignr")
 theme_override_font_sizes/font_size = 24
-text = "This is bird words!"
-horizontal_alignment = 1
+item_count = 6
+item_0/text = "Unlock: Tomato Seed"
+item_0/icon = ExtResource("5_kqex2")
+item_1/text = "Unlock: Potato Seed"
+item_1/icon = ExtResource("4_s6rbk")
+item_2/text = "Unlock: Sunflower Seed"
+item_2/icon = ExtResource("5_kqex2")
+item_3/text = "Unlock: Seed"
+item_3/icon = ExtResource("5_kqex2")
+item_4/text = "Unlock: Seed"
+item_4/icon = ExtResource("5_kqex2")
+item_5/text = "Unlock: Seed"
+item_5/icon = ExtResource("5_kqex2")
 
-[node name="ReferenceRect2" type="ReferenceRect" parent="ShopBackground/MarginContainer/VBoxContainer"]
-custom_minimum_size = Vector2(0, 16)
-layout_mode = 2
-border_width = 0.0
+[node name="BottomMessageRect" type="ColorRect" parent="."]
+offset_left = 336.0
+offset_top = 493.0
+offset_right = 897.0
+offset_bottom = 533.0
+color = Color(0, 0, 0, 0.588235)
 
-[node name="HBoxContainer2" type="HBoxContainer" parent="ShopBackground/MarginContainer/VBoxContainer"]
+[node name="BottomMessage" type="Label" parent="BottomMessageRect"]
 layout_mode = 2
-
-[node name="ReferenceRect" type="ReferenceRect" parent="ShopBackground/MarginContainer/VBoxContainer/HBoxContainer2"]
-custom_minimum_size = Vector2(32, 0)
-layout_mode = 2
-border_width = 0.0
-
-[node name="ItemList" type="ItemList" parent="ShopBackground/MarginContainer/VBoxContainer/HBoxContainer2"]
-custom_minimum_size = Vector2(682, 0)
-layout_mode = 2
-theme_override_colors/font_color = Color(1, 1, 1, 1)
+offset_left = 4.0
+offset_top = 5.0
+offset_right = 557.0
+offset_bottom = 35.0
 theme_override_colors/font_outline_color = Color(0, 0, 0, 1)
-theme_override_constants/outline_size = 4
+theme_override_constants/outline_size = 5
 theme_override_fonts/font = ExtResource("3_yignr")
-theme_override_font_sizes/font_size = 20
-auto_height = true
-item_count = 1
-icon_scale = 1.3
-item_0/text = "Potato Seeds"
-item_0/icon = ExtResource("4_s6rbk")
+theme_override_font_sizes/font_size = 24
+text = "Cost: one line with icons"
+vertical_alignment = 1
+clip_text = true
+text_overrun_behavior = 4
+
+[node name="ConfirmationButtonsContainer" type="MarginContainer" parent="."]
+visible = false
+anchors_preset = 7
+anchor_left = 0.5
+anchor_top = 1.0
+anchor_right = 0.5
+anchor_bottom = 1.0
+offset_left = -316.0
+offset_top = -115.0
+offset_right = 400.0
+offset_bottom = -42.0
+grow_horizontal = 2
+grow_vertical = 0
+theme_override_constants/margin_left = 56
+theme_override_constants/margin_top = 4
+theme_override_constants/margin_right = 56
+theme_override_constants/margin_bottom = 4
+
+[node name="HBoxContainer" type="HBoxContainer" parent="ConfirmationButtonsContainer"]
+layout_mode = 2
+alignment = 1
+
+[node name="YesButton" type="TextureButton" parent="ConfirmationButtonsContainer/HBoxContainer" groups=["buttons"]]
+layout_mode = 2
+texture_normal = ExtResource("4_3en3s")
+texture_pressed = ExtResource("5_hax5p")
+
+[node name="Label" type="Label" parent="ConfirmationButtonsContainer/HBoxContainer/YesButton"]
+layout_mode = 0
+offset_left = 21.0
+offset_top = 13.0
+offset_right = 170.0
+offset_bottom = 54.0
+theme_override_colors/font_outline_color = Color(0, 0, 0, 1)
+theme_override_constants/outline_size = 5
+theme_override_fonts/font = ExtResource("3_yignr")
+theme_override_font_sizes/font_size = 24
+text = "Ok"
+horizontal_alignment = 1
+vertical_alignment = 1
+
+[node name="NoButton" type="TextureButton" parent="ConfirmationButtonsContainer/HBoxContainer"]
+layout_mode = 2
+texture_normal = ExtResource("4_3en3s")
+texture_pressed = ExtResource("5_hax5p")
+
+[node name="Label" type="Label" parent="ConfirmationButtonsContainer/HBoxContainer/NoButton"]
+layout_mode = 0
+offset_left = 21.0
+offset_top = 13.0
+offset_right = 170.0
+offset_bottom = 54.0
+theme_override_colors/font_outline_color = Color(0, 0, 0, 1)
+theme_override_constants/outline_size = 5
+theme_override_fonts/font = ExtResource("3_yignr")
+theme_override_font_sizes/font_size = 24
+text = "Nevermind"
+horizontal_alignment = 1
+vertical_alignment = 1
+
+[connection signal="item_selected" from="ItemListContainer/ItemList" to="." method="_on_item_list_item_selected"]
+[connection signal="pressed" from="ConfirmationButtonsContainer/HBoxContainer/NoButton" to="." method="_on_no_button_pressed"]
