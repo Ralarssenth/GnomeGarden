@@ -10,7 +10,7 @@ const REMOVE_COLOR = Color(1,1,1,1)
 const HIGHLIGHT_COLOR = Color(1,1,1,0.4)
 const REMOVE_HIGHLIGHT_COLOR = Color(1,1,1,0)
 
-var fruit_counter = [0, 0]
+var fruit_counter = []
 
 signal purchased
 

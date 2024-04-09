@@ -1,6 +1,7 @@
 extends CanvasLayer
 
 @onready var buttons_container = $TopMarginContainer
+@onready var shop_button = $TopMarginContainer/HBoxContainer/ShopButton
 @onready var plant_buttons = [
 	$TopMarginContainer/HBoxContainer/PlantCropMenuButton,
 	$TopMarginContainer/HBoxContainer/PlantCrop2MenuButton
@@ -35,12 +36,20 @@ var message_list = []
 
 # Called when the node enters the scene tree for the first time.
 func _ready():
-	pass # Replace with function body.
+	register_buttons()
 
 
 # Called every frame. 'delta' is the elapsed time since the previous frame.
 func _process(delta):
 	pass
+
+
+func register_buttons():
+	var close_shop_buttons = get_tree().get_nodes_in_group("close_shop_buttons")
+	for button in close_shop_buttons:
+		var callable = Callable(self, "_close_shop")
+		button.connect("pressed", callable)
+
 
 func show_game_hud():
 	menu_container.set_visible(false)
@@ -76,9 +85,9 @@ func _on_timer_timeout():
 func update_flower_counter(count):
 	flower_counter.set_text(str(count))
 
-func update_fruit_counter(fruits_count_array):
-	for i in range(0, fruits_count_array.size()-1):
-		fruit_counters[i].set_text(": " + str(fruits_count_array[i]))
+func update_fruit_counter():
+	for i in range(0, Globals.fruit_counter.size()-1):
+		fruit_counters[i].set_text(": " + str(Globals.fruit_counter[i]))
 
 func update_garden_score(score):
 	garden_score.set_text(str(score))
@@ -91,3 +100,6 @@ func show_shop(shopping):
 	shop.set_visible(shopping)
 	if shopping:
 		shop.set_default_values()
+
+func _close_shop():
+	shop_button.set_pressed(false)

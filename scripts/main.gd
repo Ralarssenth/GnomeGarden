@@ -24,7 +24,6 @@ var harvestPos = []
 
 # score keeping
 var flower_count = 0
-var fruit_count = Globals.fruit_counter
 var biodiversity = 1
 
 # Day tracking
@@ -60,6 +59,7 @@ func register_buttons():
 	for button in toggle_buttons:
 		var callable = Callable(self, "_on_toggled_button").bind(button.name)
 		button.connect("toggled", callable)
+	
 
 func register_signals():
 	var callable = Callable(self, "_on_purchase")
@@ -75,6 +75,7 @@ func start_level(level):
 	update_hud_messages(current_level.get_welcome())
 	start_days()
 	update_garden_score()
+	current_level.initialize_player_wallet()
 
 func game_over():
 	update_hud_messages(["Game Over", "Thanks for gardening!"])
@@ -486,8 +487,8 @@ func _on_gnome_finished_busy_animation(job, pos, current_gnome):
 				if current_level.PLANTS[plant].find(fruit_type) != -1:
 					break
 				plant_number += 1
-			fruit_count[plant_number] += 1
-			hud.update_fruit_counter(fruit_count)
+			Globals.fruit_counter[plant_number] += 1
+			hud.update_fruit_counter()
 				 
 			current_level.erase_cell(current_level.FOREGROUND, map_pos)
 			current_level.erase_cell(current_level.HARVEST_SELECTION, map_pos)
@@ -572,4 +573,15 @@ func update_garden_score():
 
 func _on_purchase(index):
 	if index < current_level.PLANTS.size():
+		var seed_cost = current_level.SEED_COST[index]
+		for i in range(0, Globals.fruit_counter.size()-1):
+			if Globals.fruit_counter[i] < seed_cost[i]:
+				hud.shop.failed_to_buy()
+				return
+			else:
+				hud.shop.succeeded_buy()
+				Globals.fruit_counter[i] -= seed_cost[i]
+		hud.update_fruit_counter()
 		hud.update_plant_button_visibility(index)
+		
+			

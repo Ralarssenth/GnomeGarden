@@ -39,6 +39,13 @@ const PLANTS = {
 const PLANT_1_GROW_TIME = 10.0 
 const PLANT_2_GROW_TIME = 20.0
 
+const SEED_COST = {
+	0:
+		[0,0],
+	1:
+		[3,0]
+}
+
 # Tutorial Text
 var welcome = []
 
@@ -49,7 +56,7 @@ var game_mode
 
 # Called when the node enters the scene tree for the first time.
 func _ready():
-	pass # Replace with function body.
+	pass
 
 
 # Called every frame. 'delta' is the elapsed time since the previous frame.
@@ -117,3 +124,8 @@ func get_biodiversity():
 		if not plant_holder.is_empty():
 			biodiv += 1
 	return biodiv
+
+func initialize_player_wallet():
+	for i in range(0, PLANTS.size()):
+		Globals.fruit_counter.push_back(0)
+		print(str(i, Globals.fruit_counter[i]))

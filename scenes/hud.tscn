@@ -167,7 +167,7 @@ offset_top = -108.0
 offset_right = 189.0
 grow_vertical = 0
 size_flags_horizontal = 0
-size_flags_vertical = 0
+size_flags_vertical = 8
 theme_override_constants/margin_left = 4
 theme_override_constants/margin_top = 4
 theme_override_constants/margin_right = 4
@@ -176,9 +176,10 @@ theme_override_constants/margin_bottom = 4
 [node name="VBoxContainer" type="VBoxContainer" parent="LeftSideContainer"]
 layout_mode = 2
 size_flags_horizontal = 0
-size_flags_vertical = 0
+size_flags_vertical = 8
 
 [node name="HBoxContainer2" type="HBoxContainer" parent="LeftSideContainer/VBoxContainer"]
+visible = false
 layout_mode = 2
 theme_override_constants/separation = 4
 
@@ -192,7 +193,8 @@ theme_override_colors/font_outline_color = Color(0, 0, 0, 1)
 theme_override_constants/outline_size = 5
 theme_override_fonts/font = ExtResource("2_qdxsb")
 theme_override_font_sizes/font_size = 24
-text = ": 0"
+text = ": default
+"
 horizontal_alignment = 2
 
 [node name="HBoxContainer4" type="HBoxContainer" parent="LeftSideContainer/VBoxContainer"]
