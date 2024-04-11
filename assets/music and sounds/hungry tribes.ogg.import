@@ -1,0 +1,19 @@
+[remap]
+
+importer="oggvorbisstr"
+type="AudioStreamOggVorbis"
+uid="uid://bx51b0htfid5y"
+path="res://.godot/imported/hungry tribes.ogg-dd48db1671a817a6e178d324cab214b0.oggvorbisstr"
+
+[deps]
+
+source_file="res://assets/music and sounds/hungry tribes.ogg"
+dest_files=["res://.godot/imported/hungry tribes.ogg-dd48db1671a817a6e178d324cab214b0.oggvorbisstr"]
+
+[params]
+
+loop=false
+loop_offset=0
+bpm=0
+beat_count=0
+bar_beats=4

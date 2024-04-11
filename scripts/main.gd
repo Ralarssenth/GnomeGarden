@@ -90,6 +90,7 @@ func register_gnome_signals(current_gnome):
 
 # Called on menu button press
 func _on_button_pressed(name):
+	hud.play_button_click()
 	match name:
 		"TutorialLevel":
 			start_level(tutorial_level)
@@ -97,6 +98,7 @@ func _on_button_pressed(name):
 			start_level(sandbox_level)
 
 func _on_toggled_button(on, name):
+	hud.play_button_click()
 	if on:
 		match name:
 			"ShopButton":
@@ -121,11 +123,11 @@ func _on_toggled_button(on, name):
 		match name:
 			"ClearDebrisButton", "PlantCropMenuButton", "HarvestButton", "PlantCrop2MenuButton":
 				set_mode(MODES.NULL)
-			"PauseButton", "PlayButton", "FastForwardButton":
-				pass
 			"ShopButton":
 				in_shop = false
 				hud.show_shop(in_shop)
+			_:
+				pass
 
 # handles player inputs
 func _unhandled_input(event):

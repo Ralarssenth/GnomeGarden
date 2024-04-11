@@ -1,7 +1,8 @@
-[gd_scene load_steps=3 format=3 uid="uid://cly2xeubhhq30"]
+[gd_scene load_steps=4 format=3 uid="uid://cly2xeubhhq30"]
 
 [ext_resource type="TileSet" uid="uid://bw3no5fgo7o1" path="res://assets/farm_tile_set.tres" id="1_t7x12"]
 [ext_resource type="Script" path="res://scripts/level.gd" id="2_ysa4s"]
+[ext_resource type="AudioStream" uid="uid://dd34uipmu4rfi" path="res://assets/music and sounds/01 track 1.wav" id="3_wqvyr"]
 
 [node name="TileMap" type="TileMap"]
 texture_filter = 1
@@ -24,3 +25,8 @@ layer_5/name = "harvestSelection"
 layer_5/z_index = 5
 layer_5/tile_data = PackedInt32Array()
 script = ExtResource("2_ysa4s")
+
+[node name="BackgroundMusic" type="AudioStreamPlayer" parent="."]
+stream = ExtResource("3_wqvyr")
+volume_db = -12.0
+autoplay = true

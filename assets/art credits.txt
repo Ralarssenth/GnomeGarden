@@ -1,0 +1,2 @@
+art credits
+"[asset name]" by [author name] licensed [license]: [asset url]

@@ -32,6 +32,8 @@ extends CanvasLayer
 
 @onready var shop = $Shop
 
+@onready var button_click_sound = $ButtonClick
+
 var message_list = []
 
 # Called when the node enters the scene tree for the first time.
@@ -103,3 +105,6 @@ func show_shop(shopping):
 
 func _close_shop():
 	shop_button.set_pressed(false)
+
+func play_button_click():
+	button_click_sound.play()

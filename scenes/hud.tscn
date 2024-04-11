@@ -1,4 +1,4 @@
-[gd_scene load_steps=24 format=3 uid="uid://f1xug5peqhti"]
+[gd_scene load_steps=25 format=3 uid="uid://f1xug5peqhti"]
 
 [ext_resource type="Script" path="res://scripts/hud.gd" id="1_g56gc"]
 [ext_resource type="FontFile" uid="uid://b5k5jn21eha6y" path="res://assets/fonts/VarelaRound-Regular.ttf" id="2_qdxsb"]
@@ -23,6 +23,7 @@
 [ext_resource type="Texture2D" uid="uid://65hd5ujfymg5" path="res://assets/free version/potatoSeed_icon.png" id="9_gymll"]
 [ext_resource type="Texture2D" uid="uid://cabcf8rb6fpvf" path="res://assets/free version/potatoSeed_icon_pressed.png" id="10_nykba"]
 [ext_resource type="PackedScene" uid="uid://g4ig6h8qbxvl" path="res://scenes/shop.tscn" id="23_rwbmp"]
+[ext_resource type="AudioStream" uid="uid://gr234jp3jxof" path="res://assets/music and sounds/zipclick.wav" id="24_b1tc6"]
 
 [node name="HUD" type="CanvasLayer"]
 process_mode = 1
@@ -364,6 +365,9 @@ text = "Sandbox Mode"
 
 [node name="Shop" parent="." instance=ExtResource("23_rwbmp")]
 visible = false
+
+[node name="ButtonClick" type="AudioStreamPlayer" parent="."]
+stream = ExtResource("24_b1tc6")
 
 [connection signal="timeout" from="MessageContainer/Timer" to="." method="_on_timer_timeout"]
 [connection signal="timeout" from="BottomMarginContainer/TimeContainer/DayTimer" to="." method="_on_day_timer_timeout"]

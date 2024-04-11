@@ -6,6 +6,7 @@ extends CanvasLayer
 @onready var top_message = $TopMessageRect/TopMessage
 @onready var close_button = $CloseXButton
 @onready var back_button = $BackButton
+@onready var button_click_sound = $ButtonClick
 
 var default_bottom_text = "Cost: "
 var default_top_text = [
@@ -38,6 +39,7 @@ func set_default_values():
 	item_list.deselect_all()
 
 func _on_item_list_item_selected(index):
+	button_click_sound.play()
 	var item_selected = true
 	toggle_bottom_buttons(item_selected)
 	top_message.set_text("Don't ask where I got these seeds from...")
@@ -52,6 +54,7 @@ func _on_item_list_item_selected(index):
 			
 
 func _on_no_button_pressed():
+	button_click_sound.play()
 	var item_selected = false
 	toggle_bottom_buttons(item_selected)
 	item_list.deselect_all()
@@ -60,7 +63,6 @@ func _on_no_button_pressed():
 
 
 func _on_yes_button_pressed():
-	
 	var selected_items = item_list.get_selected_items()
 	var item_index = selected_items[0]
 	
@@ -70,6 +72,7 @@ func failed_to_buy():
 	top_message.set_text(failed_buy_message[randi_range(0, failed_buy_message.size()-1)])
 	
 func succeeded_buy():
+	button_click_sound.play()
 	# Disable the selected item in the item list
 	var selected_items = item_list.get_selected_items()
 	var item_index = selected_items[0]

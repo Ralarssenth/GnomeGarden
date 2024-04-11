@@ -1,4 +1,4 @@
-[gd_scene load_steps=14 format=3 uid="uid://g4ig6h8qbxvl"]
+[gd_scene load_steps=15 format=3 uid="uid://g4ig6h8qbxvl"]
 
 [ext_resource type="Script" path="res://scripts/shop.gd" id="1_a0og2"]
 [ext_resource type="Texture2D" uid="uid://bken6it4e2dft" path="res://assets/made by me/Shop.png" id="1_j4vkj"]
@@ -10,6 +10,7 @@
 [ext_resource type="Texture2D" uid="uid://dk6bj18op0rt4" path="res://assets/free version/tomatoSeed_icon.png" id="5_kqex2"]
 [ext_resource type="Texture2D" uid="uid://8h7mumcjqb8b" path="res://assets/fonts/closeX.png" id="9_cjx4m"]
 [ext_resource type="Texture2D" uid="uid://5e7j6xhg6hmy" path="res://assets/fonts/closeX_pressed.png" id="10_5svcw"]
+[ext_resource type="AudioStream" uid="uid://gr234jp3jxof" path="res://assets/music and sounds/zipclick.wav" id="11_of77n"]
 
 [sub_resource type="Animation" id="Animation_3o186"]
 length = 0.001
@@ -123,7 +124,7 @@ theme_override_colors/font_outline_color = Color(0, 0, 0, 1)
 theme_override_constants/outline_size = 5
 theme_override_fonts/font = ExtResource("3_yignr")
 theme_override_font_sizes/font_size = 24
-item_count = 6
+item_count = 4
 item_0/text = "Unlock: Tomato Seed"
 item_0/icon = ExtResource("5_kqex2")
 item_1/text = "Unlock: Potato Seed"
@@ -132,10 +133,6 @@ item_2/text = "Unlock: Sunflower Seed"
 item_2/icon = ExtResource("5_kqex2")
 item_3/text = "Unlock: Seed"
 item_3/icon = ExtResource("5_kqex2")
-item_4/text = "Unlock: Seed"
-item_4/icon = ExtResource("5_kqex2")
-item_5/text = "Unlock: Seed"
-item_5/icon = ExtResource("5_kqex2")
 
 [node name="BottomMessageRect" type="ColorRect" parent="."]
 offset_left = 336.0
@@ -248,6 +245,9 @@ theme_override_font_sizes/font_size = 24
 text = "Back"
 horizontal_alignment = 1
 vertical_alignment = 1
+
+[node name="ButtonClick" type="AudioStreamPlayer" parent="."]
+stream = ExtResource("11_of77n")
 
 [connection signal="item_selected" from="ItemListContainer/ItemList" to="." method="_on_item_list_item_selected"]
 [connection signal="pressed" from="ConfirmationButtonsContainer/HBoxContainer/YesButton" to="." method="_on_yes_button_pressed"]
