@@ -11,12 +11,20 @@ signal gnome_finished_busy_animation
 @onready var _animation_player = $AnimationPlayer
 @onready var gnome_sprite = $Sprite2D
 @onready var hat_sprite = $HatSprite
+@onready var name_label = $Name
+
 
 const GNOME_TEXTURES = [
 	"res://assets/gnome/PNG/24x32/gnome-m-red_hat-NESW.png",
 	"res://assets/gnome/PNG/24x32/gnome-m-green_hat-NESW.png",
 	"res://assets/gnome/PNG/24x32/gnome-f-violet_hat-NESW.png",
 	"res://assets/gnome/PNG/24x32/gnome-f-red_hat-NESW.png"
+]
+
+const GNAMES = [
+	"Fenton", "David", 
+	"Lisa","Susan", 
+	"Pog","Gnomey","Winklebottom"
 ]
 
 var construction_hat = preload("res://assets/gnome/hats/construction_hat.png")
@@ -30,6 +38,7 @@ var job = Globals.GNOME_STATE.IDLE
 # Called when the node enters the scene tree for the first time.
 func _ready():
 	randomize_gnome_texture()
+	randomize_gname()
 	# These values need to be adjusted for the actor's speed
 	# and the navigation layout.
 	navigation_agent.path_desired_distance = 2.0
@@ -46,6 +55,12 @@ func randomize_gnome_texture():
 	var i = randi_range(0, GNOME_TEXTURES.size()-1)
 	var texture = load(GNOME_TEXTURES[i])
 	gnome_sprite.set_texture(texture)
+
+func randomize_gname():
+	var i = randi_range(0, GNAMES.size()-1)
+	var gname = GNAMES[i]
+	name_label.set_text(gname)
+	
 
 # Sets up the navigation on the first physics frame
 func actor_setup():
@@ -154,5 +169,6 @@ func set_state(_state):
 func _on_animation_player_animation_finished(_anim_name):
 	if _anim_name == "busy":
 		emit_signal("gnome_finished_busy_animation", job, movement_target_position, self)
+
 
 

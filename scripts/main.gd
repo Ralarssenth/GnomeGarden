@@ -585,5 +585,6 @@ func _on_purchase(index):
 				Globals.fruit_counter[i] -= seed_cost[i]
 		hud.update_fruit_counter()
 		hud.update_plant_button_visibility(index)
+	else:
+		hud.shop.failed_to_buy()
 		
-			

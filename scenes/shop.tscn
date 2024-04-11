@@ -10,7 +10,7 @@
 [ext_resource type="Texture2D" uid="uid://dk6bj18op0rt4" path="res://assets/free version/tomatoSeed_icon.png" id="5_kqex2"]
 [ext_resource type="Texture2D" uid="uid://8h7mumcjqb8b" path="res://assets/fonts/closeX.png" id="9_cjx4m"]
 [ext_resource type="Texture2D" uid="uid://5e7j6xhg6hmy" path="res://assets/fonts/closeX_pressed.png" id="10_5svcw"]
-[ext_resource type="AudioStream" uid="uid://gr234jp3jxof" path="res://assets/music and sounds/zipclick.wav" id="11_of77n"]
+[ext_resource type="AudioStream" uid="uid://dghuwpf8j4ykp" path="res://assets/music and sounds/snd_purchase.wav" id="11_ua5nu"]
 
 [sub_resource type="Animation" id="Animation_3o186"]
 length = 0.001
@@ -247,7 +247,8 @@ horizontal_alignment = 1
 vertical_alignment = 1
 
 [node name="ButtonClick" type="AudioStreamPlayer" parent="."]
-stream = ExtResource("11_of77n")
+stream = ExtResource("11_ua5nu")
+volume_db = -2.0
 
 [connection signal="item_selected" from="ItemListContainer/ItemList" to="." method="_on_item_list_item_selected"]
 [connection signal="pressed" from="ConfirmationButtonsContainer/HBoxContainer/YesButton" to="." method="_on_yes_button_pressed"]

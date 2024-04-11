@@ -1,8 +1,9 @@
-[gd_scene load_steps=11 format=3 uid="uid://bkeys04n7sew6"]
+[gd_scene load_steps=12 format=3 uid="uid://bkeys04n7sew6"]
 
 [ext_resource type="Texture2D" uid="uid://1rodbtgo0gyi" path="res://assets/gnome/PNG/24x32/gnome-m-green_hat-NESW.png" id="2_dqeyd"]
 [ext_resource type="Script" path="res://scripts/gnome.gd" id="2_vr4qt"]
 [ext_resource type="Texture2D" uid="uid://cwqvltvk8tpys" path="res://assets/gnome/hats/construction_hat.png" id="3_vcuvs"]
+[ext_resource type="FontFile" uid="uid://b5k5jn21eha6y" path="res://assets/fonts/VarelaRound-Regular.ttf" id="4_4bdpx"]
 
 [sub_resource type="Animation" id="Animation_bpt2v"]
 length = 0.001
@@ -211,5 +212,27 @@ texture = ExtResource("3_vcuvs")
 hframes = 3
 vframes = 5
 frame = 12
+
+[node name="Name" type="Label" parent="."]
+texture_filter = 2
+anchors_preset = 7
+anchor_left = 0.5
+anchor_top = 1.0
+anchor_right = 0.5
+anchor_bottom = 1.0
+offset_left = -20.0
+offset_top = -23.5
+offset_right = 21.0
+offset_bottom = -7.5
+grow_horizontal = 2
+grow_vertical = 0
+size_flags_horizontal = 3
+theme_override_colors/font_outline_color = Color(0, 0, 0, 1)
+theme_override_constants/outline_size = 4
+theme_override_fonts/font = ExtResource("4_4bdpx")
+theme_override_font_sizes/font_size = 12
+text = "Gname"
+horizontal_alignment = 1
+vertical_alignment = 2
 
 [connection signal="animation_finished" from="AnimationPlayer" to="." method="_on_animation_player_animation_finished"]
