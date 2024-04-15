@@ -1,6 +1,7 @@
 extends CanvasLayer
 
 @onready var buttons_container = $TopMarginContainer
+@onready var menu_button = $TopMarginContainer/HBoxContainer/MenuButton
 @onready var shop_button = $TopMarginContainer/HBoxContainer/ShopButton
 @onready var plant_buttons = [
 	$TopMarginContainer/HBoxContainer/PlantCropMenuButton,
@@ -15,6 +16,7 @@ extends CanvasLayer
 	$MenuContainer/MarginContainer/VBoxContainer/TutorialLevel
 ]
 @onready var options_menu = $OptionsMenu
+@onready var menu_back_button = $MenuContainer/MarginContainer/VBoxContainer/BackButton
 
 @onready var message_container = $MessageContainer
 @onready var message_label = $MessageContainer/HBoxContainer/Label
@@ -71,6 +73,8 @@ func show_menu_hud():
 	bottom_margin_container.set_visible(false)
 	left_side_container.set_visible(false)
 	menu_container.set_visible(true)
+	menu_back_button.set_visible(false)
+	
 
 func update_message_list(text):
 	message_list.append_array(text)
@@ -116,9 +120,14 @@ func play_button_click():
 	button_click_sound.play()
 
 func toggle_inGame_menu(menu_open):
+	menu_back_button.set_visible(true)
 	menu_container.set_visible(menu_open)
 	for member in level_select_menu:
 		member.set_visible(false)
+		
+	var buttons = get_tree().get_nodes_in_group("toggle_buttons")
+	for button in buttons:
+		button.set_disabled(menu_open)
 
 func pause_game():
 	pause_button.set_pressed(true)
@@ -126,6 +135,17 @@ func pause_game():
 func toggle_options_menu(menu_open):
 	options_menu.set_visible(menu_open)
 	menu_container.set_visible(not menu_open)
-	var buttons = get_tree().get_nodes_in_group("toggle_buttons")
-	for button in buttons:
-		button.set_disabled(menu_open)
+	
+
+
+func _on_menu_back_button_pressed():
+	toggle_inGame_menu(false)
+	menu_button.set_pressed(false)
+
+
+func _on_options_back_button_pressed():
+	toggle_options_menu(false)
+	if Globals.in_level:
+		toggle_inGame_menu(true)
+	else:
+		show_menu_hud()

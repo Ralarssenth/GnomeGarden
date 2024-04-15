@@ -9,7 +9,6 @@ var sandbox_level = preload("res://scenes/sandbox.tscn")
 
 # level tracking
 var current_level
-var in_level = false
 var in_shop = false
 var camera_zoom
 
@@ -68,7 +67,7 @@ func register_signals():
 func start_level(level):
 	current_level = level.instantiate()
 	add_child(current_level)
-	in_level = true
+	Globals.in_level = true
 	camera_zoom = camera.get_zoom()
 	hud.show_game_hud()
 	spawn_gnome()
@@ -94,8 +93,6 @@ func _on_button_pressed(name):
 	match name:
 		"OptionsMenuButton":
 			hud.toggle_options_menu(true)
-		"BackButton":
-			hud.toggle_options_menu(false)
 		"TutorialLevel":
 			start_level(tutorial_level)
 		"SandboxLevel":
@@ -141,7 +138,7 @@ func _on_toggled_button(on, name):
 # handles player inputs
 func _unhandled_input(event):
 	var mouse_pos = get_global_mouse_position()
-	if in_level and not in_shop:
+	if Globals.in_level and not in_shop:
 		if event.is_action_pressed("scroll up") and camera_zoom < Vector2(5, 5):
 			camera_zoom = camera.get_zoom()
 			camera_zoom += Vector2(1,1)
@@ -555,13 +552,13 @@ func start_harvest_timer(map_pos, time, plant_array, plant_stage):
 
 # Starts the day tracking based on the current_level
 func start_days():
-	if in_level:
+	if Globals.in_level:
 		day_timer.set_wait_time(current_level.get_day_length())
 		day_timer.start()
 	
 # Tracks the days elapsed and triggers game_over() based on the current_level
 func _on_day_timer_timeout():
-	if in_level:
+	if Globals.in_level:
 		day_tracker += 1
 		print("day timer incremented")
 		hud.day.set_text(str(day_tracker))

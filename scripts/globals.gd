@@ -11,6 +11,7 @@ const HIGHLIGHT_COLOR = Color(1,1,1,0.4)
 const REMOVE_HIGHLIGHT_COLOR = Color(1,1,1,0)
 
 var fruit_counter = []
+var in_level = false
 
 signal purchased
 

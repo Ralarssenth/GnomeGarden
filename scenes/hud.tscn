@@ -54,6 +54,7 @@ toggle_mode = true
 button_group = ExtResource("3_f7wew")
 texture_normal = ExtResource("3_s3gjw")
 texture_pressed = ExtResource("4_2emmk")
+texture_disabled = ExtResource("4_2emmk")
 stretch_mode = 5
 
 [node name="ShopButton" type="TextureButton" parent="TopMarginContainer/HBoxContainer" groups=["toggle_buttons"]]
@@ -303,7 +304,6 @@ text = "0"
 
 [node name="MenuContainer" type="MarginContainer" parent="."]
 process_mode = 3
-visible = false
 anchors_preset = 8
 anchor_left = 0.5
 anchor_top = 0.5
@@ -379,6 +379,15 @@ theme_override_constants/outline_size = 5
 theme_override_fonts/font = ExtResource("2_qdxsb")
 theme_override_font_sizes/font_size = 24
 text = "Sandbox Mode"
+
+[node name="BackButton" type="Button" parent="MenuContainer/MarginContainer/VBoxContainer"]
+layout_mode = 2
+tooltip_text = "Start Level"
+theme_override_colors/font_outline_color = Color(0, 0, 0, 1)
+theme_override_constants/outline_size = 5
+theme_override_fonts/font = ExtResource("2_qdxsb")
+theme_override_font_sizes/font_size = 24
+text = "Back"
 
 [node name="OptionsMenu" type="MarginContainer" parent="."]
 process_mode = 3
@@ -473,7 +482,7 @@ horizontal_alignment = 1
 layout_mode = 2
 bus_name = "sfx"
 
-[node name="BackButton" type="Button" parent="OptionsMenu/MarginContainer/VBoxContainer" groups=["buttons"]]
+[node name="BackButton" type="Button" parent="OptionsMenu/MarginContainer/VBoxContainer"]
 layout_mode = 2
 tooltip_text = "Start Level"
 theme_override_colors/font_outline_color = Color(0, 0, 0, 1)
@@ -490,3 +499,5 @@ stream = ExtResource("24_b1tc6")
 bus = &"sfx"
 
 [connection signal="timeout" from="MessageContainer/Timer" to="." method="_on_timer_timeout"]
+[connection signal="pressed" from="MenuContainer/MarginContainer/VBoxContainer/BackButton" to="." method="_on_menu_back_button_pressed"]
+[connection signal="pressed" from="OptionsMenu/MarginContainer/VBoxContainer/BackButton" to="." method="_on_options_back_button_pressed"]
