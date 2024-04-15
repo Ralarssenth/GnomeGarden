@@ -6,8 +6,15 @@ extends CanvasLayer
 	$TopMarginContainer/HBoxContainer/PlantCropMenuButton,
 	$TopMarginContainer/HBoxContainer/PlantCrop2MenuButton
 ]
+@onready var pause_button = $TopMarginContainer/HBoxContainer2/PauseButton
 
 @onready var menu_container = $MenuContainer
+@onready var level_select_menu = [
+	$MenuContainer/MarginContainer/VBoxContainer/LevelSelect,
+	$MenuContainer/MarginContainer/VBoxContainer/SandboxLevel,
+	$MenuContainer/MarginContainer/VBoxContainer/TutorialLevel
+]
+@onready var options_menu = $OptionsMenu
 
 @onready var message_container = $MessageContainer
 @onready var message_label = $MessageContainer/HBoxContainer/Label
@@ -28,7 +35,6 @@ extends CanvasLayer
 
 @onready var bottom_margin_container = $BottomMarginContainer
 @onready var day = $BottomMarginContainer/TimeContainer/Day
-@onready var day_timer = $BottomMarginContainer/TimeContainer/DayTimer
 
 @onready var shop = $Shop
 
@@ -58,7 +64,6 @@ func show_game_hud():
 	buttons_container.set_visible(true)
 	bottom_margin_container.set_visible(true)
 	left_side_container.set_visible(true)
-	day_timer.start()
 
 func show_menu_hud():
 	buttons_container.set_visible(false)
@@ -108,3 +113,16 @@ func _close_shop():
 
 func play_button_click():
 	button_click_sound.play()
+
+func toggle_inGame_menu(menu_open):
+	menu_container.set_visible(menu_open)
+	options_menu.set_visible(not menu_open)
+	for member in level_select_menu:
+		member.set_visible(false)
+
+func pause_game():
+	pause_button.set_pressed(true)
+
+func toggle_options_menu(menu_open):
+	menu_container.set_visible(not menu_open)
+	options_menu.set_visible(menu_open)

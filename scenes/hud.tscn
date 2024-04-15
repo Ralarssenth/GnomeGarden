@@ -1,4 +1,4 @@
-[gd_scene load_steps=25 format=3 uid="uid://f1xug5peqhti"]
+[gd_scene load_steps=27 format=3 uid="uid://f1xug5peqhti"]
 
 [ext_resource type="Script" path="res://scripts/hud.gd" id="1_g56gc"]
 [ext_resource type="FontFile" uid="uid://b5k5jn21eha6y" path="res://assets/fonts/VarelaRound-Regular.ttf" id="2_qdxsb"]
@@ -6,6 +6,8 @@
 [ext_resource type="Texture2D" uid="uid://ja83wm1ith2n" path="res://assets/free version/debris_icon.png" id="3_hwei1"]
 [ext_resource type="Texture2D" uid="uid://vnvq51qo64qe" path="res://assets/fonts/pause.png" id="3_lg2bv"]
 [ext_resource type="Texture2D" uid="uid://322j1dgcjvw1" path="res://assets/free version/bird.png" id="3_m2qfa"]
+[ext_resource type="Texture2D" uid="uid://cg0blaf5muv2l" path="res://assets/fonts/menu.png" id="3_s3gjw"]
+[ext_resource type="Texture2D" uid="uid://cxsmgxph7173j" path="res://assets/fonts/menu_open.png" id="4_2emmk"]
 [ext_resource type="Texture2D" uid="uid://c16l1bfallj61" path="res://assets/free version/bird_pressed.png" id="4_5aq8d"]
 [ext_resource type="Texture2D" uid="uid://cmn86j80etfbm" path="res://assets/fonts/pause_white.png" id="4_73n0a"]
 [ext_resource type="Texture2D" uid="uid://cg8uef2jlgaaq" path="res://assets/free version/tomato_icon.png" id="4_kwcus"]
@@ -44,6 +46,14 @@ theme_override_constants/margin_bottom = 4
 layout_mode = 2
 mouse_filter = 2
 theme_override_constants/separation = 4
+
+[node name="MenuButton" type="TextureButton" parent="TopMarginContainer/HBoxContainer" groups=["toggle_buttons"]]
+layout_mode = 2
+toggle_mode = true
+button_group = ExtResource("3_f7wew")
+texture_normal = ExtResource("3_s3gjw")
+texture_pressed = ExtResource("4_2emmk")
+stretch_mode = 5
 
 [node name="ShopButton" type="TextureButton" parent="TopMarginContainer/HBoxContainer" groups=["toggle_buttons"]]
 layout_mode = 2
@@ -290,10 +300,6 @@ theme_override_fonts/font = ExtResource("2_qdxsb")
 theme_override_font_sizes/font_size = 24
 text = "0"
 
-[node name="DayTimer" type="Timer" parent="BottomMarginContainer/TimeContainer"]
-wait_time = 5.0
-one_shot = true
-
 [node name="MenuContainer" type="MarginContainer" parent="."]
 process_mode = 3
 anchors_preset = 8
@@ -327,7 +333,7 @@ theme_override_constants/margin_bottom = 4
 layout_mode = 2
 theme_override_constants/separation = 4
 
-[node name="Label" type="Label" parent="MenuContainer/MarginContainer/VBoxContainer"]
+[node name="GameTitle" type="Label" parent="MenuContainer/MarginContainer/VBoxContainer"]
 layout_mode = 2
 theme_override_colors/font_outline_color = Color(0, 0, 0, 1)
 theme_override_constants/outline_size = 5
@@ -336,7 +342,16 @@ theme_override_font_sizes/font_size = 24
 text = "Gnome Garden"
 horizontal_alignment = 1
 
-[node name="Label2" type="Label" parent="MenuContainer/MarginContainer/VBoxContainer"]
+[node name="OptionsMenuButton" type="Button" parent="MenuContainer/MarginContainer/VBoxContainer" groups=["buttons"]]
+layout_mode = 2
+tooltip_text = "Start Level"
+theme_override_colors/font_outline_color = Color(0, 0, 0, 1)
+theme_override_constants/outline_size = 5
+theme_override_fonts/font = ExtResource("2_qdxsb")
+theme_override_font_sizes/font_size = 24
+text = "Options"
+
+[node name="LevelSelect" type="Label" parent="MenuContainer/MarginContainer/VBoxContainer"]
 layout_mode = 2
 theme_override_colors/font_outline_color = Color(0, 0, 0, 1)
 theme_override_constants/outline_size = 4
@@ -363,6 +378,58 @@ theme_override_fonts/font = ExtResource("2_qdxsb")
 theme_override_font_sizes/font_size = 24
 text = "Sandbox Mode"
 
+[node name="OptionsMenu" type="MarginContainer" parent="."]
+process_mode = 3
+visible = false
+anchors_preset = 8
+anchor_left = 0.5
+anchor_top = 0.5
+anchor_right = 0.5
+anchor_bottom = 0.5
+offset_left = -93.0
+offset_top = -55.0
+offset_right = 82.0
+offset_bottom = 43.0
+grow_horizontal = 2
+grow_vertical = 2
+theme_override_constants/margin_left = 4
+theme_override_constants/margin_top = 4
+theme_override_constants/margin_right = 4
+theme_override_constants/margin_bottom = 4
+
+[node name="ColorRect" type="ColorRect" parent="OptionsMenu"]
+layout_mode = 2
+color = Color(0.0196078, 0.462745, 0.545098, 1)
+
+[node name="MarginContainer" type="MarginContainer" parent="OptionsMenu"]
+layout_mode = 2
+theme_override_constants/margin_left = 4
+theme_override_constants/margin_top = 4
+theme_override_constants/margin_right = 4
+theme_override_constants/margin_bottom = 4
+
+[node name="VBoxContainer" type="VBoxContainer" parent="OptionsMenu/MarginContainer"]
+layout_mode = 2
+theme_override_constants/separation = 4
+
+[node name="GameTitle" type="Label" parent="OptionsMenu/MarginContainer/VBoxContainer"]
+layout_mode = 2
+theme_override_colors/font_outline_color = Color(0, 0, 0, 1)
+theme_override_constants/outline_size = 5
+theme_override_fonts/font = ExtResource("2_qdxsb")
+theme_override_font_sizes/font_size = 24
+text = "Gnome Garden"
+horizontal_alignment = 1
+
+[node name="BackButton" type="Button" parent="OptionsMenu/MarginContainer/VBoxContainer" groups=["buttons"]]
+layout_mode = 2
+tooltip_text = "Start Level"
+theme_override_colors/font_outline_color = Color(0, 0, 0, 1)
+theme_override_constants/outline_size = 5
+theme_override_fonts/font = ExtResource("2_qdxsb")
+theme_override_font_sizes/font_size = 24
+text = "Back"
+
 [node name="Shop" parent="." instance=ExtResource("23_rwbmp")]
 visible = false
 
@@ -370,4 +437,3 @@ visible = false
 stream = ExtResource("24_b1tc6")
 
 [connection signal="timeout" from="MessageContainer/Timer" to="." method="_on_timer_timeout"]
-[connection signal="timeout" from="BottomMarginContainer/TimeContainer/DayTimer" to="." method="_on_day_timer_timeout"]

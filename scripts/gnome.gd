@@ -22,9 +22,10 @@ const GNOME_TEXTURES = [
 ]
 
 const GNAMES = [
-	"Fenton", "David", 
-	"Lisa","Susan", 
-	"Pog","Gnomey","Winklebottom"
+	"Fenton", "Pog",  "Boondoggles", 
+	"David", "Lisa","Susan", 
+	"Gnomey","Winklebottom", 
+	"Fiblthip", "Gnasty"
 ]
 
 var construction_hat = preload("res://assets/gnome/hats/construction_hat.png")

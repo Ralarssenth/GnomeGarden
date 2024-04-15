@@ -92,6 +92,10 @@ func register_gnome_signals(current_gnome):
 func _on_button_pressed(name):
 	hud.play_button_click()
 	match name:
+		"OptionsMenuButton":
+			hud.toggle_options_menu(true)
+		"BackButton":
+			hud.toggle_options_menu(false)
 		"TutorialLevel":
 			start_level(tutorial_level)
 		"SandboxLevel":
@@ -101,9 +105,12 @@ func _on_toggled_button(on, name):
 	hud.play_button_click()
 	if on:
 		match name:
+			"MenuButton":
+				hud.toggle_inGame_menu(on)
+				hud.pause_game()
 			"ShopButton":
 				in_shop = true
-				hud.show_shop(in_shop)
+				hud.show_shop(on)
 			"ClearDebrisButton":
 				set_mode(MODES.CLEAR_DEBRIS)
 			"PlantCropMenuButton":
@@ -123,9 +130,11 @@ func _on_toggled_button(on, name):
 		match name:
 			"ClearDebrisButton", "PlantCropMenuButton", "HarvestButton", "PlantCrop2MenuButton":
 				set_mode(MODES.NULL)
+			"MenuButton":
+				hud.toggle_inGame_menu(on)
 			"ShopButton":
 				in_shop = false
-				hud.show_shop(in_shop)
+				hud.show_shop(on)
 			_:
 				pass
 
