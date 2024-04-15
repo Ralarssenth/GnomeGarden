@@ -106,7 +106,7 @@ func _on_toggled_button(on, name):
 	if on:
 		match name:
 			"MenuButton":
-				hud.toggle_inGame_menu(on)
+				hud.toggle_inGame_menu(true)
 				hud.pause_game()
 			"ShopButton":
 				in_shop = true
@@ -131,7 +131,7 @@ func _on_toggled_button(on, name):
 			"ClearDebrisButton", "PlantCropMenuButton", "HarvestButton", "PlantCrop2MenuButton":
 				set_mode(MODES.NULL)
 			"MenuButton":
-				hud.toggle_inGame_menu(on)
+				hud.toggle_inGame_menu(false)
 			"ShopButton":
 				in_shop = false
 				hud.show_shop(on)

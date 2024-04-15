@@ -1,4 +1,4 @@
-[gd_scene load_steps=27 format=3 uid="uid://f1xug5peqhti"]
+[gd_scene load_steps=28 format=3 uid="uid://f1xug5peqhti"]
 
 [ext_resource type="Script" path="res://scripts/hud.gd" id="1_g56gc"]
 [ext_resource type="FontFile" uid="uid://b5k5jn21eha6y" path="res://assets/fonts/VarelaRound-Regular.ttf" id="2_qdxsb"]
@@ -26,6 +26,7 @@
 [ext_resource type="Texture2D" uid="uid://cabcf8rb6fpvf" path="res://assets/free version/potatoSeed_icon_pressed.png" id="10_nykba"]
 [ext_resource type="PackedScene" uid="uid://g4ig6h8qbxvl" path="res://scenes/shop.tscn" id="23_rwbmp"]
 [ext_resource type="AudioStream" uid="uid://gr234jp3jxof" path="res://assets/music and sounds/zipclick.wav" id="24_b1tc6"]
+[ext_resource type="PackedScene" uid="uid://cq2ay750sqrxs" path="res://scenes/volume_slider.tscn" id="25_obhkh"]
 
 [node name="HUD" type="CanvasLayer"]
 process_mode = 1
@@ -302,6 +303,7 @@ text = "0"
 
 [node name="MenuContainer" type="MarginContainer" parent="."]
 process_mode = 3
+visible = false
 anchors_preset = 8
 anchor_left = 0.5
 anchor_top = 0.5
@@ -412,14 +414,64 @@ theme_override_constants/margin_bottom = 4
 layout_mode = 2
 theme_override_constants/separation = 4
 
-[node name="GameTitle" type="Label" parent="OptionsMenu/MarginContainer/VBoxContainer"]
+[node name="Options" type="Label" parent="OptionsMenu/MarginContainer/VBoxContainer"]
 layout_mode = 2
 theme_override_colors/font_outline_color = Color(0, 0, 0, 1)
 theme_override_constants/outline_size = 5
 theme_override_fonts/font = ExtResource("2_qdxsb")
 theme_override_font_sizes/font_size = 24
-text = "Gnome Garden"
+text = "Options"
 horizontal_alignment = 1
+
+[node name="Volume" type="Label" parent="OptionsMenu/MarginContainer/VBoxContainer"]
+layout_mode = 2
+theme_override_colors/font_outline_color = Color(0, 0, 0, 1)
+theme_override_constants/outline_size = 5
+theme_override_fonts/font = ExtResource("2_qdxsb")
+theme_override_font_sizes/font_size = 20
+text = "Volume"
+horizontal_alignment = 1
+
+[node name="Master" type="Label" parent="OptionsMenu/MarginContainer/VBoxContainer"]
+layout_mode = 2
+theme_override_colors/font_outline_color = Color(0, 0, 0, 1)
+theme_override_constants/outline_size = 5
+theme_override_fonts/font = ExtResource("2_qdxsb")
+theme_override_font_sizes/font_size = 16
+text = "Master"
+horizontal_alignment = 1
+
+[node name="MasterVolumeSlider" parent="OptionsMenu/MarginContainer/VBoxContainer" instance=ExtResource("25_obhkh")]
+layout_mode = 2
+bus_name = "Master"
+
+[node name="Music" type="Label" parent="OptionsMenu/MarginContainer/VBoxContainer"]
+layout_mode = 2
+theme_override_colors/font_outline_color = Color(0, 0, 0, 1)
+theme_override_constants/outline_size = 5
+theme_override_fonts/font = ExtResource("2_qdxsb")
+theme_override_font_sizes/font_size = 16
+text = "Music
+"
+horizontal_alignment = 1
+
+[node name="MusicVolumeSlider" parent="OptionsMenu/MarginContainer/VBoxContainer" instance=ExtResource("25_obhkh")]
+layout_mode = 2
+bus_name = "music"
+
+[node name="Effects" type="Label" parent="OptionsMenu/MarginContainer/VBoxContainer"]
+layout_mode = 2
+theme_override_colors/font_outline_color = Color(0, 0, 0, 1)
+theme_override_constants/outline_size = 5
+theme_override_fonts/font = ExtResource("2_qdxsb")
+theme_override_font_sizes/font_size = 16
+text = "Effects
+"
+horizontal_alignment = 1
+
+[node name="SFXVolumeSlider" parent="OptionsMenu/MarginContainer/VBoxContainer" instance=ExtResource("25_obhkh")]
+layout_mode = 2
+bus_name = "sfx"
 
 [node name="BackButton" type="Button" parent="OptionsMenu/MarginContainer/VBoxContainer" groups=["buttons"]]
 layout_mode = 2
@@ -435,5 +487,6 @@ visible = false
 
 [node name="ButtonClick" type="AudioStreamPlayer" parent="."]
 stream = ExtResource("24_b1tc6")
+bus = &"sfx"
 
 [connection signal="timeout" from="MessageContainer/Timer" to="." method="_on_timer_timeout"]

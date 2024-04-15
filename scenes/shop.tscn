@@ -249,6 +249,7 @@ vertical_alignment = 1
 [node name="ButtonClick" type="AudioStreamPlayer" parent="."]
 stream = ExtResource("11_ua5nu")
 volume_db = -2.0
+bus = &"sfx"
 
 [connection signal="item_selected" from="ItemListContainer/ItemList" to="." method="_on_item_list_item_selected"]
 [connection signal="pressed" from="ConfirmationButtonsContainer/HBoxContainer/YesButton" to="." method="_on_yes_button_pressed"]

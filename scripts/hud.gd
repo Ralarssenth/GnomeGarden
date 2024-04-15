@@ -45,6 +45,7 @@ var message_list = []
 # Called when the node enters the scene tree for the first time.
 func _ready():
 	register_buttons()
+	show_menu_hud()
 
 
 # Called every frame. 'delta' is the elapsed time since the previous frame.
@@ -116,7 +117,6 @@ func play_button_click():
 
 func toggle_inGame_menu(menu_open):
 	menu_container.set_visible(menu_open)
-	options_menu.set_visible(not menu_open)
 	for member in level_select_menu:
 		member.set_visible(false)
 
@@ -124,5 +124,8 @@ func pause_game():
 	pause_button.set_pressed(true)
 
 func toggle_options_menu(menu_open):
-	menu_container.set_visible(not menu_open)
 	options_menu.set_visible(menu_open)
+	menu_container.set_visible(not menu_open)
+	var buttons = get_tree().get_nodes_in_group("toggle_buttons")
+	for button in buttons:
+		button.set_disabled(menu_open)
