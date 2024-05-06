@@ -74,6 +74,7 @@ func start_level(level):
 	update_hud_messages(current_level.get_welcome())
 	start_days()
 	update_garden_score()
+	hud.pause_game()
 	current_level.initialize_player_wallet()
 
 func game_over():
@@ -108,6 +109,7 @@ func _on_toggled_button(on, name):
 			"ShopButton":
 				in_shop = true
 				hud.show_shop(on)
+				hud.pause_game()
 			"ClearDebrisButton":
 				set_mode(MODES.CLEAR_DEBRIS)
 			"PlantCropMenuButton":

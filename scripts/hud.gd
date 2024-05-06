@@ -144,6 +144,7 @@ func _on_menu_back_button_pressed():
 
 
 func _on_options_back_button_pressed():
+	play_button_click()
 	toggle_options_menu(false)
 	if Globals.in_level:
 		toggle_inGame_menu(true)
